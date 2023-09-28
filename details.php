@@ -20,7 +20,7 @@ $response = json_decode(curl_exec($req));
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 </head>
 <body>
-<button onclick="goback()">🔙 Go back!</button>
+<button onclick="goback()" class="navigation-button">🔙 Go back!</button>
 <table class="named">
 <tr>
 <td>Name</td>
@@ -39,6 +39,8 @@ $response = json_decode(curl_exec($req));
 <td><?php echo $response->SIH; ?></td>
 </tr>
 </table>
+<details>
+<summary>More details</summary>
 <table class="others">
 <tr>
 <th scope="col">Field</th>
@@ -54,5 +56,6 @@ $response = json_decode(curl_exec($req));
 <?php
 echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 ?>
+</details>
 </body>
 </html>

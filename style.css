@@ -1,9 +1,21 @@
+body{
+	/*background: #000;*/
+}
 .named {
 	font-family: Monospace;
-	font-size: 4em;
+	font-size: 2.5em;
 	border-collapse: collapse;
+	margin: 2em;
 	margin-left: auto;
 	margin-right: auto;
+}
+#qr-reader{
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 2em;
+}
+#html5-qrcode-element{
+	font-size: 2em;
 }
 .extras {
 	font-size: 0.5em;
@@ -25,17 +37,18 @@ td {
 tr {
 	border-collapse: collapse;
 }
-button {
+.navigation-button {
 	display: block;
 	font-size: 3em;
 	margin-right: auto;
 	margin-left: auto;
 	width: 75vw;
-	height: 10vh;
-	margin-bottom: 1em;
+	min-height: 10vh;
+	padding: 0.5em;
 }
 button:hover {
 	background: darkred;
+	color: white;
 }
 body {
 	width: 100vw;
