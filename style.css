@@ -1,0 +1,42 @@
+.named {
+	font-family: Monospace;
+	font-size: 4em;
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+}
+.extras {
+	font-size: 0.5em;
+	border-collapse: collapse;
+}
+td {
+	padding: 0.4em;
+}
+tr:nth-child(odd){
+	background: lightgray;
+}
+tr:nth-child(even){
+	background: lightyellow;
+}
+td {
+	border: 1px solid blueviolet;
+	border-collapse: collapse;
+}
+tr {
+	border-collapse: collapse;
+}
+button {
+	display: block;
+	font-size: 3em;
+	margin-right: auto;
+	margin-left: auto;
+	width: 75vw;
+	height: 10vh;
+	margin-bottom: 1em;
+}
+button:hover {
+	background: darkred;
+}
+body {
+	width: 100vw;
+}

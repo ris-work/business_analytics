@@ -1,0 +1,30 @@
+<html>
+	<head><title>Stock checking app and scanning app</title>
+		<script src="html5-qrcode.min.js" type="text/javascript"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", start)
+			function start(){
+			var resultContainer = document.getElementById('qr-reader-results');
+			var lastResult, countResults = 0;
+
+			function onScanSuccess(decodedText, decodedResult) {
+				if (decodedText !== lastResult) {
+					++countResults;
+					lastResult = decodedText;
+					// Handle on success condition with the decoded message.
+					window.location.replace(`details.php?id=${decodedText}`);
+					console.log(`Scan result ${decodedText}`, decodedResult);
+				}
+			}
+
+			var html5QrcodeScanner = new Html5QrcodeScanner(
+				"qr-reader", { fps: 10, qrbox: 250 });
+			html5QrcodeScanner.render(onScanSuccess);
+			}
+		</script>
+	</head>
+	<body>	
+		<div id="qr-reader" style="width:500px"></div>
+		<div id="qr-reader-results"></div>
+	</body>
+</html>
