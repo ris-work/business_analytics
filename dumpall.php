@@ -7,7 +7,7 @@ var json_p="";
 var SIHCache = new Map();
 var PriceCache = new Map();
 function goBack(){window.location.assign("/scan/")}
-function displaySelected(e){
+async function displaySelected(e){
 	var regex=false;
 	console.log(e.target.value);
 	input = e.target.value;
@@ -19,10 +19,23 @@ function displaySelected(e){
 		else{
 			json_filtered = json_p.filter(a => a.PLU_DESC.toLowerCase().includes(input.toLowerCase()));
 			dump=json_filtered;
+			json_data = await fetch_data(json_filtered);
 		}
 		pretty_print_filtered(json_filtered);
 	}
 }
+async function fetch_data(entries){
+	data = new FormData();
+	ids = [];
+	entries.forEach((v) => ids.push(v.PLU_CODE));
+	data.append('ids', JSON.stringify(ids));
+	dump=ids;
+	res = await fetch("agg_get_info.php",
+{method: "POST", body: data});
+const reader=res.body.getReader();
+value = (await reader.read()).value;
+return (new TextDecoder).decode(value);
+};
 function pretty_print_filtered(filtered){
 	document.getElementById("printer");
 	var table = document.createElement("table");
