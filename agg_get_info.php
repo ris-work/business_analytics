@@ -30,7 +30,15 @@ do{
 	}
 }
 while ($active && $status == CURLM_OK);
-$response = json_decode(curl_exec($req));
+$RESPONSES=[];
+foreach($REQUESTS as $req)
+{
+	$res=curl_multi_getcontent($req);
+	var_dump($res);
+	array_push($RESPONSES, $res);
+};
+echo json_encode($RESPONSES);
+//$response = json_decode(curl_exec($req));
 //var_dump($response);
 ?>
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
