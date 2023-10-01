@@ -2,18 +2,48 @@
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
 <script>
+dump="";
+var json_p="";
 function goBack(){window.location.assign("/scan/")}
 function displaySelected(e){
+	var regex=false;
 	console.log(e.target.value);
 	input = e.target.value;
 	if(input.length>=3){
+		if(regex){
 		console.log(r = new RegExp(input));
 		json_p.filter();
+		}
+		else{
+			json_filtered = json_p.filter(a => a.PLU_DESC.toLowerCase().includes(input.toLowerCase()));
+			dump=json_filtered;
+		}
+		pretty_print_filtered(json_filtered);
 	}
+}
+function pretty_print_filtered(filtered){
+	document.getElementById("printer");
+	var table = document.createElement("table");
+	filtered.forEach((v) => {table.appendChild(generate_table_row(v));});
+	printer.replaceChildren(table);
+}
+function generate_table_row(v){
+	row = document.createElement("tr");
+	row.appendChild(generate_data_element(v.PLU_DESC));
+	row.appendChild(generate_data_element(v.PLU_CODE));
+	row.appendChild(generate_data_element(v.PLU_SELL));
+	row.appendChild(generate_data_element(v.SIH));
+	return row;
+}
+function generate_data_element(text){
+	var de = document.createElement('td');
+	de.innerText = text;
+	return de;
 }
 function loaded(){
 document.getElementById("back").addEventListener("click", goBack)
 document.getElementById("search").addEventListener("input", displaySelected)
+json_p=list_p;
 }
 window.onload=loaded;
 </script>
@@ -37,6 +67,7 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 <body>
 <button onclick="goback()" class="navigation-button" id="back">🔙 Go back!</button><br />
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
+<div id="printer"></div>
 <table class="named">
 <tr>
 <td>Name</td>
