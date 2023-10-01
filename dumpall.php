@@ -4,6 +4,8 @@
 <script>
 dump="";
 var json_p="";
+var SIHCache = new Map();
+var PriceCache = new Map();
 function goBack(){window.location.assign("/scan/")}
 function displaySelected(e){
 	var regex=false;
@@ -24,6 +26,15 @@ function displaySelected(e){
 function pretty_print_filtered(filtered){
 	document.getElementById("printer");
 	var table = document.createElement("table");
+	table.style.marginLeft="auto";
+	table.style.marginRight="auto";
+	table.style.borderCollapse="collapse";
+	heading_row = document.createElement("tr");
+	heading_row.appendChild(generate_data_heading("Code"));
+	heading_row.appendChild(generate_data_heading("Description"));
+	heading_row.appendChild(generate_data_heading("SIH"));
+	heading_row.appendChild(generate_data_heading("PRICE"));
+	table.appendChild(heading_row);
 	filtered.forEach((v) => {table.appendChild(generate_table_row(v));});
 	printer.replaceChildren(table);
 }
@@ -37,6 +48,11 @@ function generate_table_row(v){
 }
 function generate_data_element(text){
 	var de = document.createElement('td');
+	de.innerText = text;
+	return de;
+}
+function generate_data_heading(text){
+	var de = document.createElement('th');
 	de.innerText = text;
 	return de;
 }
