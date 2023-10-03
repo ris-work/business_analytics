@@ -102,6 +102,7 @@ function generate_table_row(v){
 	row.appendChild(generate_data_element(v.S_D30));
 	row.appendChild(generate_data_element(v.S_D60));
 	if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
+	if(parseInt(v.SIH)==0) row.className = "very-dangerous";
 	}
 	return row;
 }

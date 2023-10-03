@@ -53,3 +53,7 @@ button:hover {
 body {
 	width: 100vw;
 }
+tr[class=very-dangerous] {
+	background-color: darkred !important;
+	color: lightcyan;
+}
