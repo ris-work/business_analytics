@@ -29,8 +29,8 @@ $RESPONSES=[];
 foreach($REQUESTS as $req)
 {
 	$res=curl_multi_getcontent($req);
-	var_dump($res);
-	array_push($RESPONSES, $res);
+	//var_dump($res);
+	array_push($RESPONSES, json_decode($res));
 };
 echo json_encode($RESPONSES);
 //$response = json_decode(curl_exec($req));

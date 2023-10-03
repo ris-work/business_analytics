@@ -21,7 +21,7 @@ async function displaySelected(e){
 			dump=json_filtered;
 			json_data = await fetch_data(json_filtered);
 		}
-		pretty_print_filtered(json_filtered);
+		pretty_print_filtered(JSON.parse(json_data));
 	}
 }
 async function fetch_data(entries){
@@ -32,9 +32,8 @@ async function fetch_data(entries){
 	dump=ids;
 	res = await fetch("agg_get_info.php",
 {method: "POST", body: data});
-const reader=res.body.getReader();
-value = (await reader.read()).value;
-return (new TextDecoder).decode(value);
+const buf=await res.arrayBuffer();
+return (new TextDecoder).decode(buf);
 };
 function pretty_print_filtered(filtered){
 	document.getElementById("printer");
@@ -45,18 +44,22 @@ function pretty_print_filtered(filtered){
 	heading_row = document.createElement("tr");
 	heading_row.appendChild(generate_data_heading("Code"));
 	heading_row.appendChild(generate_data_heading("Description"));
+	heading_row.appendChild(generate_data_heading("Sell"));
 	heading_row.appendChild(generate_data_heading("SIH"));
-	heading_row.appendChild(generate_data_heading("PRICE"));
 	table.appendChild(heading_row);
 	filtered.forEach((v) => {table.appendChild(generate_table_row(v));});
 	printer.replaceChildren(table);
 }
 function generate_table_row(v){
 	row = document.createElement("tr");
-	row.appendChild(generate_data_element(v.PLU_DESC));
+	//console.log(v);
+	if(v){
 	row.appendChild(generate_data_element(v.PLU_CODE));
+	row.appendChild(generate_data_element(v.PLU_DESC));
 	row.appendChild(generate_data_element(v.PLU_SELL));
 	row.appendChild(generate_data_element(v.SIH));
+	if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
+	}
 	return row;
 }
 function generate_data_element(text){
