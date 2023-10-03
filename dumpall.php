@@ -17,11 +17,28 @@ async function displaySelected(e){
 		json_p.filter();
 		}
 		else{
-			json_filtered = json_p.filter(a => a.PLU_DESC.toLowerCase().includes(input.toLowerCase()));
-			dump=json_filtered;
-			json_data = await fetch_data(json_filtered);
+			var json_filtered = json_p.filter(a => a.PLU_DESC.toLowerCase().includes(input.toLowerCase()));
+			var dump=json_filtered;
+			var json_data = await fetch_data(json_filtered);
+			var json_analytics = await fetch_analytics(json_filtered);
+			var analytics = JSON.parse(json_analytics);
+			var data_with_analytics = JSON.parse(json_data);
+			//console.log(analytics);
+			//console.log(data_with_analytics);
+			for(i1 in data_with_analytics){
+				for(i2 in analytics){
+					try{
+					if(data_with_analytics[i1].PLU_CODE == analytics[i2].CODE){
+						Object.assign(data_with_analytics[i1], analytics[i2]);
+						delete analytics[i2];
+						break;
+					}
+					}
+					catch(error){}//console.log(error)}
+				}
+			}
 		}
-		pretty_print_filtered(JSON.parse(json_data));
+		pretty_print_filtered((data_with_analytics));
 	}
 }
 async function fetch_data(entries){
@@ -31,6 +48,17 @@ async function fetch_data(entries){
 	data.append('ids', JSON.stringify(ids));
 	dump=ids;
 	res = await fetch("agg_get_info.php",
+{method: "POST", body: data});
+const buf=await res.arrayBuffer();
+return (new TextDecoder).decode(buf);
+};
+async function fetch_analytics(entries){
+	data = new FormData();
+	ids = [];
+	entries.forEach((v) => ids.push(v.PLU_CODE));
+	data.append('ids', JSON.stringify(ids));
+	dump=ids;
+	res = await fetch("agg_get_salesdata.php",
 {method: "POST", body: data});
 const buf=await res.arrayBuffer();
 return (new TextDecoder).decode(buf);
@@ -46,6 +74,9 @@ function pretty_print_filtered(filtered){
 	heading_row.appendChild(generate_data_heading("Description"));
 	heading_row.appendChild(generate_data_heading("Sell"));
 	heading_row.appendChild(generate_data_heading("SIH"));
+	heading_row.appendChild(generate_data_heading("Sales (15)"));
+	heading_row.appendChild(generate_data_heading("Sales (30)"));
+	heading_row.appendChild(generate_data_heading("Sales (60)"));
 	table.appendChild(heading_row);
 	filtered.forEach((v) => {table.appendChild(generate_table_row(v));});
 	printer.replaceChildren(table);
@@ -58,6 +89,9 @@ function generate_table_row(v){
 	row.appendChild(generate_data_element(v.PLU_DESC));
 	row.appendChild(generate_data_element(v.PLU_SELL));
 	row.appendChild(generate_data_element(v.SIH));
+	row.appendChild(generate_data_element(v.S_D15));
+	row.appendChild(generate_data_element(v.S_D30));
+	row.appendChild(generate_data_element(v.S_D60));
 	if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
 	}
 	return row;
@@ -70,6 +104,7 @@ function generate_data_element(text){
 function generate_data_heading(text){
 	var de = document.createElement('th');
 	de.innerText = text;
+	de.style.border="1px solid black";
 	return de;
 }
 function loaded(){
@@ -133,7 +168,7 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 <?php } ?>
 </table>
 <?php
-echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
+//echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
 </body>
