@@ -21,19 +21,22 @@ async function displaySelected(){
 	//console.log(e.target.value);
 	var input = ToDisplay;
 	if(input.length>=3){
-	Blocked = true;
+		Blocked = true;
 		if(regex){
-		console.log(r = new RegExp(input));
-		json_p.filter();
+			console.log(r = new RegExp(input));
+			json_p.filter();
 		}
 		else{
 			il = input.toLowerCase();
-			if(abjad){
+			if(starts_with){
+				json_filtered = json_pl.filter(a => a.PLU_DESC.startsWith(il));
+			}
+			else if(abjad){
 				iln = normalize(il);
 				if (iln < 3) {Blocked=false; return;}
-			json_filtered = json_pa.filter(a => a.PLU_DESC.includes(iln));
+				json_filtered = json_pa.filter(a => a.PLU_DESC.includes(iln));
 			}else{
-			json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
+				json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
 			}
 			var not_in_cache = json_filtered.map(a => {!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE)});
 			var dump=json_filtered;
@@ -45,20 +48,20 @@ async function displaySelected(){
 			//console.log(data);
 			for(var i1 in analytics){
 				try{
-				AnalyticsCache.set(analytics[i1].CODE, analytics[i1]);
+					AnalyticsCache.set(analytics[i1].CODE, analytics[i1]);
 				}catch(e){}
 			}
 			for(var i1 in data){
 				try{
-				DataCache.set(data[i1].PLU_CODE, data[i1]);
+					DataCache.set(data[i1].PLU_CODE, data[i1]);
 				}catch(e){}
 			}
 			for(var i1 in data){
 				try{
-				var dwa = Object.create({});
-				Object.assign(dwa, DataCache.get(data[i1].PLU_CODE));
-				Object.assign(dwa, AnalyticsCache.get(data[i1].PLU_CODE));
-				data_with_analytics.push(dwa);
+					var dwa = Object.create({});
+					Object.assign(dwa, DataCache.get(data[i1].PLU_CODE));
+					Object.assign(dwa, AnalyticsCache.get(data[i1].PLU_CODE));
+					data_with_analytics.push(dwa);
 				}catch(e){}
 			}
 			//console.log(analytics);
@@ -76,9 +79,9 @@ async function fetch_data(entries){
 	data.append('ids', JSON.stringify(ids));
 	dump=ids;
 	res = await fetch("agg_get_info.php",
-{method: "POST", body: data});
-const buf=await res.arrayBuffer();
-return (new TextDecoder).decode(buf);
+	{method: "POST", body: data});
+	const buf=await res.arrayBuffer();
+	return (new TextDecoder).decode(buf);
 };
 async function fetch_analytics(entries){
 	data = new FormData();
@@ -87,9 +90,9 @@ async function fetch_analytics(entries){
 	data.append('ids', JSON.stringify(ids));
 	dump=ids;
 	res = await fetch("agg_get_salesdata.php",
-{method: "POST", body: data});
-const buf=await res.arrayBuffer();
-return (new TextDecoder).decode(buf);
+	{method: "POST", body: data});
+	const buf=await res.arrayBuffer();
+	return (new TextDecoder).decode(buf);
 };
 function pretty_print_filtered(filtered){
 	document.getElementById("printer");
@@ -113,17 +116,17 @@ function generate_table_row(v){
 	row = document.createElement("tr");
 	//console.log(v);
 	if(v){
-	row.appendChild(generate_data_element(v.PLU_CODE));
-	row.appendChild(generate_data_element(v.PLU_DESC));
-	row.appendChild(generate_data_element(v.PLU_SELL));
-	row.appendChild(generate_data_element(v.SIH));
-	row.appendChild(generate_data_element(v.S_D15));
-	row.appendChild(generate_data_element(v.S_D30));
-	row.appendChild(generate_data_element(v.S_D60));
-	if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
-	if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
-	if(parseInt(v.SIH) < parseInt(v.S_D15)){
-	}
+		row.appendChild(generate_data_element(v.PLU_CODE));
+		row.appendChild(generate_data_element(v.PLU_DESC));
+		row.appendChild(generate_data_element(v.PLU_SELL));
+		row.appendChild(generate_data_element(v.SIH));
+		row.appendChild(generate_data_element(v.S_D15));
+		row.appendChild(generate_data_element(v.S_D30));
+		row.appendChild(generate_data_element(v.S_D60));
+		if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
+		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
+		if(parseInt(v.SIH) < parseInt(v.S_D15)){
+		}
 	}
 	return row;
 }
@@ -146,19 +149,19 @@ function updateOptions(){
 }
 var json_p, json_pa;
 function loaded(){
-document.getElementById("back").addEventListener("click", goBack)
-document.getElementById("search").addEventListener("input", updateSelected)
-document.getElementById("abjad").addEventListener("change", updateOptions)
-document.getElementById("starts-with").addEventListener("change", updateOptions)
-json_p=list_p;
-json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
-json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
-Clock = window.setInterval(displaySelected, 800);
+	document.getElementById("back").addEventListener("click", goBack)
+		document.getElementById("search").addEventListener("input", updateSelected)
+		document.getElementById("abjad").addEventListener("change", updateOptions)
+		document.getElementById("starts-with").addEventListener("change", updateOptions)
+		json_p=list_p;
+	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
+	json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
+	Clock = window.setInterval(displaySelected, 800);
 }
 function normalize(string) {
 	string = string.toLowerCase()
-	var vowels=/[aeiou]/g
-	string = string.replaceAll(vowels, "");
+		var vowels=/[aeiou]/g
+		string = string.replaceAll(vowels, "");
 	string = string.replaceAll("y", "i");
 	string = string.replaceAll("k", "c");
 	return string;
@@ -196,7 +199,7 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 <br />
 <div>
 <input type="checkbox" id="starts-with"></input>
-<label for="starts-with">Starts with ...</label>
+<label for="starts-with">Starts with ... (disables abjad)</label>
 </div>
 </fieldset>
 </details>
