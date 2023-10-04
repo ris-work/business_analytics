@@ -6,11 +6,18 @@ dump="";
 var json_p="";
 var DataCache = new Map();
 var AnalyticsCache = new Map();
+var ToDisplay = "";
+var Displaying = "";
+var Clock = null;
+function updateSelected(e){
+	ToDisplay=e.target.value;
+}
 function goBack(){window.location.assign("/scan/")}
-async function displaySelected(e){
+async function displaySelected(){
+	if(Displaying==ToDisplay) return;
 	var regex=false;
-	console.log(e.target.value);
-	input = e.target.value;
+	//console.log(e.target.value);
+	var input = ToDisplay;
 	if(input.length>=3){
 		if(regex){
 		console.log(r = new RegExp(input));
@@ -49,6 +56,7 @@ async function displaySelected(e){
 		}
 		pretty_print_filtered((data_with_analytics));
 	}
+	Displaying=ToDisplay;
 }
 async function fetch_data(entries){
 	data = new FormData();
@@ -102,7 +110,9 @@ function generate_table_row(v){
 	row.appendChild(generate_data_element(v.S_D30));
 	row.appendChild(generate_data_element(v.S_D60));
 	if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
-	if(parseInt(v.SIH)==0) row.className = "very-dangerous";
+	if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
+	if(parseInt(v.SIH) < parseInt(v.S_D15)){
+	}
 	}
 	return row;
 }
@@ -119,8 +129,9 @@ function generate_data_heading(text){
 }
 function loaded(){
 document.getElementById("back").addEventListener("click", goBack)
-document.getElementById("search").addEventListener("input", displaySelected)
+document.getElementById("search").addEventListener("input", updateSelected)
 json_p=list_p;
+Clock = window.setInterval(displaySelected, 800);
 }
 window.onload=loaded;
 </script>

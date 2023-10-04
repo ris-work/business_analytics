@@ -57,3 +57,8 @@ tr[class=very-dangerous] {
 	background-color: darkred !important;
 	color: lightcyan;
 }
+tr[class=always-empty] {
+	background-color: darkgoldenrod !important;
+	background-color: darkslategray !important;
+	color: lightcyan;
+}
