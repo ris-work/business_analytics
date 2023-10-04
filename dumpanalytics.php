@@ -13,18 +13,28 @@ function updateSelected(e){
 	ToDisplay=e.target.value;
 }
 function goBack(){window.location.assign("/scan/")}
+var Blocked=false;
 async function displaySelected(){
 	if(Displaying==ToDisplay) return;
+	if(Blocked) return;
 	var regex=false;
 	//console.log(e.target.value);
 	var input = ToDisplay;
 	if(input.length>=3){
+	Blocked = true;
 		if(regex){
 		console.log(r = new RegExp(input));
 		json_p.filter();
 		}
 		else{
-			var json_filtered = json_p.filter(a => a.PLU_DESC.toLowerCase().includes(input.toLowerCase()));
+			il = input.toLowerCase();
+			if(abjad){
+				iln = normalize(il);
+				if (iln < 3) {Blocked=false; return;}
+			json_filtered = json_pa.filter(a => a.PLU_DESC.includes(iln));
+			}else{
+			json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
+			}
 			var not_in_cache = json_filtered.map(a => {!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE)});
 			var dump=json_filtered;
 			var json_data = await fetch_data(json_filtered);
@@ -55,8 +65,9 @@ async function displaySelected(){
 			console.log(data_with_analytics);
 		}
 		pretty_print_filtered((data_with_analytics));
+		Blocked=false;
+		Displaying=ToDisplay;
 	}
-	Displaying=ToDisplay;
 }
 async function fetch_data(entries){
 	data = new FormData();
@@ -127,11 +138,30 @@ function generate_data_heading(text){
 	de.style.border="1px solid black";
 	return de;
 }
+var abjad = false;
+var starts_with=false;
+function updateOptions(){
+	starts_with = document.getElementById("starts-with").checked;
+	abjad = document.getElementById("abjad").checked;
+}
+var json_p, json_pa;
 function loaded(){
 document.getElementById("back").addEventListener("click", goBack)
 document.getElementById("search").addEventListener("input", updateSelected)
+document.getElementById("abjad").addEventListener("change", updateOptions)
+document.getElementById("starts-with").addEventListener("change", updateOptions)
 json_p=list_p;
+json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
+json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
 Clock = window.setInterval(displaySelected, 800);
+}
+function normalize(string) {
+	string = string.toLowerCase()
+	var vowels=/[aeiou]/g
+	string = string.replaceAll(vowels, "");
+	string = string.replaceAll("y", "i");
+	string = string.replaceAll("k", "c");
+	return string;
 }
 window.onload=loaded;
 </script>
@@ -155,6 +185,21 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 <body>
 <button onclick="goback()" class="navigation-button" id="back">🔙 Go back!</button><br />
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
+<details>
+<summary>More options...</summary>
+<fieldset id="search-options">
+<legend>Search options:</legend>
+<div>
+<input type="checkbox" id="abjad"></input>
+<label for="abjad">Abjad and other normalizations</label>
+</div>
+<br />
+<div>
+<input type="checkbox" id="starts-with"></input>
+<label for="starts-with">Starts with ...</label>
+</div>
+</fieldset>
+</details>
 <div id="printer"></div>
 <table class="named">
 <tr>
