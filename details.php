@@ -15,6 +15,14 @@ curl_setopt($req, CURLOPT_URL, "$BASEURL/$ID");
 curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 $response = json_decode(curl_exec($req));
+$BASEURL_ANALYTICS = "http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
+$req_analytics = curl_init();
+curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$ID");
+curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($req_analytics, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
+$response_analytics = json_decode(curl_exec($req_analytics));
+$SIH = $response_analytics->SIH;
+$state_of_things="too-much";
 //var_dump($response);
 ?>
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
@@ -34,9 +42,21 @@ $response = json_decode(curl_exec($req));
 <td>Selling price</td>
 <td><?php echo $response->PLU_SELL; ?></td>
 </tr>
-<tr>
+<tr class="<?php echo $state_of_things; ?>">
 <td>SIH</td>
 <td><?php echo $response->SIH; ?></td>
+</tr>
+<tr>
+<td>Sold (15 days)</td>
+<td><?php echo $response_analytics->S_D15; ?></td>
+</tr>
+<tr>
+<td>Sold (30 days)</td>
+<td><?php echo $response_analytics->S_D30; ?></td>
+</tr>
+<tr>
+<td>Sold (60 days)</td>
+<td><?php echo $response_analytics->S_D60; ?></td>
 </tr>
 </table>
 <details>
@@ -52,9 +72,16 @@ $response = json_decode(curl_exec($req));
 <td><?php echo $value; ?></td>
 </tr>
 <?php } ?>
+<?php foreach($response_analytics as $field=>$value) { ?>
+<tr>
+<td><?php echo $field; ?></td>
+<td><?php echo $value; ?></td>
+</tr>
+<?php } ?>
 </table>
 <?php
 echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
+echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
 </body>

@@ -2,7 +2,7 @@ body{
 	/*background: #000;*/
 }
 .named {
-	font-family: Monospace;
+	font-family: 'IBM Courier', Monospace;
 	font-size: 2.5em;
 	border-collapse: collapse;
 	margin: 2em;
@@ -52,10 +52,81 @@ button:hover {
 }
 body {
 	width: 100vw;
+	width: auto;
 }
 tr[class=very-dangerous] {
 	background-color: darkred !important;
 	color: lightcyan;
+}
+tr[class=always-empty] {
+	background-color: darkgoldenrod !important;
+	background-color: darkslategray !important;
+	color: lightcyan;
+}
+tr[class=good] {
+	background-color: lightgreen;
+	color: black;
+}
+tr[class=very-good] {
+	background-color: darkgreen;
+	color: white;
+}
+tr[class=too-much] {
+	background: repeating-linear-gradient(-30deg, #600 0px 2px, #090 2px 4px, #009 4px 6px);
+	font-weight: 700;
+}
+tr[class=too-much] td{
+	color: white;
+	mix-blend-mode: difference;
+}
+#search-options input {
+	font-size: 1em;
+	width: auto;
+	height: auto;
+	display: inline;
+	margin: auto;
+	min-height: 6vh;
+}
+#search-options label {
+	font-size: 1.25em;
+	width: auto;
+}
+tr[class=very-dangerous] {
+	background-color: darkred !important;
+	color: lightcyan;
+}
+tr[class=always-empty] {
+	background-color: darkgoldenrod !important;
+	background-color: darkslategray !important;
+	color: lightcyan;
+}
+tr[class=good] {
+	background-color: lightgreen;
+	color: black;
+}
+tr[class=very-good] {
+	background-color: darkgreen;
+	color: white;
+}
+tr[class=too-much] {
+	background: repeating-linear-gradient(-30deg, #600 0px 2px, #090 2px 4px, #009 4px 6px);
+	font-weight: 700;
+}
+tr[class=too-much] td{
+	color: white;
+	mix-blend-mode: difference;
+}
+#search-options input {
+	font-size: 1em;
+	width: auto;
+	height: auto;
+	display: inline;
+	margin: auto;
+	min-height: 6vh;
+}
+#search-options label {
+	font-size: 1.25em;
+	width: auto;
 }
 .link-button {
 	margin-left: auto;

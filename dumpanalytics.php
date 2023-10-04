@@ -6,18 +6,38 @@ dump="";
 var json_p="";
 var DataCache = new Map();
 var AnalyticsCache = new Map();
+var ToDisplay = "";
+var Displaying = "";
+var Clock = null;
+function updateSelected(e){
+	ToDisplay=e.target.value;
+}
 function goBack(){window.location.assign("/scan/")}
-async function displaySelected(e){
+var Blocked=false;
+async function displaySelected(){
+	if(Displaying==ToDisplay) return;
+	if(Blocked) return;
 	var regex=false;
-	console.log(e.target.value);
-	input = e.target.value;
+	//console.log(e.target.value);
+	var input = ToDisplay;
 	if(input.length>=3){
+		Blocked = true;
 		if(regex){
-		console.log(r = new RegExp(input));
-		json_p.filter();
+			console.log(r = new RegExp(input));
+			json_p.filter();
 		}
 		else{
-			var json_filtered = json_p.filter(a => a.PLU_DESC.toLowerCase().includes(input.toLowerCase()));
+			il = input.toLowerCase();
+			if(starts_with){
+				json_filtered = json_pl.filter(a => a.PLU_DESC.startsWith(il));
+			}
+			else if(abjad){
+				iln = normalize(il);
+				if (iln < 3) {Blocked=false; return;}
+				json_filtered = json_pa.filter(a => a.PLU_DESC.includes(iln));
+			}else{
+				json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
+			}
 			var not_in_cache = json_filtered.map(a => {!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE)});
 			var dump=json_filtered;
 			var json_data = await fetch_data(json_filtered);
@@ -28,26 +48,28 @@ async function displaySelected(e){
 			//console.log(data);
 			for(var i1 in analytics){
 				try{
-				AnalyticsCache.set(analytics[i1].CODE, analytics[i1]);
+					AnalyticsCache.set(analytics[i1].CODE, analytics[i1]);
 				}catch(e){}
 			}
 			for(var i1 in data){
 				try{
-				DataCache.set(data[i1].PLU_CODE, data[i1]);
+					DataCache.set(data[i1].PLU_CODE, data[i1]);
 				}catch(e){}
 			}
 			for(var i1 in data){
 				try{
-				var dwa = Object.create({});
-				Object.assign(dwa, DataCache.get(data[i1].PLU_CODE));
-				Object.assign(dwa, AnalyticsCache.get(data[i1].PLU_CODE));
-				data_with_analytics.push(dwa);
+					var dwa = Object.create({});
+					Object.assign(dwa, DataCache.get(data[i1].PLU_CODE));
+					Object.assign(dwa, AnalyticsCache.get(data[i1].PLU_CODE));
+					data_with_analytics.push(dwa);
 				}catch(e){}
 			}
 			//console.log(analytics);
 			console.log(data_with_analytics);
 		}
 		pretty_print_filtered((data_with_analytics));
+		Blocked=false;
+		Displaying=ToDisplay;
 	}
 }
 async function fetch_data(entries){
@@ -57,9 +79,9 @@ async function fetch_data(entries){
 	data.append('ids', JSON.stringify(ids));
 	dump=ids;
 	res = await fetch("agg_get_info.php",
-{method: "POST", body: data});
-const buf=await res.arrayBuffer();
-return (new TextDecoder).decode(buf);
+	{method: "POST", body: data});
+	const buf=await res.arrayBuffer();
+	return (new TextDecoder).decode(buf);
 };
 async function fetch_analytics(entries){
 	data = new FormData();
@@ -68,9 +90,9 @@ async function fetch_analytics(entries){
 	data.append('ids', JSON.stringify(ids));
 	dump=ids;
 	res = await fetch("agg_get_salesdata.php",
-{method: "POST", body: data});
-const buf=await res.arrayBuffer();
-return (new TextDecoder).decode(buf);
+	{method: "POST", body: data});
+	const buf=await res.arrayBuffer();
+	return (new TextDecoder).decode(buf);
 };
 function pretty_print_filtered(filtered){
 	document.getElementById("printer");
@@ -94,15 +116,17 @@ function generate_table_row(v){
 	row = document.createElement("tr");
 	//console.log(v);
 	if(v){
-	row.appendChild(generate_data_element(v.PLU_CODE));
-	row.appendChild(generate_data_element(v.PLU_DESC));
-	row.appendChild(generate_data_element(v.PLU_SELL));
-	row.appendChild(generate_data_element(v.SIH));
-	row.appendChild(generate_data_element(v.S_D15));
-	row.appendChild(generate_data_element(v.S_D30));
-	row.appendChild(generate_data_element(v.S_D60));
-	if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
-	if(parseInt(v.SIH)==0) row.className = "very-dangerous";
+		row.appendChild(generate_data_element(v.PLU_CODE));
+		row.appendChild(generate_data_element(v.PLU_DESC));
+		row.appendChild(generate_data_element(v.PLU_SELL));
+		row.appendChild(generate_data_element(v.SIH));
+		row.appendChild(generate_data_element(v.S_D15));
+		row.appendChild(generate_data_element(v.S_D30));
+		row.appendChild(generate_data_element(v.S_D60));
+		if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
+		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
+		if(parseInt(v.SIH) < parseInt(v.S_D15)){
+		}
 	}
 	return row;
 }
@@ -117,10 +141,30 @@ function generate_data_heading(text){
 	de.style.border="1px solid black";
 	return de;
 }
+var abjad = false;
+var starts_with=false;
+function updateOptions(){
+	starts_with = document.getElementById("starts-with").checked;
+	abjad = document.getElementById("abjad").checked;
+}
+var json_p, json_pa;
 function loaded(){
-document.getElementById("back").addEventListener("click", goBack)
-document.getElementById("search").addEventListener("input", displaySelected)
-json_p=list_p;
+	document.getElementById("back").addEventListener("click", goBack)
+		document.getElementById("search").addEventListener("input", updateSelected)
+		document.getElementById("abjad").addEventListener("change", updateOptions)
+		document.getElementById("starts-with").addEventListener("change", updateOptions)
+		json_p=list_p;
+	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
+	json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
+	Clock = window.setInterval(displaySelected, 800);
+}
+function normalize(string) {
+	string = string.toLowerCase()
+		var vowels=/[aeiou]/g
+		string = string.replaceAll(vowels, "");
+	string = string.replaceAll("y", "i");
+	string = string.replaceAll("k", "c");
+	return string;
 }
 window.onload=loaded;
 </script>
@@ -144,6 +188,21 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 <body>
 <button onclick="goback()" class="navigation-button" id="back">🔙 Go back!</button><br />
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
+<details>
+<summary>More options...</summary>
+<fieldset id="search-options">
+<legend>Search options:</legend>
+<div>
+<input type="checkbox" id="abjad"></input>
+<label for="abjad">Abjad and other normalizations</label>
+</div>
+<br />
+<div>
+<input type="checkbox" id="starts-with"></input>
+<label for="starts-with">Starts with ... (disables abjad)</label>
+</div>
+</fieldset>
+</details>
 <div id="printer"></div>
 <table class="named">
 <tr>
