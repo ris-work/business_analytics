@@ -4,6 +4,9 @@
 		<script src="html5-qrcode.min.js" type="text/javascript"></script>
 		<script>
 			document.addEventListener("DOMContentLoaded", start)
+			document.addEventListener("DOMContentLoaded", initevents)
+			var htmlQrcodeScanner;
+			var qrbox_size=200;
 			function start(){
 				var resultContainer = document.getElementById('qr-reader-results');
 				var lastResult, countResults = 0;
@@ -18,17 +21,41 @@
 					}
 				}
 
-				var html5QrcodeScanner = new Html5QrcodeScanner(
-					"qr-reader", { fps: 10, qrbox: 200 });
+				html5QrcodeScanner = new Html5QrcodeScanner(
+					"qr-reader", { fps: 10, qrbox: qrbox_size, aspectRatio: 0.5, 
+						videoConstraints: {
+							/*"zoom": {ideal: 0.5},*/
+							facingMode: {exact: "environment"},
+							focusMode: "continuous",
+							height: {min: 1080}
+							/*"height": {"min": 1080}*/
+						} 
+					});
 				html5QrcodeScanner.render(onScanSuccess);
+			}
+			async function stop(){
+				await html5QrcodeScanner.clear();
+			}
+			async function restart(){await stop();start();}
+			function initevents(){
+			document.getElementById("qrbox_l").addEventListener("click", function(){qrbox_size=300; restart()});
+			document.getElementById("qrbox_m").addEventListener("click", function(){qrbox_size=200; restart()});
+			document.getElementById("qrbox_s").addEventListener("click", function(){qrbox_size=150; restart()});
 			}
 		</script>
 	</head>
 	<body>	
-		<div id="qr-reader" style="width:500px"></div>
+		<div id="qr-reader" style="width:50vw"></div>
 		<div id="qr-reader-results"></div><br />
 		<div class="centered-container">
 		<a href="dumpanalytics.php" class="link-button"><span>Alternatively, view ALL</span></a>
+		</div>
+		<br />
+		<br />
+		<div class="centered-container">
+		<button id="qrbox_l">QRbox: large</button>
+		<button id="qrbox_m">QRbox: med</button>
+		<button id="qrbox_s">QRbox: small</button>
 		</div>
 	</body>
 </html>
