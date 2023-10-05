@@ -82,9 +82,10 @@ async function displaySelected(){
 async function loadAllAtOnce(){
 	not_in_cache = json_pl;
 	console.log(not_in_cache);
-	json_data = await fetch_data(not_in_cache);
+	json_data = await fetch_data(not_in_cache.slice(0,2000));
 	console.log(json_data);
-	json_analytics = await fetch_analytics(not_in_cache);
+	//json_analytics = await fetch_analytics(not_in_cache);
+	json_analytics=await fetch_analytics(not_in_cache.slice(0,2000));
 	console.log(json_analytics);
 	analytics_fetched = JSON.parse(json_analytics);
 	data_fetched = JSON.parse(json_data);
@@ -93,12 +94,12 @@ async function loadAllAtOnce(){
 	//console.log(data);
 	for(var i1 in analytics_fetched){
 		try{
-			AnalyticsCache.set(analytics[i1].CODE, analytics[i1]);
+			AnalyticsCache.set(analytics_fetched[i1].CODE, analytics_fetched[i1]);
 		}catch(e){}
 	}
 	for(var i1 in data_fetched){
 		try{
-			DataCache.set(data[i1].PLU_CODE, data[i1]);
+			DataCache.set(data_fetched[i1].PLU_CODE, data_fetched[i1]);
 		}catch(e){}
 	}
 	//console.log(analytics);
