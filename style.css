@@ -1,5 +1,5 @@
 body{
-	background: #bcd4e6;
+	background: #b0c4de;
 }
 .named {
 	font-family: 'IBM Courier', Monospace;
@@ -25,7 +25,7 @@ td {
 	padding: 0.4em;
 }
 tr:nth-child(odd){
-	background: #b0c4de;
+	background:  #c4c3d0;
 }
 tr:nth-child(even){
 	background: white;
