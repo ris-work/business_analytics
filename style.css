@@ -25,10 +25,10 @@ td {
 	padding: 0.4em;
 }
 tr:nth-child(odd){
-	background: lightgray;
+	background: #b0c4de;
 }
 tr:nth-child(even){
-	background: lightyellow;
+	background: white;
 }
 td {
 	border: 1px solid blueviolet;
