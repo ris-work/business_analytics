@@ -87,7 +87,7 @@ async function loadAllAtOnce(){
 	var analytics_fetched = JSON.parse(json_analytics);
 	var data_fetched = JSON.parse(json_data);
 	var data_with_analytics=[];
-	console.log(data_fetched);
+	df=(data_fetched);
 	//console.log(data);
 	for(var i1 in analytics_fetched){
 		try{
