@@ -46,7 +46,7 @@ async function displaySelected(){
 			var json_data = await fetch_data(not_in_cache);
 			var json_analytics = await fetch_analytics(not_in_cache);
 			var analytics = JSON.parse(json_analytics);
-			in_cache.forEach(x => analyitcs.push(AnalyticsCache.get(x)))
+			in_cache.forEach(x => analytics.push(AnalyticsCache.get(x)))
 			var data = JSON.parse(json_data);
 			in_cache.forEach(x => data.push(DataCache.get(x)))
 			var data_with_analytics=[];
