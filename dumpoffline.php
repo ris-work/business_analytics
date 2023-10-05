@@ -85,11 +85,7 @@ async function loadAllAtOnce(){
 	json_data = await fetch_data(not_in_cache);
 	json_analytics = await fetch_analytics(not_in_cache);
 	var analytics_fetched = JSON.parse(json_analytics);
-	analytics=Array.from(analytics_fetched);
-	in_cache.forEach(x => analytics.push(AnalyticsCache.get(x.PLU_CODE)));
 	var data_fetched = JSON.parse(json_data);
-	data=Array.from(data_fetched);
-	in_cache.forEach(x => data.push(DataCache.get(x.PLU_CODE)));
 	var data_with_analytics=[];
 	//console.log(data);
 	for(var i1 in analytics_fetched){
@@ -100,14 +96,6 @@ async function loadAllAtOnce(){
 	for(var i1 in data_fetched){
 		try{
 			DataCache.set(data[i1].PLU_CODE, data[i1]);
-		}catch(e){}
-	}
-	for(var i1 in data){
-		try{
-			var dwa = Object.create({});
-			Object.assign(dwa, DataCache.get(data[i1].PLU_CODE));
-			Object.assign(dwa, AnalyticsCache.get(data[i1].PLU_CODE));
-			data_with_analytics.push(dwa);
 		}catch(e){}
 	}
 	//console.log(analytics);
