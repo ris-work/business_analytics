@@ -79,14 +79,14 @@ async function displaySelected(){
 		Displaying=ToDisplay;
 	}
 }
-async function loadAllAtOnce(){
+async function loadAllAtOnce(a){
 	not_in_cache = json_pl;
 	console.log(not_in_cache);
-	json_data = await fetch_data(not_in_cache.slice(0,200));
-	console.log(json_data);
+	json_data = await fetch_data(not_in_cache.slice(a,a+200));
+	//console.log(json_data);
 	//json_analytics = await fetch_analytics(not_in_cache);
-	json_analytics=await fetch_analytics(not_in_cache.slice(0,200));
-	console.log(json_analytics);
+	json_analytics=await fetch_analytics(not_in_cache.slice(a,a+200));
+	//console.log(json_analytics);
 	analytics_fetched = JSON.parse(json_analytics);
 	data_fetched = JSON.parse(json_data);
 	data_with_analytics=[];
@@ -103,7 +103,7 @@ async function loadAllAtOnce(){
 		}catch(e){}
 	}
 	//console.log(analytics);
-	console.log(DataCache);
+	//console.log(DataCache);
 }
 async function fetch_data(entries){
 	data = new FormData();
@@ -190,6 +190,13 @@ function loaded(){
 	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
 	json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
 	Clock = window.setInterval(displaySelected, 400);
+}
+async function loadEverything(){
+	console.log(Date.now());
+	for(var i=0; i<json_p.length; i+=200){
+		await loadAllAtOnce(i);
+	}
+	console.log(Date.now());
 }
 function normalize(string) {
 	string = string.toLowerCase()
