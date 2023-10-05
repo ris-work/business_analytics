@@ -156,7 +156,7 @@ function loaded(){
 		json_p=list_p;
 	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
 	json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
-	Clock = window.setInterval(displaySelected, 800);
+	Clock = window.setInterval(displaySelected, 250);
 }
 function normalize(string) {
 	string = string.toLowerCase()
