@@ -80,15 +80,15 @@ async function displaySelected(){
 	}
 }
 async function loadAllAtOnce(){
-	var not_in_cache = json_pl;
+	not_in_cache = json_pl;
 	console.log(not_in_cache);
 	json_data = await fetch_data(not_in_cache);
 	console.log(json_data);
 	json_analytics = await fetch_analytics(not_in_cache);
 	console.log(json_analytics);
-	var analytics_fetched = JSON.parse(json_analytics);
-	var data_fetched = JSON.parse(json_data);
-	var data_with_analytics=[];
+	analytics_fetched = JSON.parse(json_analytics);
+	data_fetched = JSON.parse(json_data);
+	data_with_analytics=[];
 	df=(data_fetched);
 	//console.log(data);
 	for(var i1 in analytics_fetched){
