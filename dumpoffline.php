@@ -38,20 +38,27 @@ async function displaySelected(){
 			}else{
 				json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
 			}
-			var not_in_cache = json_filtered.filter(a => {return !DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE)});
+			not_in_cache = json_filtered.filter(a => {return !DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE)});
+			in_cache = json_filtered.filter(a => {return !(!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE))});
+			console.log(not_in_cache);
+			console.log(in_cache);
 			var dump=json_filtered;
-			var json_data = await fetch_data(not_in_cache);
-			var json_analytics = await fetch_analytics(not_in_cache);
-			var analytics = JSON.parse(json_analytics);
-			var data = JSON.parse(json_data);
+			json_data = await fetch_data(not_in_cache);
+			json_analytics = await fetch_analytics(not_in_cache);
+			var analytics_fetched = JSON.parse(json_analytics);
+			analytics=Array.from(analytics_fetched);
+			in_cache.forEach(x => analytics.push(AnalyticsCache.get(x.PLU_CODE)));
+			var data_fetched = JSON.parse(json_data);
+			data=Array.from(data_fetched);
+			in_cache.forEach(x => data.push(DataCache.get(x.PLU_CODE)));
 			var data_with_analytics=[];
 			//console.log(data);
-			for(var i1 in analytics){
+			for(var i1 in analytics_fetched){
 				try{
 					AnalyticsCache.set(analytics[i1].CODE, analytics[i1]);
 				}catch(e){}
 			}
-			for(var i1 in data){
+			for(var i1 in data_fetched){
 				try{
 					DataCache.set(data[i1].PLU_CODE, data[i1]);
 				}catch(e){}
@@ -74,19 +81,23 @@ async function displaySelected(){
 }
 async function loadAllAtOnce(){
 	var not_in_cache = json_pl;
-	var dump=json_filtered;
-	var json_data = await fetch_data(not_in_cache);
-	var json_analytics = await fetch_analytics(not_in_cache);
-	var analytics = JSON.parse(json_analytics);
-	var data = JSON.parse(json_data);
+	//console.log(data);
+	json_data = await fetch_data(not_in_cache);
+	json_analytics = await fetch_analytics(not_in_cache);
+	var analytics_fetched = JSON.parse(json_analytics);
+	analytics=Array.from(analytics_fetched);
+	in_cache.forEach(x => analytics.push(AnalyticsCache.get(x.PLU_CODE)));
+	var data_fetched = JSON.parse(json_data);
+	data=Array.from(data_fetched);
+	in_cache.forEach(x => data.push(DataCache.get(x.PLU_CODE)));
 	var data_with_analytics=[];
 	//console.log(data);
-	for(var i1 in analytics){
+	for(var i1 in analytics_fetched){
 		try{
 			AnalyticsCache.set(analytics[i1].CODE, analytics[i1]);
 		}catch(e){}
 	}
-	for(var i1 in data){
+	for(var i1 in data_fetched){
 		try{
 			DataCache.set(data[i1].PLU_CODE, data[i1]);
 		}catch(e){}
