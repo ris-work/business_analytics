@@ -72,7 +72,7 @@ async function displaySelected(){
 		Displaying=ToDisplay;
 	}
 }
-function loadAllAtOnce(){
+async function loadAllAtOnce(){
 	var not_in_cache = json_pl;
 	var dump=json_filtered;
 	var json_data = await fetch_data(not_in_cache);
