@@ -39,6 +39,7 @@ async function displaySelected(){
 				json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
 			}
 			var not_in_cache = json_filtered.filter(a => {!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE)});
+			console.log(not_in_cache);
 			var dump=json_filtered;
 			var json_data = await fetch_data(not_in_cache);
 			var json_analytics = await fetch_analytics(not_in_cache);
