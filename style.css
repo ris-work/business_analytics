@@ -25,7 +25,7 @@ td {
 	padding: 0.4em;
 }
 tr:nth-child(odd){
-	background:  #c4c3d0;
+	background:  #dae6f6;
 }
 tr:nth-child(even){
 	background: white;
