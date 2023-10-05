@@ -87,6 +87,7 @@ async function loadAllAtOnce(){
 	var analytics_fetched = JSON.parse(json_analytics);
 	var data_fetched = JSON.parse(json_data);
 	var data_with_analytics=[];
+	console.log(data_fetched);
 	//console.log(data);
 	for(var i1 in analytics_fetched){
 		try{
@@ -99,7 +100,7 @@ async function loadAllAtOnce(){
 		}catch(e){}
 	}
 	//console.log(analytics);
-	console.log(data_with_analytics);
+	console.log(DataCache);
 }
 async function fetch_data(entries){
 	data = new FormData();
