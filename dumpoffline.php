@@ -81,7 +81,7 @@ async function displaySelected(){
 }
 async function loadAllAtOnce(a){
 	not_in_cache = json_pl;
-	console.log(not_in_cache);
+	//console.log(not_in_cache);
 	json_data = await fetch_data(not_in_cache.slice(a,a+200));
 	//console.log(json_data);
 	//json_analytics = await fetch_analytics(not_in_cache);
