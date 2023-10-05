@@ -179,11 +179,11 @@ function updateOptions(){
 }
 var json_p, json_pa;
 function loaded(){
-	document.getElementById("back").addEventListener("click", goBack)
-		document.getElementById("search").addEventListener("input", updateSelected)
-		document.getElementById("abjad").addEventListener("change", updateOptions)
-		document.getElementById("starts-with").addEventListener("change", updateOptions)
-		json_p=list_p;
+	document.getElementById("back").addEventListener("click", goBack);
+	document.getElementById("search").addEventListener("input", updateSelected);
+	document.getElementById("abjad").addEventListener("change", updateOptions);
+	document.getElementById("starts-with").addEventListener("change", updateOptions);
+	json_p=list_p;
 	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
 	json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
 	Clock = window.setInterval(displaySelected, 400);
@@ -196,7 +196,7 @@ function normalize(string) {
 	string = string.replaceAll("k", "c");
 	return string;
 }
-window.onload=loaded;
+document.addEventListener("DOMContentLoaded", loaded);
 </script>
 <?php
 //ini_set('display_errors', '1');
