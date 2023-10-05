@@ -82,10 +82,10 @@ async function displaySelected(){
 async function loadAllAtOnce(){
 	not_in_cache = json_pl;
 	console.log(not_in_cache);
-	json_data = await fetch_data(not_in_cache.slice(0,1000));
+	json_data = await fetch_data(not_in_cache.slice(0,200));
 	console.log(json_data);
 	//json_analytics = await fetch_analytics(not_in_cache);
-	json_analytics=await fetch_analytics(not_in_cache.slice(0,1000));
+	json_analytics=await fetch_analytics(not_in_cache.slice(0,200));
 	console.log(json_analytics);
 	analytics_fetched = JSON.parse(json_analytics);
 	data_fetched = JSON.parse(json_data);
