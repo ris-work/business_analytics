@@ -196,7 +196,6 @@ function normalize(string) {
 	string = string.replaceAll("k", "c");
 	return string;
 }
-document.addEventListener("DOMContentLoaded", loaded);
 </script>
 <?php
 //ini_set('display_errors', '1');
@@ -210,7 +209,7 @@ curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 $response = curl_exec($req);
 $response_dec = json_decode($response);
-echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list));</script>";
+echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list));document.addEventListener('DOMContentLoaded', loaded);</script>";
 //var_dump($response);
 ?>
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
