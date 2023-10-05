@@ -72,6 +72,36 @@ async function displaySelected(){
 		Displaying=ToDisplay;
 	}
 }
+function loadAllAtOnce(){
+	var not_in_cache = json_pl;
+	var dump=json_filtered;
+	var json_data = await fetch_data(not_in_cache);
+	var json_analytics = await fetch_analytics(not_in_cache);
+	var analytics = JSON.parse(json_analytics);
+	var data = JSON.parse(json_data);
+	var data_with_analytics=[];
+	//console.log(data);
+	for(var i1 in analytics){
+		try{
+			AnalyticsCache.set(analytics[i1].CODE, analytics[i1]);
+		}catch(e){}
+	}
+	for(var i1 in data){
+		try{
+			DataCache.set(data[i1].PLU_CODE, data[i1]);
+		}catch(e){}
+	}
+	for(var i1 in data){
+		try{
+			var dwa = Object.create({});
+			Object.assign(dwa, DataCache.get(data[i1].PLU_CODE));
+			Object.assign(dwa, AnalyticsCache.get(data[i1].PLU_CODE));
+			data_with_analytics.push(dwa);
+		}catch(e){}
+	}
+	//console.log(analytics);
+	console.log(data_with_analytics);
+}
 async function fetch_data(entries){
 	data = new FormData();
 	ids = [];
@@ -156,7 +186,7 @@ function loaded(){
 		json_p=list_p;
 	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
 	json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
-	Clock = window.setInterval(displaySelected, 250);
+	Clock = window.setInterval(displaySelected, 400);
 }
 function normalize(string) {
 	string = string.toLowerCase()
