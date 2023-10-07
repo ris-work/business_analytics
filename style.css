@@ -24,11 +24,16 @@ body{
 td {
 	padding: 0.4em;
 }
+th {
+background-color: #588bae
+
+;
+}
 tr:nth-child(odd){
-	background:  #dae6f6;
+	background: white;
 }
 tr:nth-child(even){
-	background: white;
+	background: #f2f2f2;
 }
 td {
 	border: 1px solid blueviolet;
