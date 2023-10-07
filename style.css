@@ -25,9 +25,8 @@ td {
 	padding: 0.4em;
 }
 th {
-background-color: #588bae;
+background: #588bae;
 
-;
 }
 tr:nth-child(odd){
 	background: white;
