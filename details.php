@@ -31,15 +31,15 @@ $state_of_things="too-much";
 <button onclick="goback()" class="navigation-button">🔙 Go back!</button>
 <table class="named">
 <tr>
-<td>Name</td>
+<th>Name</th>
 <td><?php echo $response->PLU_DESC; ?></td>
 </tr>
 <tr>
-<td>Code</td>
+<th>Code</th>
 <td><?php echo $response->PLU_CODE; ?></td>
 </tr>
 <tr>
-<td>Selling price</td>
+<th>Selling price</th>
 <td><?php echo $response->PLU_SELL; ?></td>
 </tr>
 <tr class="<?php echo $state_of_things; ?>">
