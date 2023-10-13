@@ -49,7 +49,7 @@ tr {
 	margin-right: auto;
 	margin-left: auto;
 	width: 75vw;
-	min-height: 20vh;
+	/*min-height: 20vh;*/
 	padding: 0.5em;
 }
 button:hover {

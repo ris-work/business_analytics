@@ -1,6 +1,8 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="icon" type="image/svg+xml" href="icons/warehouse.svg">
+<link rel="apple-touch-icon" type="image/png" href="icons/warehouse.png">
 <script>
 dump="";
 var json_p="";
