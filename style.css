@@ -1,5 +1,6 @@
 body{
 	background: #b0c4de;
+	margin: 0;
 }
 .named {
 	font-family: 'IBM Courier', Monospace;
@@ -48,12 +49,16 @@ tr {
 	margin-right: auto;
 	margin-left: auto;
 	width: 75vw;
-	min-height: 10vh;
+	min-height: 20vh;
 	padding: 0.5em;
 }
 button:hover {
 	background: darkred;
 	color: white;
+}
+button {
+	font-size: 2em;
+	min-height: 2em;
 }
 body {
 	width: 100vw;
