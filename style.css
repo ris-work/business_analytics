@@ -56,19 +56,12 @@ tr {
 	padding: 0.5em;
 	
 }
-.goBackButton{
+.goBackButton input{
 	color: #3c73bc;
 	font: white;
 
 }
-button:hover {
-	background: darkred;
-	color: white;
-}
-button {
-	font-size: 2em;
-	min-height: 2em;
-}
+
 body {
 	width: 100vw;
 	width: auto;
@@ -140,7 +133,4 @@ tr[class=too-much] td{
 	background: darkgoldenrod;
 	color: white;
 }
-#backButton{
-	height: 20 px;
-	width: 20 px;
-}
+
