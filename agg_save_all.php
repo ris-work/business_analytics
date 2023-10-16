@@ -2,7 +2,7 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 require_once("/etc/auth.php");
-for($i=0;$i<20000;$i+=100)
+for($i=0;$i<30000;$i+=100)
 {
 	echo "Iteration: $i.";
 	$IDs = (range($i,$i+100));
