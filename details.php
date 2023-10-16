@@ -84,6 +84,6 @@ echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
-<input type="image" onclick="goback() " src="icons/backButton.png"/> 
+<button onclick="goback()"> <img  src="icons/backButton.png"> </button>
 </body>
 </html>
