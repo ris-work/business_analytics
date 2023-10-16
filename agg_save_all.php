@@ -33,4 +33,11 @@ foreach($REQUESTS as $req)
 	array_push($RESPONSES, json_decode($res));
 };
 var_dump($RESPONSES);
+$dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
+$t = $dbh->beginTransaction();
+$stmt_sql = $dbh->prepare("insert into productsattime ('ID', 'SIH', 's15', 's30', 's60') values (?, ?, ?, ?, ?)");
+foreach($RESPONSES as $RESPONSE){
+$stmt = $stmt_sql->execute([$RESPONSE->CODE, $RESPONSE->SIH, $RESPONSE->S_D15, $RESPONSE->S_D30, $RESPONSE->S_D60]);
+}
+$dbh->commit();
 ?>
