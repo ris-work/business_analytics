@@ -54,6 +54,8 @@ tr {
 	width: 75vw;
 	/*min-height: 20vh;*/
 	padding: 0.5em;
+	color: #3c73bc;
+	font: white;
 }
 button:hover {
 	background: darkred;
