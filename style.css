@@ -37,7 +37,7 @@ tr:nth-child(even){
 	background: #f2f2f2;
 }
 td {
-	border: 1px solid blueviolet;
+	border: 3px solid#b0c4de;
 	border-collapse: collapse;
 }
 tr {
