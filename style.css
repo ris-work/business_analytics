@@ -27,8 +27,9 @@ td {
 }
 th {
 font-weight: bold;
+border: 5px solid#b0c4de;
 border-collapse: collapse;
-border: 5px #b0c4de;
+
 
 }
 tr:nth-child(odd){
