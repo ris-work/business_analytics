@@ -140,3 +140,7 @@ tr[class=too-much] td{
 	background: darkgoldenrod;
 	color: white;
 }
+#backButton{
+	height: 20 px;
+	width: 20 px;
+}
