@@ -28,7 +28,7 @@ $state_of_things="too-much";
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 </head>
 <body>
-<input type= "image" id="backButton" onclick="goback()" src="backButton.png"/> 
+<input type= "image" id="backButton" onclick="goback()" src="icon/backButton.png"/> 
 <table class="named">
 <tr>
 <th>Name</th>
