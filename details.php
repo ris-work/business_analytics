@@ -28,7 +28,7 @@ $state_of_things="too-much";
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 </head>
 <body>
-<button onclick="goback()" class="navigation-button">🔙 Go back!</button>
+<input type= "image" id="backButton" onclick="goback()" src="backButton.png"/> 
 <table class="named">
 <tr>
 <th>Name</th>
@@ -43,19 +43,19 @@ $state_of_things="too-much";
 <td><?php echo $response->PLU_SELL; ?></td>
 </tr>
 <tr class="<?php echo $state_of_things; ?>">
-<td>SIH</td>
+<th>SIH</th>
 <td><?php echo $response->SIH; ?></td>
 </tr>
 <tr>
-<td>Sold (15 days)</td>
+<th>Sold (15 days)</th>
 <td><?php echo $response_analytics->S_D15; ?></td>
 </tr>
 <tr>
-<td>Sold (30 days)</td>
+<th>Sold (30 days)</th>
 <td><?php echo $response_analytics->S_D30; ?></td>
 </tr>
 <tr>
-<td>Sold (60 days)</td>
+<th>Sold (60 days)</th>
 <td><?php echo $response_analytics->S_D60; ?></td>
 </tr>
 </table>
