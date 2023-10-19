@@ -47,7 +47,7 @@ tr {
 	border-collapse: collapse;
 }
 
-.backbutton {
+.backbutton input{
 	background-color: transparent;
 	
 }
