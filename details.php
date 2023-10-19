@@ -28,7 +28,7 @@ $state_of_things="too-much";
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 </head>
 <body>
-<button onclick="goback()" class="navigation-button"> Go back!</button>
+<button onclick="goback()" class="navigation-button"> <img  src="icons/backButton.png"></button>
 <table class="named">
 <tr>
 <th>Name</th>
@@ -84,6 +84,6 @@ echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
-<button class ="goBackButton" onclick="goback()"> <img  src="icons/backButton.png"> </button>
+<button class ="goBackButton" onclick="goback()" style={background-color: blue}> <img  src="icons/backButton.png"> </button>
 </body>
 </html>
