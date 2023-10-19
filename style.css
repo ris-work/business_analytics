@@ -46,9 +46,6 @@ td {
 tr {
 	border-collapse: collapse;
 }
-button{
-	background-color: transparent;
-}
 
 body {
 	width: 100vw;
@@ -123,6 +120,7 @@ tr[class=too-much] td{
 }
 .button-container{
 	margin-top: 200px;
+	align-self: center;
 }
 .btn{
 	cursor: pointer;
