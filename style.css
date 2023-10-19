@@ -47,9 +47,9 @@ tr {
 	border-collapse: collapse;
 }
 
-.goBackButton{
-	color: #3c73bc;
-	font: white;
+.backbutton {
+	background-color: transparent;
+	
 }
 
 body {
