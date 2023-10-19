@@ -46,10 +46,8 @@ td {
 tr {
 	border-collapse: collapse;
 }
-
-.button backbutton {
+button{
 	background-color: transparent;
-	
 }
 
 body {
