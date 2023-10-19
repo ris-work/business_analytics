@@ -28,7 +28,7 @@ $state_of_things="too-much";
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 </head>
 <body>
-<button onclick="goback()" class="navigation-button"> <img  src="icons/backButton.png" height= "40px" width="40px"></button>
+<button onclick="goback()" class="navigation-button"> <img  src="icons/backButton.png" height= "60px" width="60px"></button>
 <table class="named">
 <tr>
 <th>Name</th>
