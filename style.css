@@ -137,6 +137,9 @@ font-family: "bauhaus 93";
 width: 2em;
 
 }
+#qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop {
+	font-size: 2em;
+}
 .goback:hover{
 	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 	color: grey;	
