@@ -24,10 +24,10 @@ $response_analytics = json_decode(curl_exec($req_analytics));
 $SIH = $response_analytics->SIH;
 $state_of_things="too-much";
 //var_dump($response);
-var_dump($response_analytics);
+//var_dump($response_analytics);
 $dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
 $t = $dbh->beginTransaction();
-$stmt_sql = $dbh->prepare("SELECT ID, avg(SIH), substring(TIME, 0, 12) FROM productsattime WHERE ID = ? GROUP BY ID, substring(TIME, 0, 12) ORDER BY substring(TIME, 0, 12)");
+$stmt_sql = $dbh->prepare("SELECT ID, avg(SIH), substring(TIME, 0, 12) as date, avg(S15) as s15 FROM productsattime WHERE ID = ? GROUP BY ID, substring(TIME, 0, 12) ORDER BY substring(TIME, 0, 12)");
 $stmt = $stmt_sql->execute([$response->PLU_CODE]);
 $past_data=$stmt_sql->fetchAll();
 $dbh->commit();
@@ -36,7 +36,34 @@ $dbh->commit();
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 <script>
 var deltaSales15 = [];
-for (var i in past_data){console.log(past_data[i])}
+var dates=[];
+for (var i=0; i<past_data.length-1; i++){deltaSales15.push(past_data[i]['s15']- past_data[i+1]['s15'])}
+for (var i=0; i<past_data.length; i++){dates.push(past_data[i]['date'])}
+var averageDailySalesOnDay0=past_data[0]['s15']/15;
+var averageDailySales = [averageDailySalesOnDay0];
+var c = averageDailySalesOnDay0;
+for(var i=0; i<deltaSales15.length; i++){
+	c+=deltaSales15[i];
+	averageDailySales.push(c);
+}
+console.log(averageDailySales);
+</script>
+<script type="text/javascript" src="chart.umd.min.js">
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', displayChart);
+function displayChart(){
+	var daily_sales = new Chart(document.getElementById('chart_sales'),
+{
+	type: 'line',
+		data: {
+		labels: dates,
+			datasets: [{label: "Daily Average Sales", data: averageDailySales}],
+			options: {scale: {y: {beginAtZero: true}}}
+}
+}
+)
+}
 </script>
 </head>
 <body>
@@ -99,5 +126,6 @@ echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
 <button class ="goBackButton" onclick="goback()" style={background-color: blue}> <img  src="icons/backButton.png"> </button>
+<canvas id="chart_sales" width="400" height="400"></canvas>
 </body>
 </html>
