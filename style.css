@@ -131,10 +131,11 @@ tr[class=too-much] td{
 background-color: transparent;
 border: transparent;
 border-radius: 12px;
-font-size: 5em;
+font-size: 4em;
 color: #312d2d44 ;
 
 }
 .goback:hover{
-	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);	
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+	color: white;	
 }
