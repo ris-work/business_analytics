@@ -119,7 +119,7 @@ tr[class=too-much] td{
 	color: white;
 }
 .button-container{
-	margin: 1em;
+	margin-top: 5%;
 	align-self: center;
 	position:absolute;
 }
