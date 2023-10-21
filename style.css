@@ -129,10 +129,6 @@ tr[class=too-much] td{
 background-color: transparent;
 border: transparent;
 border-radius: 12px;
-font-size: 4em;
-color: #312d2d44 ;
-font-family: "bauhaus 93";
-width: 2em;
 
 }
 #qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop {
