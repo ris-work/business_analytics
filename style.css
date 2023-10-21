@@ -121,7 +121,7 @@ tr[class=too-much] td{
 .button-container{
 	margin-top: 0%;
 	align-self: center;
-	position:absolute;
+	position:relative;
 }
 .btn{
 	cursor: pointer;
