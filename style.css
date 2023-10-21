@@ -34,7 +34,7 @@ padding: 1px;
 
 
 }
-tr:hover{
+tr:hover td{
 	background-color: #ddddddb3;
 }
 tr:nth-child(odd){
