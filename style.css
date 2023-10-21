@@ -6,7 +6,7 @@ body{
 	font-family: 'IBM Courier', Monospace;
 	font-size: 2.5em;
 	border-collapse: collapse;
-	margin-top: 4em;
+	margin-top: 2em;
 	margin-left: auto;
 	margin-right: auto;
 	border-radius: 11%;
@@ -121,7 +121,7 @@ tr[class=too-much] td{
 .button-container{
 	margin-top: 0%;
 	align-self: center;
-	position:relative;
+	position:absolute;
 }
 .btn{
 	cursor: pointer;
