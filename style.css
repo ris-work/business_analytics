@@ -6,10 +6,10 @@ body{
 	font-family: 'IBM Courier', Monospace;
 	font-size: 2.5em;
 	border-collapse: collapse;
+	margin-top: 6%;
 	margin-left: auto;
 	margin-right: auto;
 	border-radius: 11%;
-	margin: 2em;
 }
 #qr-reader{
 	margin-left: auto;
