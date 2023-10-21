@@ -34,6 +34,9 @@ padding: 1px;
 
 
 }
+tr:hover{
+	background-color: #ddddddb3;
+}
 tr:nth-child(odd){
 	background: white;
 }
