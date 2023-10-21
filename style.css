@@ -28,7 +28,7 @@ td {
 }
 th {
 font-weight: bold;
-border: 5px solid#b0c4de;
+border: 4px solid#b0c4de;
 border-collapse: collapse;
 padding: 1px;
 
@@ -38,10 +38,10 @@ tr:nth-child(odd){
 	background: white;
 }
 tr:nth-child(even){
-	background: #f2f2f2;
+	background: #ddd;
 }
 td {
-	border: 2px solid#b0c4de;
+	border: 4px solid#b0c4de;
 	border-collapse: collapse;
 }
 tr {
