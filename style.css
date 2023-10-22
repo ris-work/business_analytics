@@ -137,7 +137,7 @@ tr[class=too-much] td{
 .goback{
 background-color: transparent;
 border: transparent;
-border-radius: 12px;
+border-radius: 50%;
 
 }
 #qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop {
