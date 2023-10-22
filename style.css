@@ -126,7 +126,7 @@ tr[class=too-much] td{
 	color: white;
 }
 .button-container{
-	margin-left: 5%;
+	margin-left: 1%;
 	margin-top: 5%;
 	align-self: center;
 	position:relative;
@@ -139,8 +139,9 @@ background-color: transparent;
 border: transparent;
 border-radius: 50%;
 height: auto;
-padding-top: 1.2%;
-padding-bottom: 1.2%;
+padding-top: 1.5%;
+padding-bottom: 1.5%;
+box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 
 }
 #qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop {
