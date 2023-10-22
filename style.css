@@ -10,6 +10,7 @@ body{
 	margin-left: auto;
 	margin-right: auto;
 	border-radius: 11%;
+	box-shadow: 1px 1px 1px #5f5e5e;
 }
 #qr-reader{
 	margin-left: auto;
