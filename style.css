@@ -138,7 +138,8 @@ tr[class=too-much] td{
 background-color: transparent;
 border: transparent;
 border-radius: 50%;
-height: 5%;
+height: auto;
+padding-top: 1%;
 
 }
 #qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop {
