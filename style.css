@@ -147,7 +147,7 @@ padding-bottom: 2%;
 {
 	position: absolute;
 	margin-top: auto;
-	align-items: end;
+	align-self: end;
 }
 .graph{
 	background-color: transparent;
