@@ -129,8 +129,7 @@ tr[class=too-much] td{
 	margin-left: 1%;
 	margin-top: 5%;
 	align-self: center;
-	position:relative;
-	background-color: #090;
+	position:static;
 }
 .btn{
 	cursor: pointer;
