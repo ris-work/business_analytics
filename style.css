@@ -143,7 +143,13 @@ padding-top: 2%;
 padding-bottom: 2%;
 
 }
-.btn graph{
+.graph-container
+{
+	position: absolute;
+	margin-top: auto;
+	margin-right: -1%;
+}
+.graph{
 	background-color: transparent;
 	border: transparent;
 	border-radius: 50%;
