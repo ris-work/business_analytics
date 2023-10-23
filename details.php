@@ -30,7 +30,7 @@ $state_of_things="too-much";
 <body>
 <div class ="button-container">
 <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:42%; width:42%;"> </button>
-<button class="btn goback"> <img  src="icons/graph.png" style="height: 42%; width:42%"> </button>
+<button class="btn goback" style="right:0px;"> <img  src="icons/graph.png" style="height: 42%; width:42%"> </button>
 </div>
 
 <table class="named">
