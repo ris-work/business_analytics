@@ -62,7 +62,7 @@ $state_of_things="too-much";
 </tr>
 </table>
 <details>
-<summary><button class="btn down" > <img  src="icons/down_button.png"> </button></summary>
+<button class="btn goback" > <img  src="icons/down_button.png" style= "height:42%; width:42%;"> </button>
 <table class="others">
 <tr>
 <th scope="col">Field</th>
