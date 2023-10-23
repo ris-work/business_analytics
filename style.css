@@ -143,6 +143,15 @@ padding-top: 2%;
 padding-bottom: 2%;
 
 }
+.graph{
+	
+	background-color: transparent;
+	border: transparent;
+	border-radius: 50%;
+	height: auto;
+	padding-top: 2%;
+	padding-bottom: 2%;
+}
 #qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop {
 	font-size: 2em;
 }
