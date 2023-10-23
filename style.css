@@ -146,6 +146,7 @@ padding-bottom: 2%;
 .graph-container{
 	position: absolute;
 	margin-right: 0%;
+	margin-left: 50%;
 }
 .graph{
 	background-color: transparent;
