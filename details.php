@@ -29,9 +29,9 @@ $state_of_things="too-much";
 </head>
 <body>
 <div class ="button-container">
-<div style="position: relative;  float: left;">
+<div style="position: absolute;  left:0;">
 <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:42%; width:42%;"> </button></div>
-<div style="position: relative;  float: right">
+<div style="position: absolute;  right:0;">
 <button class="btn goback"> <img  src="icons/graph.png" style="height: 42%; width:42%"> </button></div>
 </div>
 
