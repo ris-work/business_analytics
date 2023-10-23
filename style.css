@@ -130,6 +130,7 @@ tr[class=too-much] td{
 	margin-top: 5%;
 	align-self: center;
 	position:relative;
+	background-color: #090;
 }
 .btn{
 	cursor: pointer;
@@ -143,7 +144,7 @@ padding-top: 2%;
 padding-bottom: 2%;
 
 }
-#graph-container{
+.graph-container{
 	position: absolute;
 	margin-right: 0%;
 	margin-left: 50%;
