@@ -82,13 +82,13 @@ function displayChart(){
 	var daily_sales = new Chart(document.getElementById('chart_sales'),
 {
 	type: 'line',
-		data: {
+	data: {
 		labels: dates,
-			datasets: [{label: "Daily Average Sales (15d Average)", data: avgSales15},
-				{label: "Daily Average Sales (30d Average)", data: avgSales30},
-				{label: "Daily Average Sales (60d Average)", data: avgSales60}],
-			options: {scale: {y: {beginAtZero: true}}}
-}
+		datasets: [{label: "Daily Average Sales (15d Average)", data: avgSales15, tenstion: 0.8, cubicInterpolationMode: 'monotone'},
+			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone'},
+			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone'}]
+	},
+	options: {scales: {y: {beginAtZero: true}}}
 }
 )
 }
