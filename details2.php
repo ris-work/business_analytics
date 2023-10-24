@@ -88,7 +88,10 @@ function displayChart(){
 			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone'},
 			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone'}]
 	},
-	options: {scales: {y: {beginAtZero: true}}}
+		options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}}, 
+				x: {grid: {color: "#077"}}},
+			responsive: false
+		}
 }
 )
 }
@@ -154,6 +157,6 @@ echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
 <button class ="goBackButton" onclick="goback()" style={background-color: blue}> <img  src="icons/backButton.png"> </button>
-<canvas id="chart_sales" width="400" height="400"></canvas>
+<canvas id="chart_sales" width="600" height="400"></canvas>
 </body>
 </html>
