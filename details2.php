@@ -27,7 +27,7 @@ $state_of_things="too-much";
 //var_dump($response_analytics);
 $dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
 $t = $dbh->beginTransaction();
-$stmt_sql = $dbh->prepare("SELECT ID, avg(SIH), substring(TIME, 0, 12) as date, avg(S15) as s15 FROM productsattime WHERE ID = ? GROUP BY ID, substring(TIME, 0, 12) ORDER BY substring(TIME, 0, 12)");
+$stmt_sql = $dbh->prepare("SELECT productsattime.TIME, s15, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?");
 $stmt = $stmt_sql->execute([$response->PLU_CODE]);
 $past_data=$stmt_sql->fetchAll();
 $dbh->commit();

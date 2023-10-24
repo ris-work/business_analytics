@@ -146,12 +146,34 @@ padding-bottom: 2%;
 }
 .graph-container{
 	position: absolute;
+	position: absolute;
+	position: relative;
+	position: relative;
+	position: absolute; /* DO NOT USE ABSOLUTE POSITIONING. EVER. */
 	margin-right: 0%;
 	margin-left: 50%;
 	background-color: #090;
 }
+.graph{
+	background-color: transparent;
+	border: transparent;
+	border-radius: 50%;
+	height: auto;
+	padding-top: 2%;
+	padding-bottom: 2%;
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.graph{
+	background-color: transparent;
+	border: transparent;
+	border-radius: 50%;
+	height: auto;
+	padding-top: 2%;
+	padding-bottom: 2%;
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
 
-#qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop {
+#qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop, #html5-qrcode-button-camera-permission {
 	font-size: 2em;
 }
 .goback:hover{
