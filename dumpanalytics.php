@@ -198,8 +198,10 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 </head>
 <body>
-<button onclick="goback()" class="navigation-button" id="back">🔙 Go back!</button><br />
+<button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh;" id="back">🔙 Go back!</button><br />
+<div class="centered-container">
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
+</div>
 <details>
 <summary>More options...</summary>
 <fieldset id="search-options">

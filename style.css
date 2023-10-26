@@ -69,6 +69,7 @@ tr {
 body {
 	width: 100vw;
 	width: auto;
+	padding-bottom: 15vh;
 }
 #index-body {
 	display: flex;
@@ -112,16 +113,21 @@ tr[class=too-much] td{
 	mix-blend-mode: difference;
 }
 #search-options input {
-	font-size: 1em;
+	font-size: 2em;
 	width: auto;
 	height: auto;
 	display: inline;
 	margin: auto;
-	min-height: 6vh;
+	transform: scale(2,2);
+	margin: 0.25em;
+	/*min-height: 6vh;*/
 }
 #search-options label {
 	font-size: 1.25em;
 	width: auto;
+}
+#search {
+	font-size: 5vw;
 }
 .centered-container{
 	margin-left: auto;

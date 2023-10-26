@@ -133,7 +133,9 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 </head>
 <body>
 <button onclick="goback()" class="navigation-button" id="back">🔙 Go back!</button><br />
+<div class="centered-container">
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
+</div>
 <div id="printer"></div>
 <table class="named">
 <tr>
