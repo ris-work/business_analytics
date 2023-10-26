@@ -178,7 +178,7 @@ padding-bottom: 2%;
 }
 
 #qrbox_l, #qrbox_m, #qrbox_s, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop, #html5-qrcode-button-camera-permission {
-	font-size: max(2em, 10vh, 10vw);
+	font-size: max(2em, 2vh, 2vw);
 }
 .goback:hover{
 	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
