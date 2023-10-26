@@ -28,10 +28,10 @@ $state_of_things="too-much";
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 </head>
 <body>
-<div class ="button-container">
+
 <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:42%; width:42%;"> </button>
-<button class="btn goback" style="right:0px;"> <img  src="icons/graph.png" style="height: 42%; width:42%"> </button>
-</div>
+<button class="btn goback"> <img  src="icons/graph.png" style="height: 42%; width:42%"> </button>
+
 
 <table class="named">
 <tr>
@@ -88,5 +88,6 @@ echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
+<div id ="bottom"> <nav>this is the nav bar</nav><div>
 </body>
 </html>
