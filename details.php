@@ -83,7 +83,7 @@ echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
-<div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:100%; width:100%;"> </button>
-<button class="btn goback"> <img  src="icons/graph.png" style="height: 100%; width:100%"> </button> <div>
+<div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:80%; width:80%;"> </button>
+<button class="btn goback"> <img  src="icons/graph.png" style="height: 80%; width:80%"> </button> <div>
 </body>
 </html>
