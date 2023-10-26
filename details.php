@@ -84,6 +84,6 @@ echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:65%; width:65%;"> </button>
-<button class="btn goback"> <img  src="icons/graph.png" style="height: 65%; width:65%"; left:33%;> </button> <div>
+<button class="graph"> <img  src="icons/graph.png" style="height: 65%; width:65%"; left:33%;> </button> <div>
 </body>
 </html>
