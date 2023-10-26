@@ -98,9 +98,9 @@ function displayChart(){
 </script>
 </head>
 <body>
-<div class ="button-container">
+<!--<div class ="button-container">
 <button onclick="goback()" class="btn goback" > <img  src="icons/backButton.png" height= "70px" width="70px"></button>
-</div>
+</div>-->
 <table class="named">
 <tr>
 <th>Name</th>
@@ -132,7 +132,7 @@ function displayChart(){
 </tr>
 </table>
 <details>
-<summary>More details</summary>
+<summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:42%; width:42%;"> </button></summary>
 <table class="others">
 <tr>
 <th scope="col">Field</th>
@@ -156,7 +156,9 @@ echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
-<button class ="goBackButton" onclick="goback()" style={background-color: blue}> <img  src="icons/backButton.png"> </button>
+<!--<button class ="goBackButton" onclick="goback()" style={background-color: blue}> <img  src="icons/backButton.png"> </button>-->
 <canvas id="chart_sales" width="600" height="400"></canvas>
+<div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
+<button class="graph"> <img  src="icons/graph.png" style="height: 55%; width:55%"; left:33%;> </button> <div>
 </body>
 </html>

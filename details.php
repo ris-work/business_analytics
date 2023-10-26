@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="style.css?ref=no-cache-2">
 <script>
 function goback(){window.location.assign("/scan/")}
 </script>
