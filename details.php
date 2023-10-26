@@ -88,6 +88,6 @@ echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
-<div id ="bottom"> <nav>this is the nav bar</nav><div>
+<div id ="bottom"> this is the nav bar<div>
 </body>
 </html>
