@@ -18,7 +18,7 @@ body{
 	font-size: 2em;
 }
 #html5-qrcode-element{
-	font-size: 2em;y
+	font-size: 2em;
 }
 .extras {
 	font-size: 0.5em;
@@ -69,6 +69,8 @@ body {
 #search-options label {
 	font-size: 1.25em;
 	width: auto;
+}
+#everything {
 }
 tr[class=very-dangerous] {
 	background-color: darkred !important;
