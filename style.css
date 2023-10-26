@@ -166,8 +166,7 @@ padding-bottom: 2%;
 	height: auto;
 	padding-top: 2%;
 	padding-bottom: 2%;
-	left: 60%;
-	
+	margin-left: 33%;
 }
 .graph:hover{
 	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
