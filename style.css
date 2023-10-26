@@ -58,6 +58,8 @@ tr {
 body {
 	width: 100vw;
 	width: auto;
+}
+#index-body {
 	display: flex;
 	flex-direction: column-reverse;
 }
