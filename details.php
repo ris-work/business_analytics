@@ -61,10 +61,6 @@ $state_of_things="too-much";
 <details>
 <summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:42%; width:42%;"> </button></summary>
 <table class="others">
-<tr>
-<th scope="col">Field</th>
-<th scope="col">Value</th>
-</tr>
 <?php foreach($response as $field=>$value) { ?>
 <tr>
 <td><?php echo $field; ?></td>
