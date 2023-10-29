@@ -158,6 +158,6 @@ echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 <canvas id="chart_sales" width="600" height="400"></canvas>
 </div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
-<button class="graph" onclick="document.getElementById('chart_sales').style.display='block'"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> <div>
+<button class="graph" onclick="document.getElementById('chart_sales').style.visibility='visible'"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> <div>
 </body>
 </html>
