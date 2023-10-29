@@ -4,6 +4,7 @@
 <script>
 "use strict";
 function goback(){window.location.assign("/scan/")}
+function graph(){}
 </script>
 <?php
 ini_set('display_errors', '1');
@@ -98,9 +99,6 @@ function displayChart(){
 </script>
 </head>
 <body>
-<!--<div class ="button-container">
-<button onclick="goback()" class="btn goback" > <img  src="icons/backButton.png" height= "70px" width="70px"></button>
-</div>-->
 <table class="named">
 <tr>
 <th>Name</th>
@@ -156,11 +154,10 @@ echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
-<!--<button class ="goBackButton" onclick="goback()" style={background-color: blue}> <img  src="icons/backButton.png"> </button>-->
 <div class="centered-container">
 <canvas id="chart_sales" width="600" height="400"></canvas>
 </div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
-<button class="graph"> <img  src="icons/graph.png" style="height: 55%; width:55%"; left:33%;> </button> <div>
+<button class="graph" onclick="document.getElementById('chart_sales').style.display='block'"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> <div>
 </body>
 </html>
