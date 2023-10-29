@@ -211,5 +211,7 @@ margin-left: 2%;
 	mix-blend-mode: difference;
 	/* height: min(66vh, 66vw) !important;
 	width: min(100vh, 100vw) !important; */
+	display: none;
+	
 }
 
