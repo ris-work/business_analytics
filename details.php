@@ -102,10 +102,10 @@ function displayChart(){
 	type: 'line',
 	data: {
 		labels: dates,
-		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone'}]
+		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#fff", backgroundColor: "#fff"}]
 	},
-		options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}}, 
-				x: {grid: {color: "#077"}}},
+		options: {scales: {y: {beginAtZero: true, grid: {color: "#fff"}, ticks: {color: "#fff"}}, 
+				x: {grid: {color: "#fff"}, ticks: {color: "#fff"}}},
 			responsive: false
 		}
 }
@@ -170,9 +170,9 @@ echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
 <div class="centered-container">
-<div style="background: linear-gradient(0deg, green, red)">
-<span style="mix-blend-mode: color-burn; color: white; background: black">Hello! Chart area...</span>
-<div style="background: black;">
+<div style="background: linear-gradient(180deg, lightseagreen, lightcoral)">
+<!--<span style="mix-blend-mode: color-burn; color: white; background: black">Hello! Chart area...</span>-->
+<div style="background: black; mix-blend-mode: darken;">
 <canvas id="chart_sih" style="" width="795" height="650"></canvas>
 </div>
 </div>
