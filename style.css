@@ -88,8 +88,7 @@ body {
 }
 
 tr[class=very-dangerous] {
-	background-color: darkred !important;
-	color: lightcyan;
+	color: rgb(204, 41, 41);
 }
 tr[class=always-empty] {
 	background-color: darkgoldenrod !important;
@@ -97,12 +96,10 @@ tr[class=always-empty] {
 	color: lightcyan;
 }
 tr[class=good] {
-	background-color: lightgreen;
-	color: black;
+	color: rgb(37, 179, 77);
 }
 tr[class=very-good] {
-	background-color: darkgreen;
-	color: white;
+	color: rgb(5, 73, 5);
 }
 tr[class=too-much] {
 	background: repeating-linear-gradient(-30deg, #600 0px 2px, #090 2px 4px, #009 4px 6px);
@@ -212,16 +209,5 @@ margin-left: 2%;
 	/* height: min(66vh, 66vw) !important;
 	width: min(100vh, 100vw) !important; */
 	visibility:collapse;
-	font-family: 'IBM Courier', Monospace;
-	font-size: 2.5em;
-	border-collapse: collapse;
-	margin: 1em;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 10%;
-	margin-bottom: 0%;
-	box-shadow: 0 17px 50px 0 rgba(0,0,0,0.19), 0 17px 50px 0 rgba(0,0,0,0.19);
-
-	
 }
 
