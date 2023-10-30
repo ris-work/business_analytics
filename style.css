@@ -102,13 +102,10 @@ tr[class=very-good] {
 	color: rgb(5, 73, 5);
 }
 tr[class=too-much] td{
-	background: repeating-linear-gradient(-30deg, #600 0px 2px, #090 2px 4px, #009 4px 6px);
+	color: repeating-linear-gradient(-30deg, #600 0px 2px, #090 2px 4px, #009 4px 6px);
 	font-weight: 700;
 }
-tr[class=too-much] td{
-	color: white;
-	mix-blend-mode: difference;
-}
+
 #search-options input {
 	font-size: 2em;
 	width: auto;
