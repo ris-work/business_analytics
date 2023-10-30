@@ -41,6 +41,7 @@ $dbh->commit();
 var avgSales15 = [];
 var avgSales30 = [];
 var avgSales60 = [];
+var SIH = [];
 var deltaSales15 = [];
 var deltaSales30 = [];
 var deltaSales60 = [];
@@ -48,6 +49,7 @@ var dates=[];
 for (var i=0; i<past_data.length-1; i++){avgSales15.push(past_data[i]['s15']/15)}
 for (var i=0; i<past_data.length-1; i++){avgSales30.push(past_data[i]['s30']/30)}
 for (var i=0; i<past_data.length-1; i++){avgSales60.push(past_data[i]['s60']/60)}
+for (var i=0; i<past_data.length-1; i++){SIH.push(past_data[i]['SIH'])}
 for (var i=0; i<past_data.length-1; i++){deltaSales15.push(past_data[i]['s15']- past_data[i+1]['s15'])}
 for (var i=0; i<past_data.length-1; i++){deltaSales30.push(past_data[i]['s30']- past_data[i+1]['s30'])}
 for (var i=0; i<past_data.length-1; i++){deltaSales60.push(past_data[i]['s60']- past_data[i+1]['s60'])}
@@ -88,6 +90,19 @@ function displayChart(){
 		datasets: [{label: "Daily Average Sales (15d Average)", data: avgSales15, tenstion: 0.8, cubicInterpolationMode: 'monotone'},
 			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone'},
 			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone'}]
+	},
+		options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}}, 
+				x: {grid: {color: "#077"}}},
+			responsive: false
+		}
+}
+)
+	var daily_SIH = new Chart(document.getElementById('chart_sih'),
+{
+	type: 'line',
+	data: {
+		labels: dates,
+		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone'}]
 	},
 		options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}}, 
 				x: {grid: {color: "#077"}}},
@@ -154,6 +169,14 @@ echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 ?>
 </details>
+<div class="centered-container">
+<div style="background: linear-gradient(0deg, green, red)">
+<span style="mix-blend-mode: color-burn; color: white; background: black">Hello! Chart area...</span>
+<div style="background: black;">
+<canvas id="chart_sih" style="" width="795" height="650"></canvas>
+</div>
+</div>
+</div>
 <div class="centered-container">
 <canvas id="chart_sales" width="795" height="650"></canvas>
 </div>
