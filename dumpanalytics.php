@@ -137,8 +137,12 @@ function generate_table_row(v){
 		row.appendChild(generate_data_element(v.S_D60));
 		if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
 		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
-		if(parseInt(v.SIH) < parseInt(v.S_D15)){
-		}
+		if(parseInt(v.SIH) <=parseInt(v.S_D15))row.className="dangerous";
+		if(parseInt(v.SIH) <=parseInt(v.S_D15))row.className="very-dangerous";
+		if(parseInt(v.SIH) >= parseInt(v.S_D15)&&parseInt(v.SIH)<parseInt(v.S_D30))row.className="good";
+		if(parseInt(v.SIH) >=parseInt(v.S_D30)&&parseInt(v.SIH)<parseInt(v.S_D60))row.className="very-good";
+		if(parseInt(v.SIH) >=parseInt(v.S_D60))row.className="too-much";
+		
 	}
 	return row;
 }
