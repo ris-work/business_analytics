@@ -87,19 +87,19 @@ body {
 	width: auto;
 }
 
-tr[class=very-dangerous] {
-	color: rgb(204, 41, 41);
+tr[class=very-dangerous] td {
+	background-color: rgba(204, 41, 41, 0.29);
 }
 tr[class=always-empty] {
 	background-color: darkgoldenrod !important;
 	background-color: darkslategray !important;
 	color: lightcyan;
 }
-tr[class=good] {
-	color: rgb(37, 179, 77);
+tr[class=good] td{
+	background-color: rgba(38, 214, 88, 0.305);
 }
-tr[class=very-good] {
-	color: rgb(5, 73, 5);
+tr[class=very-good] td {
+	background-color: rgba(5, 73, 5, 0.296);
 }
 tr[class=too-much] td{
 	background-color: rgba(230, 239, 175, 0.486);
