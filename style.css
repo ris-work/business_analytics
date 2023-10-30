@@ -103,7 +103,6 @@ tr[class=very-good] {
 }
 tr[class=too-much] td{
 	color: repeating-linear-gradient(-30deg, #600 0px 2px, #090 2px 4px, #009 4px 6px);
-	font-weight: 700;
 }
 
 #search-options input {
