@@ -102,6 +102,7 @@ tr[class=very-good] {
 	color: rgb(5, 73, 5);
 }
 tr[class=too-much] td{
+	background-color: rgba(127, 255, 212, 0.322);
 	color: rgb(88, 88, 43)
 
 }
