@@ -1,0 +1,5 @@
+<?php
+$AUTH_USER = "";
+$AUTH_PASS = "";
+$ENCODED_AUTH = base64_encode("$AUTH_USER:$AUTH_PASS");
+?>
