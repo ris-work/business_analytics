@@ -81,7 +81,7 @@ async function displaySelected(){
 		}
 		pretty_print_filtered((data_with_analytics));
 		Blocked=false;
-		Displaying=ToDisplay;
+		Displaying=input;
 	}
 }
 async function fetch_data(entries){
@@ -172,6 +172,7 @@ var starts_with=false;
 function updateOptions(){
 	starts_with = document.getElementById("starts-with").checked;
 	abjad = document.getElementById("abjad").checked;
+	Displaying="";
 }
 var json_p, json_pa;
 function loaded(){
