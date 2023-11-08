@@ -191,6 +191,8 @@ function normalize(string) {
 		string = string.replaceAll(vowels, "");
 	string = string.replaceAll("y", "i");
 	string = string.replaceAll("k", "c");
+	string = string.replaceAll("pc", "c");
+	string = string.replaceAll(" ", "");
 	return string;
 }
 window.onload=loaded;
