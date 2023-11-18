@@ -132,16 +132,16 @@ function displayChart(){
 <td><?php echo $response->SIH; ?></td>
 </tr>
 <tr>
-<th>Sold (15 days)</th>
-<td><?php echo $response_analytics->S_D15; ?></td>
+<th>Fill sold (15 days)</th>
+<td><?php echo $response_analytics->S_D15 - $response->SIH; ?></td>
 </tr>
 <tr>
-<th>Sold (30 days)</th>
-<td><?php echo $response_analytics->S_D30; ?></td>
+<th>Fill sold (30 days)</th>
+<td><?php echo $response_analytics->S_D30 - $response->SIH; ?></td>
 </tr>
 <tr>
-<th>Sold (60 days)</th>
-<td><?php echo $response_analytics->S_D60; ?></td>
+<th>Fill sold (60 days)</th>
+<td><?php echo $response_analytics->S_D60 - $response->SIH; ?></td>
 </tr>
 </table>
 <details>

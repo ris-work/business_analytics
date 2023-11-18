@@ -117,9 +117,9 @@ function pretty_print_filtered(filtered){
 	heading_row.appendChild(generate_data_heading("Description"));
 	heading_row.appendChild(generate_data_heading("Sell"));
 	heading_row.appendChild(generate_data_heading("SIH"));
-	heading_row.appendChild(generate_data_heading("Sales (15)"));
-	heading_row.appendChild(generate_data_heading("Sales (30)"));
-	heading_row.appendChild(generate_data_heading("Sales (60)"));
+	heading_row.appendChild(generate_data_heading("Fill sold (15)"));
+	heading_row.appendChild(generate_data_heading("Fill sold (30)"));
+	heading_row.appendChild(generate_data_heading("Fill sold (60)"));
 	heading_row.appendChild(generate_data_heading("MORE"));
 	table.appendChild(heading_row);
 	filtered.forEach((v) => {table.appendChild(generate_table_row(v));});
@@ -133,9 +133,9 @@ function generate_table_row(v){
 		row.appendChild(generate_data_element(v.PLU_DESC));
 		row.appendChild(generate_data_element(v.PLU_SELL));
 		row.appendChild(generate_data_element(v.SIH));
-		row.appendChild(generate_data_element(v.S_D15));
-		row.appendChild(generate_data_element(v.S_D30));
-		row.appendChild(generate_data_element(v.S_D60));
+		row.appendChild(generate_data_element((v.S_D15-v.SIH) < 0 ? 0 : v.S_D15 - v.SIH));
+		row.appendChild(generate_data_element((v.S_D30-v.SIH) < 0 ? 0 : v.S_D30 - v.SIH));
+		row.appendChild(generate_data_element((v.S_D60-v.SIH) <0 ? 0 : v.S_D60 - v.SIH));
 		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE}`, "More"));
 		if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
 		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
