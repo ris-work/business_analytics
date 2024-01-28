@@ -17,7 +17,8 @@ curl_setopt($req, CURLOPT_URL, "$BASEURL/$ID");
 curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 $response = json_decode(curl_exec($req));
-if (!property_exists($response, "Message")){
+//var_dump($response);
+if ($response && !property_exists($response, "Message")){
 $BASEURL_ANALYTICS = "http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
 $req_analytics = curl_init();
 curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE");
@@ -171,11 +172,11 @@ echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
 }
 else if($response==null){
 ?>
-	<h1 style="font-family: Monospace; text-align: center; color: darkgoldenrod; font-size: 5em">Server down or could not reach it.</h1>
+	<h1 style="font-family: Monospace; text-align: center; color: darkgoldenrod; font-size: 5em; border: 0.2em double goldenrod; margin: 2em;">Server down or could not be reached.</h1>
 <?php
 }else {
 ?>
-	<h1 style="font-family: Monospace; text-align: center; color: darkred; font-size: 5em">Does not exist. <?php echo $response->Message ?></h1>
+	<h1 style="font-family: Monospace; text-align: center; color: darkred; font-size: 5em; border: 0.2em double red; margin: 2em;">Does not exist. <?php echo $response->Message ?></h1>
 <?php
 }
 ?>

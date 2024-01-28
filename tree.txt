@@ -1,0 +1,33 @@
+.:
+total 2.7M
+drwxr-xr-x  4 root     root     4.0K Jan  2 09:33 .
+drwxr-xr-x 22 root     root     4.0K Jan  4 08:37 ..
+-rw-rw----  1 www-data www-data  111 Jan  2 09:33 auth.php
+drwx------  2 root     root      16K Jan  2 08:25 lost+found
+-rw-r--r--  1 root     root     897K Jan  2 08:30 toa-srm.txz
+-rw-r--r--  1 root     root     1.7M Jan  2 08:30 webapp-srm.txz
+drwxrwxr-x  2 www-data www-data 4.0K Jan 28 02:21 www-data
+
+./lost+found:
+total 20K
+drwx------ 2 root root  16K Jan  2 08:25 .
+drwxr-xr-x 4 root root 4.0K Jan  2 09:33 ..
+
+./www-data:
+total 2.4G
+drwxrwxr-x 2 www-data www-data 4.0K Jan 28 02:21 .
+drwxr-xr-x 4 root     root     4.0K Jan  2 09:33 ..
+-rw-r--r-- 1 root     root      977 Jan 27 05:13 all_details_by_date_sales_correct_but_slower.sql
+-rw-r--r-- 1 root     root      816 Jan 21 07:00 all_details_by_date_sales.sql
+-rw-r--r-- 1 root     root      41M Jan 27 04:30 by_hour.csv
+-rw-r--r-- 1 root     root      41M Jan 27 08:38 by_hour_slower.csv
+-rw-r--r-- 1 root     root     3.2M Jan 27 08:35 data5.e7z
+-rw-rw-r-- 1 www-data www-data 2.2G Jan 28 02:21 db.sqlite3
+-rw-r--r-- 1 root     root     153M Jan 27 13:09 hourly.sqlite3
+-rw-r--r-- 1 root     root      386 Jan 21 07:23 inv_del_latest_details.sql
+-rw-r--r-- 1 root     root     443K Jan 27 08:39 inventory.csv
+-rw-r--r-- 1 root     root      116 Jan 21 07:00 inv_sel_all.sql
+-rw-r--r-- 1 root     root      532 Jan  2 09:40 schema.sql
+-rw-r--r-- 1 root     root        0 Jan  2 09:40 source.sql
+-rw-r--r-- 1 root     root      911 Jan 21 06:46 sql_all_details_by_date.sql
+-rw-r--r-- 1 root     root      816 Jan 27 04:32 with_time.sql
