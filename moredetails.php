@@ -27,6 +27,7 @@ curl_setopt($req_analytics, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_
 $response_analytics = json_decode(curl_exec($req_analytics));
 $SIH = $response_analytics->SIH;
 $state_of_things="too-much";
+if($response){$id = $response->PLU_CODE;} else{$id = $_GET["id"];}
 //var_dump($response);
 //var_dump($response_analytics);
 $dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
@@ -38,7 +39,7 @@ $dbh->commit();
 function getsalesbyhour($itemcode){
 $dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("select 100*hsq/sq, b.timehour from ((select sum(quantity) as sq, * from hourly WHERE itemcode=?) a CROSS JOIN (select itemcode, timehour, sum(quantity) as hsq from hourly where itemcode=? group by timehour) b)");
+$stmtm_sql = $dbhm->prepare("SELECT 100*hsq/sq AS psh, b.timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b)");
 $stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
 $past_datam=$stmtm_sql->fetchAll();
 $dbhm->commit();
@@ -47,14 +48,14 @@ return $past_datam;
 function getsalesbyday($itemcode){
 $dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("select a.x as daydate, ifnull(b.daydate, 0) as quantity, * from dates a LEFT JOIN (select sum(quantity), daydate from hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?)");
+$stmtm_sql = $dbhm->prepare("SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, * from dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?)");
 $stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
 $past_datam=$stmtm_sql->fetchAll();
 $dbhm->commit();
 return $past_datam;
 }
-$salesdatabyhour=getsalesbyhour($response->PLU_CODE);
-$salesdatabyday=getsalesbyday($response->PLU_CODE);
+$salesdatabyhour=getsalesbyhour($id);
+$salesdatabyday=getsalesbyday($id);
 ?>
 <script>"use strict"; var past_data = JSON.parse('<?php echo json_encode($past_data); ?>')</script>
 <script>"use strict"; var sales_data_by_hour = JSON.parse('<?php echo json_encode($salesdatabyhour); ?>')</script>
@@ -70,6 +71,10 @@ var deltaSales15 = [];
 var deltaSales30 = [];
 var deltaSales60 = [];
 var dates=[];
+var dailysales_dates = sales_data_by_day.map(x => x['daydate_full']);
+var dailysales_data = sales_data_by_day.map(x => x['quantity']);
+var sales_hours = sales_data_by_hour.map(x => x['timehour']);
+var sales_hours_data = sales_data_by_hour.map(x => x['psh']);
 for (var i=0; i<past_data.length-1; i++){avgSales15.push(past_data[i]['s15']/15)}
 for (var i=0; i<past_data.length-1; i++){avgSales30.push(past_data[i]['s30']/30)}
 for (var i=0; i<past_data.length-1; i++){avgSales60.push(past_data[i]['s60']/60)}
@@ -129,6 +134,32 @@ function displayChart(){
 		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000"}]
 	},
 		options: {scales: {y: {beginAtZero: true, grid: {color: "#000"}, ticks: {color: "#000"}}, 
+				x: {grid: {color: "#000"}, ticks: {color: "#000"}}},
+			responsive: false
+		}
+}
+)
+	var daily_sales_by_day = new Chart(document.getElementById('chart_salesbyday'),
+{
+	type: 'line',
+	data: {
+		labels: dailysales_dates,
+		datasets: [{label: "Sales", data: dailysales_data, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000"}]
+	},
+		options: {scales: {y: {beginAtZero: true, grid: {color: "#000"}, ticks: {color: "#000"}}, 
+				x: {grid: {color: "#000"}, ticks: {color: "#000"}}},
+			responsive: false
+		}
+}
+)
+	var daily_sales_by_hour = new Chart(document.getElementById('chart_salesbyhour'),
+{
+	type: 'bar',
+	data: {
+		labels: sales_hours,
+		datasets: [{label: "Sales %", data: sales_hours_data, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000"}]
+	},
+		options: {scales: {y: {beginAtZero: true, max: 100, grid: {color: "#000"}, ticks: {color: "#000"}}, 
 				x: {grid: {color: "#000"}, ticks: {color: "#000"}}},
 			responsive: false
 		}

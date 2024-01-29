@@ -148,6 +148,7 @@ function displayChart(){
 </table>
 <details>
 <summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:42%; width:42%;"> </button></summary>
+<summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:42%; width:42%;"> </button></summary>
 <table class="others">
 <tr>
 <th scope="col">Field</th>
