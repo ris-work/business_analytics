@@ -5,4 +5,6 @@ import sys
 import json
 lines = ''.join(sys.stdin.readlines())
 array = np.array(json.loads(lines))
-print(json.dumps([np.divide(np.abs(fft(array)),len(array)).tolist(), np.divide(len(array), range(0,len(array))).tolist()]))
+f=[0]
+f.extend(np.divide(len(array), range(1,len(array))).tolist())
+print(json.dumps([np.divide(np.abs(fft(array)),len(array)).tolist(), f]))

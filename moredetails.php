@@ -71,7 +71,7 @@ $process = proc_open('python3 analysis.py', $desspec, $pipes);
 if(is_resource($process)){
 	fwrite($pipes[0], json_encode($daily_data_only));
 	fclose($pipes[0]);
-	$spectrum = (stream_get_contents($pipes[1]));
+	$spectrum = trim(stream_get_contents($pipes[1]));
 	//var_dump(stream_get_contents($pipes[2]));
 	fclose($pipes[1]);
 	proc_close($process);
@@ -83,6 +83,20 @@ else{
 <script>"use strict"; var past_data = JSON.parse('<?php echo json_encode($past_data); ?>')</script>
 <script>"use strict"; var sales_data_by_hour = JSON.parse('<?php echo json_encode($salesdatabyhour); ?>')</script>
 <script>"use strict"; var sales_data_by_day = JSON.parse('<?php echo json_encode($salesdatabyday); ?>')</script>
+<script>"use strict"; var sales_data_by_day_spectrum = JSON.parse('<?php echo ($spectrum); ?>')
+var A = sales_data_by_day_spectrum[0];
+var w = sales_data_by_day_spectrum[1];
+var sarr=[];
+A.forEach((v,k)=>{sarr.push({A: v, w: w[k]})});
+var sarr_dup = sarr.map(x=>x);
+sarr_dup = sarr_dup.filter(x=>x.w<366);
+sarr_dup.sort((a,b)=>a.A<b.A?1:-1);
+//var sarr_dup = sarr.map(x=>x);
+if(sarr_dup[0].w==0) {sarr_dup.shift()}
+var most_varied=sarr_dup.slice(0,10);
+var avgsincefirstsale=A[0].toLocaleString();
+var variation_int =  `The average since first sold is ${A[0].toLocaleString()}. Sales commonly varies every ${sarr_dup[0].w.toLocaleString()} days by ${sarr_dup[0].A.toLocaleString()}, every ${sarr_dup[1].w.toLocaleString()} days by ${sarr_dup[1].A.toLocaleString()} units.`;
+</script>
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 <script>
 "use strict";
@@ -134,6 +148,8 @@ console.log(averageDailySales_60_d);
 <script>
 document.addEventListener('DOMContentLoaded', displayChart);
 function displayChart(){
+	document.getElementById("avgsincefirst").innerText=avgsincefirstsale;
+	document.getElementById("patterns").innerText=variation_int;
 	var daily_sales = new Chart(document.getElementById('chart_sales'),
 {
 	type: 'line',
@@ -221,6 +237,13 @@ function displayChart(){
 <th>Fill sold (60 days)</th>
 <td><?php echo $response_analytics->S_D60 - $response->SIH; ?></td>
 </tr>
+<tr>
+<th>Average (since first sold): </th>
+<td id="avgsincefirst"></td>
+</tr>
+<tr>
+<td colspan=2><span id="patterns" style="max-width: 20em"></span></th>
+</tr>
 </table>
 <details>
 <summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:42%; width:42%;"> </button></summary>
@@ -268,6 +291,7 @@ else if($response==null){
 <div class="centered-container">
 <canvas id="chart_salesbyday" width="795" height="650"></canvas>
 <canvas id="chart_salesbyhour" width="795" height="650"></canvas>
+<canvas id="chart_salesspectrum" width="795" height="650"></canvas>
 <canvas id="chart_sales" width="795" height="650"></canvas>
 </div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
