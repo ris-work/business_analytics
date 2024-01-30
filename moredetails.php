@@ -18,7 +18,7 @@ curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 $response = json_decode(curl_exec($req));
 //var_dump($response);
-if ($response && !property_exists($response, "Message")){
+if (strlen($ID) == 6 || ($response && !property_exists($response, "Message"))){
 $BASEURL_ANALYTICS = "http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
 $req_analytics = curl_init();
 curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE");
@@ -56,6 +56,29 @@ return $past_datam;
 }
 $salesdatabyhour=getsalesbyhour($id);
 $salesdatabyday=getsalesbyday($id);
+
+$daily_data_only = array_map(fn($x) => $x['quantity'], $salesdatabyday);
+
+$desspec = array(
+	0 => array("pipe", "r"),
+	1 => array("pipe", "w"),
+	2 => array("pipe", "r")
+);
+$cwd = '/tmp';
+//var_dump(json_encode($daily_data_only));
+
+$process = proc_open('python3 analysis.py', $desspec, $pipes);
+if(is_resource($process)){
+	fwrite($pipes[0], json_encode($daily_data_only));
+	fclose($pipes[0]);
+	$spectrum = (stream_get_contents($pipes[1]));
+	//var_dump(stream_get_contents($pipes[2]));
+	fclose($pipes[1]);
+	proc_close($process);
+}
+else{
+	echo "Process creation failed.";
+}
 ?>
 <script>"use strict"; var past_data = JSON.parse('<?php echo json_encode($past_data); ?>')</script>
 <script>"use strict"; var sales_data_by_hour = JSON.parse('<?php echo json_encode($salesdatabyhour); ?>')</script>
@@ -243,9 +266,9 @@ else if($response==null){
 </div>
 </div>
 <div class="centered-container">
-<canvas id="chart_sales" width="795" height="650"></canvas>
 <canvas id="chart_salesbyday" width="795" height="650"></canvas>
 <canvas id="chart_salesbyhour" width="795" height="650"></canvas>
+<canvas id="chart_sales" width="795" height="650"></canvas>
 </div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
 <button class="graph" onclick="document.getElementById('chart_sales').style.visibility='visible'"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> <div>
