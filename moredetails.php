@@ -48,14 +48,24 @@ return $past_datam;
 function getsalesbyday($itemcode){
 $dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, * from dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?)");
+$stmtm_sql = $dbhm->prepare("SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?)");
 $stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
+$past_datam=$stmtm_sql->fetchAll();
+$dbhm->commit();
+return $past_datam;
+}
+function lastimportedday(){
+$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+$t = $dbhm->beginTransaction();
+$stmtm_sql = $dbhm->prepare("SELECT max(daydate) AS lastupdated FROM hourly");
+$stmtm = $stmtm_sql->execute([]);
 $past_datam=$stmtm_sql->fetchAll();
 $dbhm->commit();
 return $past_datam;
 }
 $salesdatabyhour=getsalesbyhour($id);
 $salesdatabyday=getsalesbyday($id);
+$salesdatalastimported=lastimportedday();
 
 $daily_data_only = array_map(fn($x) => $x['quantity'], $salesdatabyday);
 
@@ -83,6 +93,7 @@ else{
 <script>"use strict"; var past_data = JSON.parse('<?php echo json_encode($past_data); ?>')</script>
 <script>"use strict"; var sales_data_by_hour = JSON.parse('<?php echo json_encode($salesdatabyhour); ?>')</script>
 <script>"use strict"; var sales_data_by_day = JSON.parse('<?php echo json_encode($salesdatabyday); ?>')</script>
+<script>"use strict"; var sales_data_updated = JSON.parse('<?php echo json_encode($salesdatalastimported); ?>')</script>
 <script>"use strict"; var sales_data_by_day_spectrum = JSON.parse('<?php echo ($spectrum); ?>')
 var A = sales_data_by_day_spectrum[0];
 var w = sales_data_by_day_spectrum[1];
@@ -95,7 +106,7 @@ sarr_dup.sort((a,b)=>a.A<b.A?1:-1);
 if(sarr_dup[0].w==0) {sarr_dup.shift()}
 var most_varied=sarr_dup.slice(0,10);
 var avgsincefirstsale=A[0].toLocaleString();
-var variation_int =  `The average since first sold is ${A[0].toLocaleString()}. Sales commonly varies every ${sarr_dup[0].w.toLocaleString()} days by ${sarr_dup[0].A.toLocaleString()}, every ${sarr_dup[1].w.toLocaleString()} days by ${sarr_dup[1].A.toLocaleString()} units.`;
+var variation_int =  `The daily average since first sold is ${A[0].toLocaleString()}. Sales commonly varies every ${sarr_dup[0].w.toLocaleString()} days by \u00b1${sarr_dup[0].A.toLocaleString()}, every ${sarr_dup[1].w.toLocaleString()} days by \u00b1${(sarr_dup[1].A).toLocaleString()} units.`;
 </script>
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 <script>
@@ -208,6 +219,7 @@ function displayChart(){
 </script>
 </head>
 <body>
+<span><?php echo "Last updated (full sales data): {$salesdatalastimported[0]['lastupdated']}"; ?></span>
 <table class="named">
 <tr>
 <th>Name</th>
