@@ -39,7 +39,7 @@ $dbh->commit();
 function getsalesbyhour($itemcode){
 $dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("SELECT 100*hsq/sq AS psh, b.timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b)");
+$stmtm_sql = $dbhm->prepare("SELECT 100*hsq/sq AS psh, c.x as timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b) RIGHT JOIN (SELECT x FROM cnt LIMIT 24) c ON b.timehour = c.x ORDER BY c.x");
 $stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
 $past_datam=$stmtm_sql->fetchAll();
 $dbhm->commit();
