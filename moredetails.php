@@ -39,7 +39,7 @@ $dbh->commit();
 function getsalesbyhour($itemcode){
 $dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("SELECT 100*hsq/sq AS psh, c.x as timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b) RIGHT JOIN (SELECT x FROM cnt LIMIT 24) c ON b.timehour = c.x ORDER BY c.x");
+$stmtm_sql = $dbhm->prepare("SELECT 100*hsq/sq AS psh, c.x as timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b) RIGHT JOIN (SELECT x FROM cnt LIMIT 17 OFFSET 6) c ON b.timehour = c.x ORDER BY c.x");
 $stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
 $past_datam=$stmtm_sql->fetchAll();
 $dbhm->commit();
@@ -48,7 +48,7 @@ return $past_datam;
 function getsalesbyday($itemcode){
 $dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?)");
+$stmtm_sql = $dbhm->prepare("SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) AND a.x < (SELECT * FROM last_imported)");
 $stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
 $past_datam=$stmtm_sql->fetchAll();
 $dbhm->commit();
