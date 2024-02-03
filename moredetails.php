@@ -249,6 +249,18 @@ function displayChart(){
 <th>Fill sold (60 days)</th>
 <td><?php echo $response_analytics->S_D60 - $response->SIH; ?></td>
 </tr>
+<tr style="border: 9px double black">
+<th>Sold (15 days)</th>
+<td><?php echo $response_analytics->S_D15; ?></td>
+</tr>
+<tr>
+<th>Sold (30 days)</th>
+<td><?php echo $response_analytics->S_D30; ?></td>
+</tr>
+<tr>
+<th>Sold (60 days)</th>
+<td><?php echo $response_analytics->S_D60; ?></td>
+</tr>
 <tr>
 <th>Average (since first sold): </th>
 <td id="avgsincefirst"></td>
