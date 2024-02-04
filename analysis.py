@@ -8,6 +8,7 @@
 # so, it's set to zero.
 # Copyright Rishikeshan Sulochana/Lavakumar (2024)
 # License: Apache License 2.0
+# Scope of license: THIS FILE ONLY
 
 from scipy.fft import *
 import numpy as np
