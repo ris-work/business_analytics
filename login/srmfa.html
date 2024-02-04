@@ -7,6 +7,7 @@ flex-direction: column;
 color: white;
 top: auto;
 	bottom: 0;
+	padding: 2em;
 }
 .field, label{
 	margin-left: auto;
@@ -16,6 +17,7 @@ font-family: "COURIER";
 }
 input{
 	font-size: min(7vh, 7vw);
+	min-width: 10em;
 }
 body{
 	background: black;
@@ -27,7 +29,7 @@ body{
 <form class="loginform" id="loginform" method="POST" action="/dologin_srmfa.html">
 	<div class="field"><label for="username">Username: </label><input type="text" id="username" name="httpd_username" /></div><br />
 	<div class="field"><label for="password">Password: </label><input type="password" id="password" name="httpd_password" /></div><br />
-	<div class="field"><input type="submit" name="login" value="login" /></div>
+	<div class="field"><input type="submit" name="login" value="Login" /></div>
 </form>
 	</div>
 </body>
