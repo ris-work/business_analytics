@@ -13,3 +13,4 @@ CREATE TABLE hourly_import ('itemcode', 'daydate', 'timehour', 'qty');
 CREATE INDEX product_id ON hourly (itemcode);
 CREATE INDEX product_id_with_date ON hourly (itemcode,daydate);
 CREATE INDEX product_id_with_date_and_hour ON hourly (itemcode,daydate,timehour);
+CREATE INDEX updated_dates ON hourly(daydate);
