@@ -48,7 +48,7 @@ return $past_datam;
 function getsalesbyday($itemcode){
 $dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) AND a.x < (SELECT * FROM last_imported)");
+$stmtm_sql = $dbhm->prepare("SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, b.sq as rawsq, sum(b.sq/15) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) as da15, sum(b.sq/60) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as da60, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) AND a.x < (SELECT * FROM last_imported) ORDER BY a.x");
 $stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
 $past_datam=$stmtm_sql->fetchAll();
 $dbhm->commit();

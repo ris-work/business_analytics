@@ -35,8 +35,15 @@ $stmt_sql = $dbh->prepare("SELECT productsattime.TIME, s15, s30, s60, date as da
 $stmt = $stmt_sql->execute([$response->PLU_CODE]);
 $past_data=$stmt_sql->fetchAll();
 $dbh->commit();
+$dbh_cost = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+$t_cost = $dbh_cost->beginTransaction();
+$stmt_sql_cost = $dbh_cost->prepare("SELECT itemcode, daydate, cost FROM cost WHERE itemcode=? AND daydate = (SELECT max(daydate) FROM cost WHERE itemcode = ?)");
+$stmt_cost = $stmt_sql_cost->execute([$response->PLU_CODE, $response->PLU_CODE]);
+$data_cost=$stmt_sql_cost->fetchAll();
+$dbh_cost->commit();
 ?>
 <script>"use strict"; var past_data = JSON.parse('<?php echo json_encode($past_data); ?>')</script>
+<script>"use strict"; var data_cost = JSON.parse('<?php echo json_encode($data_cost); ?>')</script>
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 <script>
 "use strict";
@@ -144,6 +151,10 @@ function displayChart(){
 <tr>
 <th>Fill sold (60 days)</th>
 <td><?php echo $response_analytics->S_D60 - $response->SIH; ?></td>
+</tr>
+<tr>
+<th>Cost (<?php echo $data_cost[0]["daydate"]; ?>)<sup style="font-size: 0.25em">Average of entries</sup></th>
+<td><?php echo number_format($data_cost[0]["cost"], 2); ?> gross <sup><?php echo number_format(100*$response->PLU_SELL/$data_cost[0]["cost"] - 100, 2); ?></sup>%</td>
 </tr>
 </table>
 <details>
