@@ -41,6 +41,12 @@ $stmt_sql_cost = $dbh_cost->prepare("SELECT itemcode, daydate, cost FROM cost WH
 $stmt_cost = $stmt_sql_cost->execute([$response->PLU_CODE, $response->PLU_CODE]);
 $data_cost=$stmt_sql_cost->fetchAll();
 $dbh_cost->commit();
+$dbh_cost_grn = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+$t_cost_grn = $dbh_cost_grn->beginTransaction();
+$stmt_sql_cost_grn = $dbh_cost_grn->prepare("SELECT itemcode, date, cost, runno FROM cost_purchase WHERE itemcode=?");
+$stmt_cost_grn = $stmt_sql_cost_grn->execute([$response->PLU_CODE]);
+$data_cost_grn=$stmt_sql_cost_grn->fetchAll();
+$dbh_cost_grn->commit();
 ?>
 <script>"use strict"; var past_data = JSON.parse('<?php echo json_encode($past_data); ?>')</script>
 <script>"use strict"; var data_cost = JSON.parse('<?php echo json_encode($data_cost); ?>')</script>
@@ -153,8 +159,12 @@ function displayChart(){
 <td><?php echo $response_analytics->S_D60 - $response->SIH; ?></td>
 </tr>
 <tr>
-<th>Cost (<?php echo $data_cost[0]["daydate"]; ?>)<sup style="font-size: 0.25em">Average of entries</sup></th>
-<td><?php echo number_format($data_cost[0]["cost"], 2); ?> gross <sup><?php echo number_format(100*$response->PLU_SELL/$data_cost[0]["cost"] - 100, 2); ?></sup>%</td>
+<th>Cost<sup> (<?php echo $data_cost[0]["daydate"]; ?>)</sup><sup style="font-size: 0.25em">Average of entries</sup></th>
+<td><?php echo number_format($data_cost[0]["cost"], 2); ?><sup> gross <?php echo number_format(100*$response->PLU_SELL/$data_cost[0]["cost"] - 100, 2); ?>%</sup></td>
+</tr>
+<tr>
+<th>Cost<sup> (<?php echo substr($data_cost_grn[0]["date"], 0, 10); ?>)</sup><sup style="font-size: 0.25em">GRN (<?php echo $data_cost_grn[0]["runno"]; ?>)</sup></th>
+<td><?php echo number_format($data_cost_grn[0]["cost"], 2); ?><sup> gross <?php echo number_format(100*$response->PLU_SELL/$data_cost_grn[0]["cost"] - 100, 2); ?>%</sup></td>
 </tr>
 </table>
 <details>
