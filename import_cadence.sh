@@ -10,3 +10,7 @@ cd cost_purchase
 pwsh cost.ps1
 sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
 cd ..
+cd sih_import
+pwsh cost.ps1
+sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
+cd ..
