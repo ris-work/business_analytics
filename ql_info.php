@@ -13,7 +13,7 @@ $dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 //var_dump($IDs);
 //$dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbh->beginTransaction();
-$stmt_sql = $dbh->prepare("SELECT itemcode AS PLU_CODE, desc AS PLU_DESC, sih AS SIH FROM sih_current");
+$stmt_sql = $dbh->prepare("SELECT itemcode AS PLU_CODE, desc AS PLU_DESC, sih AS SIH, sell/iif(sih=0, 1, sih) AS PLU_SELL FROM sih_current");
 $stmt = $stmt_sql->execute();
 $past_data=$stmt_sql->fetchAll();
 $dbh->commit();
