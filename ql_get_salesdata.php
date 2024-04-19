@@ -19,6 +19,7 @@ $stmt = $stmt_sql->execute([$ID, $ID, $ID]);
 $past_data=$stmt_sql->fetchAll();
 $dbh->commit();
 var_dump($past_data);
+if($past_data == null) {$past_data = array(0 => array("CODE"=>$ID, "S_D60"=>0, "S_D30"=>0, "S_D15"=>0));}
 array_push($RESPONSES, $past_data[0]);
 }
 //echo json_encode(json_encode($RESPONSES));
