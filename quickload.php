@@ -49,7 +49,7 @@ async function displaySelected(){
 			console.log(in_cache);
 			var dump=json_filtered;
 			json_data = "[]";//await fetch_data(not_in_cache);
-			json_analytics = await fetch_analytics(not_in_cache);
+			json_analytics = "[]"; //await fetch_analytics(not_in_cache);
 			var analytics_fetched = JSON.parse(json_analytics);
 			analytics=Array.from(analytics_fetched);
 			in_cache.forEach(x => analytics.push(AnalyticsCache.get(x.PLU_CODE)));
