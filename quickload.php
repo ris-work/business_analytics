@@ -138,12 +138,12 @@ function generate_table_row(v){
 	if(v){
 		row.appendChild(generate_data_element(v.PLU_CODE));
 		row.appendChild(generate_data_element(v.PLU_DESC));
-		row.appendChild(generate_data_element(v.PLU_SELL));
-		row.appendChild(generate_data_element(v.cost));
-		row.appendChild(generate_data_element(v.SIH));
-		row.appendChild(generate_data_element((v.S_D15-v.SIH) < 0 ? 0 : v.S_D15 - v.SIH));
-		row.appendChild(generate_data_element((v.S_D30-v.SIH) < 0 ? 0 : v.S_D30 - v.SIH));
-		row.appendChild(generate_data_element((v.S_D60-v.SIH) <0 ? 0 : v.S_D60 - v.SIH));
+		row.appendChild(generate_numeric_data_element(v.PLU_SELL));
+		row.appendChild(generate_numeric_data_element(v.cost));
+		row.appendChild(generate_numeric_data_element(v.SIH));
+		row.appendChild(generate_numeric_data_element((v.S_D15-v.SIH) < 0 ? 0 : v.S_D15 - v.SIH));
+		row.appendChild(generate_numeric_data_element((v.S_D30-v.SIH) < 0 ? 0 : v.S_D30 - v.SIH));
+		row.appendChild(generate_numeric_data_element((v.S_D60-v.SIH) <0 ? 0 : v.S_D60 - v.SIH));
 		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE}`, "More"));
 		//if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
 		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
@@ -159,6 +159,12 @@ function generate_table_row(v){
 function generate_data_element(text){
 	var de = document.createElement('td');
 	de.innerText = text;
+	return de;
+}
+function generate_numeric_data_element(text){
+	var de = document.createElement('td');
+	de.innerText = Number.parseFloat(text).toFixed(2);
+	de.className += "numeric-data";
 	return de;
 }
 function generate_link_element(href, text){

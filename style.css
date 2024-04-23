@@ -6,6 +6,10 @@ body{
 	background-image: linear-gradient(to bottom right, #ffccff 0%, #ffffff 100%);;
 	margin: 0;
 }
+.numeric-data{
+		text-align: right;
+		font-family: "IBM Courier", "Courier", Monospace;
+}
 .named {
 	font-family: 'IBM Courier', Monospace;
 	font-size: 2.5em;
