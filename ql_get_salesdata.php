@@ -14,7 +14,7 @@ foreach($IDs as $ID){
 //var_dump($ID);
 //$dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbh->beginTransaction();
-$stmt_sql = $dbh->prepare("SELECT *, S60T.itemcode AS CODE FROM (SELECT total(quantity) as S_D60, itemcode FROM hourly WHERE itemcode=? AND daydate BETWEEN date('now', '-61 days') AND date('now', '-1 day')) S60T JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly WHERE itemcode=? AND daydate BETWEEN date('now', '-31 days') AND date('now', '-1 day')) S30T ON S30T.itemcode = S60T.itemcode JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly WHERE itemcode=? AND daydate BETWEEN date('now', '-16 days') AND date('now', '-1 day')) AS S15T ON S15T.itemcode = S30T.itemcode");
+$stmt_sql = $dbh->prepare("SELECT *, S60T.itemcode AS CODE FROM (SELECT total(quantity) as S_D60, itemcode FROM hourly WHERE itemcode=? AND daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days') AND date((SELECT max(daydate) FROM hourly), '-1 day')) S60T JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly WHERE itemcode=? AND daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days') AND date((SELECT max(daydate) FROM hourly), '-1 day')) S30T ON S30T.itemcode = S60T.itemcode JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly WHERE itemcode=? AND daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days') AND date((SELECT max(daydate) FROM hourly), '-1 day')) AS S15T ON S15T.itemcode = S30T.itemcode");
 $stmt = $stmt_sql->execute([$ID, $ID, $ID]);
 $past_data=$stmt_sql->fetchAll();
 $dbh->commit();
