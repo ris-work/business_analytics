@@ -226,6 +226,11 @@ $dbh->commit();
 //var_dump($past_data);
 $response = $cur_data;
 $response_dec = $response ;// json_decode($response);
+$tlat = $dbh->beginTransaction();
+$stmt_sql_tlat = $dbh->prepare("SELECT max(daydate) AS last_updated, timediff(date('now'), max(daydate)) AS days_old FROM hourly");
+$stmt_tlat = $stmt_sql_tlat->execute();
+$lastu=$stmt_sql_tlat->fetchAll();
+$dbh->commit();
 $ta = $dbh->beginTransaction();
 $stmta_sql = $dbh->prepare("SELECT ifnull(S_D60, 0) AS S_D60, ifnull(S_D30, 0) AS S_D30, ifnull(S_D15, 0) AS S_D15, everything.itemcode AS CODE FROM everything_itemcode_in_hourly AS everything LEFT JOIN (SELECT total(quantity) as S_D60, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S60T ON everything.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S30T ON S30T.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) AS S15T ON S15T.itemcode = S30T.itemcode ");
 $stmta = $stmta_sql->execute();
@@ -244,6 +249,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <body class="cached">
 <button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh;" id="back">🔙 Go back!</button><br />
 <div class="centered-container">
+<?php var_dump($last_u); ?>
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
 </div>
 <details>
