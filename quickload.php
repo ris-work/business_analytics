@@ -227,7 +227,7 @@ $dbh->commit();
 $response = $cur_data;
 $response_dec = $response ;// json_decode($response);
 $tlat = $dbh->beginTransaction();
-$stmt_sql_tlat = $dbh->prepare("SELECT max(daydate) AS last_updated, timediff(date('now'), max(daydate)) AS days_old FROM hourly");
+$stmt_sql_tlat = $dbh->prepare("SELECT max(daydate) AS last_updated FROM hourly");
 $stmt_tlat = $stmt_sql_tlat->execute();
 $lastu=$stmt_sql_tlat->fetchAll();
 $dbh->commit();
@@ -240,7 +240,7 @@ echo "<script>var list = ".json_encode(json_encode($response))."; list_p = JSON.
 echo "<script>var lista = ".json_encode(json_encode($past_data))."; list_a = JSON.parse((lista));</script>";
 //var_dump($response);
 ?>
-	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
+	<title>DETAILS: <?php echo $lastu[0][0]; ?></title>
 <script>
 list_p.forEach((v) => {DataCache.set(v.PLU_CODE, v)});
 list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
@@ -249,7 +249,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <body class="cached">
 <button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh;" id="back">🔙 Go back!</button><br />
 <div class="centered-container">
-<?php var_dump($last_u); ?>
+<?php echo ($lastu[0][0]); ?> <br />
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
 </div>
 <details>
