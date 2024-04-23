@@ -256,24 +256,6 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 </fieldset>
 </details>
 <div id="printer"></div>
-<table class="named">
-<tr>
-<td>Name</td>
-<td><?php echo $response->PLU_DESC; ?></td>
-</tr>
-<tr>
-<td>Code</td>
-<td><?php echo $response->PLU_CODE; ?></td>
-</tr>
-<tr>
-<td>Selling price</td>
-<td><?php echo $response->PLU_SELL; ?></td>
-</tr>
-<tr>
-<td>SIH</td>
-<td><?php echo $response->SIH; ?></td>
-</tr>
-</table>
 <details>
 <summary>More details</summary>
 <table class="others">
