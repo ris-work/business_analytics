@@ -2,6 +2,10 @@ body{
 	background-image: linear-gradient(to bottom right, #99ccff 0%, #ffffff 100%);;
 	margin: 0;
 }
+.cached{
+	background-image: linear-gradient(to bottom right, #ffccff 0%, #ffffff 100%);;
+	margin: 0;
+}
 .named {
 	font-family: 'IBM Courier', Monospace;
 	font-size: 2.5em;
