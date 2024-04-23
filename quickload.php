@@ -1,11 +1,11 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="icon" type="image/svg+xml" href="/srm-icons/warehouse.svg">
-		<link rel="apple-touch-icon" size="180x180" type="image/png" href="/srm-icons/warehouse_180.png" />
-		<link rel="apple-touch-icon" size="120x120" type="image/png" href="/srm-icons/warehouse_120.png" />
-		<link rel="apple-touch-icon" size="152x152" type="image/png" href="/srm-icons/warehouse_152.png" />
-		<link rel="apple-touch-icon" size="any" type="image/svg+xml" href="/srm-icons/warehouse.svg" />
+<link rel="icon" type="image/svg+xml" href="/srm-icons/broken.svg">
+		<link rel="apple-touch-icon" size="180x180" type="image/png" href="/srm-icons/broken_180.png" />
+		<link rel="apple-touch-icon" size="120x120" type="image/png" href="/srm-icons/broken_120.png" />
+		<link rel="apple-touch-icon" size="152x152" type="image/png" href="/srm-icons/broken_152.png" />
+		<link rel="apple-touch-icon" size="any" type="image/svg+xml" href="/srm-icons/broken.svg" />
 <script>
 dump="";
 var json_p="";
