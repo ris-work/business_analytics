@@ -119,6 +119,7 @@ function pretty_print_filtered(filtered){
 	table.style.marginRight="auto";
 	table.style.borderCollapse="collapse";
 	heading_row = document.createElement("tr");
+	heading_row.className += " theader";
 	heading_row.appendChild(generate_data_heading("Code"));
 	heading_row.appendChild(generate_data_heading("Description"));
 	heading_row.appendChild(generate_data_heading("Sell"));
@@ -249,7 +250,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <body class="cached">
 <button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh;" id="back">🔙 Go back!</button><br />
 <div class="centered-container">
-<?php echo ($lastu[0][0]); ?> <br />
+<span class="notice">Data loaded on (please check today's date): <?php echo ($lastu[0][0]); ?></span> <br />
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
 </div>
 <details>
@@ -275,7 +276,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <th scope="col">Field</th>
 <th scope="col">Value</th>
 </tr>
-<?php foreach($response as $field=>$value) { ?>
+<?php /*foreach($response as $field=>$value) { ?>
 <tr>
 <td><?php echo $field; ?></td>
 <td><?php var_dump($value); ?></td>
@@ -284,7 +285,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 </table>
 <?php
 //echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
-?>
+ */?>
 </details>
 </body>
 </html>

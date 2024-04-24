@@ -121,8 +121,14 @@ function pretty_print_filtered(filtered){
 	heading_row.appendChild(generate_data_heading("Fill sold (30)"));
 	heading_row.appendChild(generate_data_heading("Fill sold (60)"));
 	heading_row.appendChild(generate_data_heading("MORE"));
+	header_row_bottom = heading_row.cloneNode(true);
+	heading_row.className += " theader";
+	header_row_bottom.className += " theader_b";
+	//header_row_bottom.style.zIndex = -2;
 	table.appendChild(heading_row);
+	//table.appendChild(header_row_bottom);
 	filtered.forEach((v) => {table.appendChild(generate_table_row(v));});
+	table.appendChild(header_row_bottom);
 	printer.replaceChildren(table);
 }
 function generate_table_row(v){
@@ -215,7 +221,7 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 </head>
 <body>
-<button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh;" id="back">🔙 Go back!</button><br />
+<button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh; z-index: 2;" id="back">🔙 Go back!</button><br />
 <div class="centered-container">
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
 </div>
@@ -260,12 +266,12 @@ echo "<script>var list = ".json_encode($response)."; list_p = JSON.parse((list))
 <th scope="col">Field</th>
 <th scope="col">Value</th>
 </tr>
-<?php foreach($response as $field=>$value) { ?>
+<?php /*foreach($response as $field=>$value) { ?>
 <tr>
 <td><?php echo $field; ?></td>
 <td><?php var_dump($value); ?></td>
 </tr>
-<?php } ?>
+<?php }*/ ?>
 </table>
 <?php
 //echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";

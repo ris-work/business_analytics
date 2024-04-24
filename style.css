@@ -9,6 +9,19 @@ body{
 .numeric-data{
 		text-align: right;
 		font-family: "IBM Courier", "Courier", Monospace;
+		font-weight: 700;
+}
+.theader{
+	position: sticky;
+	top: -1px;
+}
+.theader_b{
+	position: sticky;
+	bottom: -1px;
+}
+.notice{
+		font-size: 2em;
+		font-weight: 600;
 }
 .named {
 	font-family: 'IBM Courier', Monospace;
