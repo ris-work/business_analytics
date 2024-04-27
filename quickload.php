@@ -119,18 +119,21 @@ function pretty_print_filtered(filtered){
 	table.style.marginRight="auto";
 	table.style.borderCollapse="collapse";
 	heading_row = document.createElement("tr");
-	heading_row.className += " theader";
 	heading_row.appendChild(generate_data_heading("Code"));
 	heading_row.appendChild(generate_data_heading("Description"));
 	heading_row.appendChild(generate_data_heading("Sell"));
 	heading_row.appendChild(generate_data_heading("Cost"));
 	heading_row.appendChild(generate_data_heading("SIH"));
 	heading_row.appendChild(generate_data_heading("Fill sold (15)"));
-	heading_row.appendChild(generate_data_heading("Fill sold (30)"));
-	heading_row.appendChild(generate_data_heading("Fill sold (60)"));
+	heading_row.appendChild(generate_data_heading("F (30)"));
+	heading_row.appendChild(generate_data_heading("F (60)"));
 	heading_row.appendChild(generate_data_heading("MORE"));
+	heading_row_bottom = heading_row.cloneNode(true);
+	heading_row.className += " theader";
+	heading_row_bottom.className += " theader_b";
 	table.appendChild(heading_row);
 	filtered.forEach((v) => {table.appendChild(generate_table_row(v));});
+	table.appendChild(heading_row_bottom);
 	printer.replaceChildren(table);
 }
 function generate_table_row(v){
@@ -141,10 +144,10 @@ function generate_table_row(v){
 		row.appendChild(generate_data_element(v.PLU_DESC));
 		row.appendChild(generate_numeric_data_element(v.PLU_SELL));
 		row.appendChild(generate_numeric_data_element(v.cost));
-		row.appendChild(generate_numeric_data_element(v.SIH));
-		row.appendChild(generate_numeric_data_element((v.S_D15-v.SIH) < 0 ? 0 : v.S_D15 - v.SIH));
-		row.appendChild(generate_numeric_data_element((v.S_D30-v.SIH) < 0 ? 0 : v.S_D30 - v.SIH));
-		row.appendChild(generate_numeric_data_element((v.S_D60-v.SIH) <0 ? 0 : v.S_D60 - v.SIH));
+		row.appendChild(generate_stock_data_element(v.SIH));
+		row.appendChild(generate_stock_data_element((v.S_D15-v.SIH) < 0 ? 0 : v.S_D15 - v.SIH));
+		row.appendChild(generate_stock_data_element((v.S_D30-v.SIH) < 0 ? 0 : v.S_D30 - v.SIH));
+		row.appendChild(generate_stock_data_element((v.S_D60-v.SIH) <0 ? 0 : v.S_D60 - v.SIH));
 		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE}`, "More"));
 		//if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
 		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
@@ -165,7 +168,14 @@ function generate_data_element(text){
 function generate_numeric_data_element(text){
 	var de = document.createElement('td');
 	de.innerText = Number.parseFloat(text).toFixed(2);
-	de.className += "numeric-data";
+	de.className += " numeric-data";
+	return de;
+}
+function generate_stock_data_element(text){
+	var de = document.createElement('td');
+	de.innerText = Number.parseFloat(text).toFixed(1);
+	de.className += " numeric-data";
+	de.className += " stock-data";
 	return de;
 }
 function generate_link_element(href, text){
@@ -248,7 +258,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 </script>
 </head>
 <body class="cached">
-<button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh;" id="back">🔙 Go back!</button><br />
+<button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh; z-index: 2;" id="back">🔙 Go back!</button><br />
 <div class="centered-container">
 <span class="notice">Data loaded on (please check today's date): <?php echo ($lastu[0][0]); ?></span> <br />
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />

@@ -13,6 +13,9 @@ CREATE TABLE sih_current(itemcode TEXT, desc TEXT, sih TEXT, cost TEXT, sell TEX
 CREATE TABLE IF NOT EXISTS "sih_import"(
 "PLU_CODE" TEXT, "PLU_DESC" TEXT, "SIH" TEXT, "COSTVALUE" TEXT,
  "SELLVALUE" TEXT);
+CREATE TABLE selling(itemcode TEXT, sell TEXT, PRIMARY KEY (itemcode));
+CREATE TABLE IF NOT EXISTS "selling_import"(
+"code" TEXT, "Column1" TEXT);
 CREATE INDEX product_id ON hourly (itemcode);
 CREATE INDEX product_id_with_date ON hourly (itemcode,daydate);
 CREATE INDEX product_id_with_date_and_hour ON hourly (itemcode,daydate,timehour);
@@ -32,3 +35,5 @@ CREATE VIEW hourly_import_existing_entries AS SELECT itemcode, daydate, timehour
 /* hourly_import_existing_entries(itemcode,daydate,timehour) */;
 CREATE VIEW zeroed_out_on_import AS SELECT itemcode, daydate, timehour FROM hourly EXCEPT SELECT itemcode, daydate, timehour FROM hourly_import
 /* zeroed_out_on_import(itemcode,daydate,timehour) */;
+CREATE VIEW everything_itemcode_in_hourly AS SELECT DISTINCT itemcode FROM hourly
+/* everything_itemcode_in_hourly(itemcode) */;

@@ -11,13 +11,20 @@ body{
 		font-family: "IBM Courier", "Courier", Monospace;
 		font-weight: 700;
 }
+.stock-data{
+		border: 4px #90a4be double;
+}
 .theader{
 	position: sticky;
+	/*border: 4px black double;*/
 	top: -1px;
 }
 .theader_b{
 	position: sticky;
 	bottom: -1px;
+}
+td:nth-child(even) {
+		background: rgba(0, 0, 0, 0.1);
 }
 .notice{
 		font-size: 2em;
