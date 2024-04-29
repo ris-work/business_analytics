@@ -28,3 +28,9 @@ pwsh cost.ps1
 sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
 rm cost.csv
 cd ..
+cd prod_list
+echo prod_list
+pwsh cost.ps1
+sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
+rm cost.csv
+cd ..
