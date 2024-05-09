@@ -14,6 +14,7 @@ var AnalyticsCache = new Map();
 var ToDisplay = "";
 var Displaying = "";
 var Clock = null;
+var json_exp, ilnseg;
 function updateSelected(e){
 	ToDisplay=e.target.value;
 }
@@ -37,9 +38,11 @@ async function displaySelected(){
 				json_filtered = json_pl.filter(a => a.PLU_DESC.startsWith(il));
 			}
 			else if(abjad){
-				iln = normalize(il);
+				iln = normalize_keep_spaces(il);
 				if (iln < 3) {Blocked=false; return;}
-				json_filtered = json_pa.filter(a => a.PLU_DESC.includes(iln));
+				json_filtered = json_pa;
+				ilnseg = iln.split(" ");;
+				ilnseg.forEach((v)=>json_filtered = json_filtered.filter(a => a.PLU_DESC.includes(v)));
 			}else{
 				json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
 			}
@@ -218,6 +221,16 @@ function normalize(string) {
 	string = string.replaceAll("k", "c");
 	string = string.replaceAll("pc", "c");
 	string = string.replaceAll(" ", "");
+	return string;
+}
+function normalize_keep_spaces(string) {
+	string = string.toLowerCase()
+		var vowels=/[aeiou]/g
+		string = string.replaceAll(vowels, "");
+	string = string.replaceAll("y", "i");
+	string = string.replaceAll("k", "c");
+	string = string.replaceAll("pc", "c");
+	//string = string.replaceAll(" ", "");
 	return string;
 }
 window.onload=loaded;
