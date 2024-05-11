@@ -1,8 +1,5 @@
-CREATE TABLE IF NOT EXISTS "inventory"(
-"productcode" TEXT, "productname" TEXT);
-CREATE TABLE hourly ("itemcode" TEXT, "daydate" TEXT, "timehour" TEXT, "quantity" TEXT, PRIMARY KEY (itemcode, daydate, timehour));
+CREATE TABLE hourly ("itemcode" TEXT, "daydate" TEXT, "timehour" TEXT, "quantity" TEXT, sumsell NOT NULL DEFAULT 0, sumcost NOT NULL DEFAULT 0, PRIMARY KEY (itemcode, daydate, timehour));
 CREATE TABLE hourly_changes('DATETIME', 'itemcode', 'daydate', 'timehour', 'qty', 'qty_change');
-CREATE TABLE hourly_import ('itemcode', 'daydate', 'timehour', "quantity");
 CREATE TABLE sqlite_stat1(tbl,idx,stat);
 CREATE TABLE cost(itemcode TEXT, daydate TEXT, cost TEXT, PRIMARY KEY (itemcode, daydate));
 CREATE TABLE cost_import(itemcode TEXT, daydate TEXT, cost TEXT);
@@ -16,12 +13,25 @@ CREATE TABLE IF NOT EXISTS "sih_import"(
 CREATE TABLE selling(itemcode TEXT, sell TEXT, PRIMARY KEY (itemcode));
 CREATE TABLE IF NOT EXISTS "selling_import"(
 "code" TEXT, "Column1" TEXT);
+CREATE TABLE prod_list(dest TEXT NOT NULL, src TEXT NOT NULL, cost_src TEXT NOT NULL, proportion TEXT NOT NULL, PRIMARY KEY (dest, src)) STRICT;
+CREATE TABLE IF NOT EXISTS "prod_list_import"(
+"dest" TEXT, "src" TEXT, "cost_src" TEXT, "proportion" TEXT);
+CREATE TABLE inventory(itemcode TEXT NOT NULL, productname TEXT, PRIMARY KEY (itemcode)) STRICT;
+CREATE TABLE IF NOT EXISTS "inventory_import"(
+"itemcode" TEXT, "productname" TEXT);
+CREATE TABLE IF NOT EXISTS "hourly_import"(
+"000001" TEXT, "2021-08-07" TEXT, "10" TEXT, "20.000" TEXT,
+ "960.00" TEXT, "834.80000" TEXT);
+CREATE TABLE tentative_revenue ("itemcode" TEXT, "daydate" TEXT, "timehour" TEXT, "quantity" TEXT, sumsell NOT NULL DEFAULT 0, sumcost NOT NULL DEFAULT 0, PRIMARY KEY (itemcode, daydate, timehour));
+CREATE TABLE IF NOT EXISTS "tentative_revenue_import"(
+"productcode" TEXT, "daydate" TEXT, "timehour" TEXT, "qty" TEXT,
+ "sumsell" TEXT, "sumcost" TEXT);
 CREATE INDEX product_id ON hourly (itemcode);
 CREATE INDEX product_id_with_date ON hourly (itemcode,daydate);
 CREATE INDEX product_id_with_date_and_hour ON hourly (itemcode,daydate,timehour);
 CREATE INDEX updated_dates ON hourly(daydate);
-CREATE INDEX hourly_import_comparison ON hourly_import(itemcode, daydate, timehour);
 CREATE INDEX cost_purchase_itemcode ON cost_purchase(itemcode);
+CREATE INDEX product_id_with_date_and_hour_tentative_revenue ON tentative_revenue (itemcode,daydate,timehour);
 CREATE VIEW dates as WITH RECURSIVE day(x) as (VALUES(date('2019-01-01')) UNION ALL SELECT date(x, '+1 day') FROM day WHERE x<date('now')) SELECT x from day
 /* dates(x) */;
 CREATE VIEW cnt AS WITH RECURSIVE cnta(x) as (SELECT 0 UNION ALL SELECT x+1 FROM cnta WHERE x < 1000) SELECT x FROM cnta
@@ -31,9 +41,9 @@ CREATE VIEW last_imported AS SELECT max(daydate) FROM hourly
 CREATE TRIGGER hourly_changes_logger BEFORE UPDATE ON hourly FOR EACH ROW BEGIN INSERT INTO hourly_changes VALUES (date()||'T'||time(), OLD.itemcode, OLD.daydate, OLD.timehour, OLD.quantity, OLD.quantity - NEW.quantity); END;
 CREATE VIEW hourly_existing_entries AS SELECT itemcode, daydate, timehour FROM hourly
 /* hourly_existing_entries(itemcode,daydate,timehour) */;
-CREATE VIEW hourly_import_existing_entries AS SELECT itemcode, daydate, timehour FROM hourly_import
-/* hourly_import_existing_entries(itemcode,daydate,timehour) */;
-CREATE VIEW zeroed_out_on_import AS SELECT itemcode, daydate, timehour FROM hourly EXCEPT SELECT itemcode, daydate, timehour FROM hourly_import
-/* zeroed_out_on_import(itemcode,daydate,timehour) */;
+CREATE VIEW hourly_import_existing_entries AS SELECT itemcode, daydate, timehour FROM hourly_import;
+CREATE VIEW zeroed_out_on_import AS SELECT itemcode, daydate, timehour FROM hourly EXCEPT SELECT itemcode, daydate, timehour FROM hourly_import;
 CREATE VIEW everything_itemcode_in_hourly AS SELECT DISTINCT itemcode FROM hourly
 /* everything_itemcode_in_hourly(itemcode) */;
+CREATE VIEW t_sumrev AS SELECT itemcode, sum(sumsell) AS cumulativesell, sum(sumcost) AS cumulativecost FROM hourly GROUP BY itemcode
+/* t_sumrev(itemcode,cumulativesell,cumulativecost) */;
