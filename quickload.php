@@ -14,6 +14,7 @@ var AnalyticsCache = new Map();
 var ToDisplay = "";
 var Displaying = "";
 var Clock = null;
+var data_with_analytics=[];
 function updateSelected(e){
 	ToDisplay=e.target.value;
 }
@@ -44,7 +45,7 @@ async function displaySelected(){
 				json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
 			}
 			not_in_cache = json_filtered.filter(a => {return !DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE)});
-			in_cache = json_filtered.filter(a => {return !(!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE))});
+			in_cache = json_filtered.filter(a => {return true; !(!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE))});
 			console.log(not_in_cache);
 			console.log(in_cache);
 			var dump=json_filtered;
@@ -56,7 +57,8 @@ async function displaySelected(){
 			var data_fetched = JSON.parse(json_data);
 			data=Array.from(data_fetched);
 			in_cache.forEach(x => data.push(DataCache.get(x.PLU_CODE)));
-			var data_with_analytics=[];
+			//var data_with_analytics=[];
+			data_with_analytics=[];
 			//console.log(data);
 			for(var i1 in analytics_fetched){
 				try{

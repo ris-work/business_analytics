@@ -47,7 +47,7 @@ async function displaySelected(){
 				json_filtered = json_pl.filter(a => a.PLU_DESC.includes(il));
 			}
 			not_in_cache = json_filtered.filter(a => {return !DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE)});
-			in_cache = json_filtered.filter(a => {return !(!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE))});
+			in_cache = json_filtered.filter(a => {return true; !(!DataCache.has(a.PLU_CODE) || !AnalyticsCache.has(a.PLU_CODE))});
 			console.log(not_in_cache);
 			console.log(in_cache);
 			var dump=json_filtered;
