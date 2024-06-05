@@ -231,16 +231,19 @@ require_once("/etc/auth.php");
 $dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 //var_dump($IDs);
 //$dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+$t_q1_start = microtime(true);
 $t = $dbh->beginTransaction();
 //$stmt_sql = $dbh->prepare("SELECT sih_current.itemcode AS PLU_CODE, desc AS PLU_DESC, sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV, selling.sell AS PLU_SELL, sih_current.sih AS SIH, cost_purchase.cost AS cost FROM sih_current LEFT JOIN selling ON selling.itemcode = sih_current.itemcode LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode ");
 //$stmt_sql = $dbh->prepare("SELECT sih_current.itemcode AS PLU_CODE, desc AS PLU_DESC, sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV, coalesce(selling.sell, sih_current.sell/sih_current.sih) AS PLU_SELL, sih_current.sih AS SIH, cost_purchase.cost AS cost FROM sih_current LEFT JOIN selling ON selling.itemcode = sih_current.itemcode LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode ");
-$stmt_sql = $dbh->prepare("SELECT sih_current.itemcode AS PLU_CODE, desc AS PLU_DESC, sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV, coalesce(latestsell.asell, selling.sell, sih_current.sell/sih_current.sih) AS PLU_SELL, sih_current.sih AS SIH, coalesce(cost_purchase.cost, latestsell.acost) AS cost FROM sih_current LEFT JOIN selling ON selling.itemcode = sih_current.itemcode LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode LEFT JOIN (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly) sales JOIN (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode) maxdates ON maxdates.maxdate = sales.daydate AND maxdates.itemcode = sales.itemcode) GROUP BY sales.itemcode) latestsell ON latestsell.itemcode = sih_current.itemcode");
+$stmt_sql = $dbh->prepare("SELECT sih_current.itemcode AS PLU_CODE, desc AS PLU_DESC, sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV, (iif(iif(latestsell.asell > 0, latestsell.asell, selling.sell) > 0, iif(latestsell.asell > 0, latestsell.asell, selling.sell), sih_current.sell/sih_current.sih)) AS PLU_SELL, sih_current.sih AS SIH, coalesce(iif(cost_purchase.cost > 0, cost_purchase.cost, latestsell.acost), 'UNKNOWN') AS cost FROM sih_current LEFT JOIN selling ON selling.itemcode = sih_current.itemcode LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode LEFT JOIN (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly) sales JOIN (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode) maxdates ON maxdates.maxdate = sales.daydate AND maxdates.itemcode = sales.itemcode) GROUP BY sales.itemcode) latestsell ON latestsell.itemcode = sih_current.itemcode");
 $stmt = $stmt_sql->execute();
 $cur_data=$stmt_sql->fetchAll();
 $dbh->commit();
 //var_dump($past_data);
 $response = $cur_data;
 $response_dec = $response ;// json_decode($response);
+$t_q1_end = microtime(true);
+$t_q2_start = microtime(true);
 $tlat = $dbh->beginTransaction();
 $stmt_sql_tlat = $dbh->prepare("SELECT max(daydate) AS last_updated FROM hourly");
 $stmt_tlat = $stmt_sql_tlat->execute();
@@ -251,6 +254,7 @@ $stmta_sql = $dbh->prepare("SELECT ifnull(S_D60, 0) AS S_D60, ifnull(S_D30, 0) A
 $stmta = $stmta_sql->execute();
 $past_data=$stmta_sql->fetchAll();
 $dbh->commit();
+$t_q2_end = microtime(true);
 echo "<script>var list = ".json_encode(json_encode($response))."; list_p = JSON.parse((list));</script>";
 echo "<script>var lista = ".json_encode(json_encode($past_data))."; list_a = JSON.parse((lista));</script>";
 //var_dump($response);
@@ -299,7 +303,11 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 </table>
 <?php
 //echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
- */?>
+ */
+$t_q1_diff_ms = ($t_q1_end - $t_q1_start)*1000;
+$t_q2_diff_ms = ($t_q2_end - $t_q2_start)*1000;
+echo "Took $t_q1_diff_ms milliseconds for query 1, $t_q2_diff_ms for query 2";
+?>
 </details>
 </body>
 </html>

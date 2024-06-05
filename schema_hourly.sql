@@ -46,3 +46,4 @@ CREATE VIEW everything_itemcode_in_hourly AS SELECT DISTINCT itemcode FROM hourl
 CREATE VIEW t_sumrev AS SELECT itemcode, sum(sumsell) AS cumulativesell, sum(sumcost) AS cumulativecost FROM hourly GROUP BY itemcode
 /* t_sumrev(itemcode,cumulativesell,cumulativecost) */;
 CREATE TRIGGER hourly_changes_logger BEFORE UPDATE ON hourly FOR EACH ROW BEGIN INSERT INTO hourly_changes VALUES (date()||'T'||time(), OLD.itemcode, OLD.daydate, OLD.timehour, OLD.quantity, OLD.quantity - NEW.quantity); END;
+CREATE TABLE full_inventory_import (itemcode INT, sell REAL, cost REAL, PRIMARY KEY (itemcode)) STRICT;

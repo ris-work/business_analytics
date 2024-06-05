@@ -202,6 +202,10 @@ function displayChart(){
 		}
 }
 )
+		addEventListener('load', function(){document.getElementById('chart_salesbyday').addEventListener('click', function(e){
+				const rec=daily_sales_by_day.getElementsAtEventForMode(e, 'x', {intersect:false}, true);
+				console.log(rec);
+		})});
 	var daily_sales_by_hour = new Chart(document.getElementById('chart_salesbyhour'),
 {
 	type: 'bar',
