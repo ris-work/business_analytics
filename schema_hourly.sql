@@ -36,6 +36,7 @@ CREATE INDEX product_id_with_date_and_hour ON hourly (itemcode,daydate,timehour)
 CREATE INDEX updated_dates ON hourly(daydate);
 CREATE INDEX full_inventory_current_covering ON full_inventory_current(itemcode, sell, cost);
 CREATE INDEX sih_cast_covering ON sih_current(itemcode, desc, sih, cost, sell, cast(itemcode as int));
+CREATE INDEX hourly_index_for_trends ON hourly(itemcode, daydate, quantity);
 CREATE VIEW dates as WITH RECURSIVE day(x) as (VALUES(date('2019-01-01')) UNION ALL SELECT date(x, '+1 day') FROM day WHERE x<date('now')) SELECT x from day
 /* dates(x) */;
 CREATE VIEW cnt AS WITH RECURSIVE cnta(x) as (SELECT 0 UNION ALL SELECT x+1 FROM cnta WHERE x < 1000) SELECT x FROM cnta
