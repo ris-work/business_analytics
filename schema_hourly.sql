@@ -29,6 +29,8 @@ CREATE TABLE hourly ("itemcode" TEXT, "daydate" TEXT, "timehour" TEXT, "quantity
 CREATE TABLE IF NOT EXISTS "full_inventory_current_import"(
 "itemcode" TEXT, "sell" TEXT, "cost" TEXT);
 CREATE TABLE full_inventory_current (itemcode INT, sell REAL, cost REAL, PRIMARY KEY (itemcode)) STRICT;
+CREATE TABLE sih_history(datetime TEXT NOT NULL, itemcode INT NOT NULL, desc TEXT, sih INT, cost REAL, sell REAL, PRIMARY KEY (datetime, itemcode)) STRICT;
+CREATE TABLE full_inventory_history (datetime TEXT NOT NULL, itemcode INT NOT NULL, sell REAL, cost REAL, primary key(datetime, itemcode)) STRICT;
 CREATE INDEX cost_purchase_itemcode ON cost_purchase(itemcode);
 CREATE INDEX sih_current_description_sih ON sih_current(itemcode, desc, sih);
 CREATE INDEX tentative_revenue_everything ON tentative_revenue(itemcode, daydate, timehour, sumsell, sumcost);
@@ -54,7 +56,6 @@ CREATE VIEW everything_itemcode_in_hourly AS SELECT DISTINCT itemcode FROM hourl
 CREATE VIEW t_sumrev AS SELECT itemcode, sum(sumsell) AS cumulativesell, sum(sumcost) AS cumulativecost FROM hourly GROUP BY itemcode
 /* t_sumrev(itemcode,cumulativesell,cumulativecost) */;
 CREATE TRIGGER hourly_changes_logger BEFORE UPDATE ON hourly FOR EACH ROW BEGIN INSERT INTO hourly_changes VALUES (date()||'T'||time(), OLD.itemcode, OLD.daydate, OLD.timehour, OLD.quantity, OLD.quantity - NEW.quantity); END;
-CREATE TABLE sih_history(datetime TEXT NOT NULL, itemcode INT NOT NULL, desc TEXT, sih INT, cost REAL, sell REAL, PRIMARY KEY (datetime, itemcode)) STRICT;
-CREATE TABLE full_inventory_history (datetime TEXT NOT NULL, itemcode INT NOT NULL, sell REAL, cost REAL, primary key(datetime, itemcode)) STRICT;
 CREATE TRIGGER full_inventory_history_logger AFTER UPDATE ON full_inventory_current FOR EACH ROW WHEN OLD.sell <> NEW.sell OR OLD.cost <> NEW.cost BEGIN INSERT INTO full_inventory_history VALUES (datetime(), OLD.itemcode, OLD.sell, OLD.cost); END;
 CREATE TRIGGER sih_history_logger AFTER UPDATE ON sih_current FOR EACH ROW WHEN OLD.sih <> NEW.sih OR OLD.sell <> NEW.sell OR OLD.cost <> NEW.cost BEGIN INSERT INTO sih_history VALUES (datetime(), cast(OLD.itemcode as int), "", cast(OLD.sih AS INT), cast(OLD.cost AS REAL), cast(OLD.sell AS REAL)); END;
+CREATE INDEX hourly_index_for_trends_replaceme ON hourly(daydate, itemcode, quantity);
