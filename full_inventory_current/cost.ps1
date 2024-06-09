@@ -1,4 +1,5 @@
 . /saru/auth.ps1
+echo "pwd: $(pwd)"
 $query = Get-Content query_cost.sql
 #$query_t = Get-Content sih_t.sql
 Get-Date -Format "o"

@@ -34,6 +34,7 @@ pwsh cost.ps1
 sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
 rm cost.csv
 cd ..
+cd full_inventory_current
 echo full_inventory_current
 pwsh cost.ps1
 sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"

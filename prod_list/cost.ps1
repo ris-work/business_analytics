@@ -1,3 +1,4 @@
+echo "pwd: $(pwd)"
 . /saru/auth.ps1
 $query = Get-Content query_cost.sql
 #$query_t = Get-Content sih_t.sql

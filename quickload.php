@@ -33,9 +33,10 @@ async function displaySelected(){
 			json_p.filter();
 		}
 		else{
+			let ctr=0;
 			il = input.toLowerCase();
 			if(starts_with){
-				json_filtered = json_pl.filter(a => a.PLU_DESC.startsWith(il));
+				json_filtered = json_pl.filter(a => (a.PLU_DESC.startsWith(il)));
 			}
 			else if(abjad){
 				iln = normalize(il);
