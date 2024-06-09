@@ -1,3 +1,4 @@
+echo "pwd: $(pwd)"
 . /saru/auth.ps1
 $query = Get-Content query_hourly.sql
 Get-Date -Format "o"
