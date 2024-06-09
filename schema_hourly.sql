@@ -37,6 +37,8 @@ CREATE INDEX updated_dates ON hourly(daydate);
 CREATE INDEX full_inventory_current_covering ON full_inventory_current(itemcode, sell, cost);
 CREATE INDEX sih_cast_covering ON sih_current(itemcode, desc, sih, cost, sell, cast(itemcode as int));
 CREATE INDEX hourly_index_for_trends ON hourly(itemcode, daydate, quantity);
+CREATE INDEX selling_covering ON selling(itemcode, sell);
+CREATE INDEX cost_purchase_covering ON cost_purchase(itemcode, runno, date, cost);
 CREATE VIEW dates as WITH RECURSIVE day(x) as (VALUES(date('2019-01-01')) UNION ALL SELECT date(x, '+1 day') FROM day WHERE x<date('now')) SELECT x from day
 /* dates(x) */;
 CREATE VIEW cnt AS WITH RECURSIVE cnta(x) as (SELECT 0 UNION ALL SELECT x+1 FROM cnta WHERE x < 1000) SELECT x FROM cnta
@@ -52,3 +54,7 @@ CREATE VIEW everything_itemcode_in_hourly AS SELECT DISTINCT itemcode FROM hourl
 CREATE VIEW t_sumrev AS SELECT itemcode, sum(sumsell) AS cumulativesell, sum(sumcost) AS cumulativecost FROM hourly GROUP BY itemcode
 /* t_sumrev(itemcode,cumulativesell,cumulativecost) */;
 CREATE TRIGGER hourly_changes_logger BEFORE UPDATE ON hourly FOR EACH ROW BEGIN INSERT INTO hourly_changes VALUES (date()||'T'||time(), OLD.itemcode, OLD.daydate, OLD.timehour, OLD.quantity, OLD.quantity - NEW.quantity); END;
+CREATE TABLE sih_history(datetime TEXT NOT NULL, itemcode INT NOT NULL, desc TEXT, sih INT, cost REAL, sell REAL, PRIMARY KEY (datetime, itemcode)) STRICT;
+CREATE TABLE full_inventory_history (datetime TEXT NOT NULL, itemcode INT NOT NULL, sell REAL, cost REAL, primary key(datetime, itemcode)) STRICT;
+CREATE TRIGGER full_inventory_history_logger AFTER UPDATE ON full_inventory_current FOR EACH ROW WHEN OLD.sell <> NEW.sell OR OLD.cost <> NEW.cost BEGIN INSERT INTO full_inventory_history VALUES (datetime(), OLD.itemcode, OLD.sell, OLD.cost); END;
+CREATE TRIGGER sih_history_logger AFTER UPDATE ON sih_current FOR EACH ROW WHEN OLD.sih <> NEW.sih OR OLD.sell <> NEW.sell OR OLD.cost <> NEW.cost BEGIN INSERT INTO sih_history VALUES (datetime(), cast(OLD.itemcode as int), "", cast(OLD.sih AS INT), cast(OLD.cost AS REAL), cast(OLD.sell AS REAL)); END;
