@@ -7,6 +7,20 @@ src: local('IBM Courier'), url("font-og-courier/fonts/OGCourier-Bold.otf") forma
 font-family: "Cousine";
 src: local('Cousine'), url("fonts/apache/cousine/Cousine-Regular.ttf") format("truetype");
 }
+body {
+  	width: 100vw;
+  	height: 100vh;
+padding:0;
+margin:0;
+}
+
+pre {
+margin:0;
+padding:0;
+  	background: repeating-linear-gradient(to bottom, #ffd0d0ff 0em, #ffd0d0ff 1.1em, #8888ffff 1.1em, #8888ffff 1.2em, #a0eea0ff 1.2em, #a0eea0ff 2.3em, #ff8888ff 2.3em,  #ff8888ff 2.4em, #c0c0ffff 2.4em, #c0c0ffff 3.5em, #0000ff30 3.5em, #88aa88ff 3.5em, #88aa88ff 3.6em);
+    line-height: 1.2em;
+    filter: hue-rotate(270deg) grayscale(15%);
+}
 </style>
 <pre style="font-family: 'Cousine', 'IBM Courier', 'Consolas', 'Lucida', MONOSPACE; font-weight: 500; color: indigo">
 <?php
