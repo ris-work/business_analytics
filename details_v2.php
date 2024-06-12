@@ -18,12 +18,13 @@ curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 $response = json_decode(curl_exec($req));
 //var_dump($response);
-if ($response && !property_exists($response, "Message")){
+if (true || $response && !property_exists($response, "Message")){
 $BASEURL_ANALYTICS = "http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
 $req_analytics = curl_init();
 curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE");
 curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req_analytics, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
+if($response==null){$response = new class{public $PLU_CODE = "";}; $response->PLU_CODE=$_GET["id"];};
 $response_analytics = json_decode(curl_exec($req_analytics));
 $SIH = $response_analytics->SIH;
 $state_of_things="too-much";
@@ -32,8 +33,8 @@ $state_of_things="too-much";
 $dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t = $dbh->beginTransaction();
 //$stmt_sql = $dbh->prepare("SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?");
-$stmt_sql = $dbh->prepare("SELECT trendsfrommindate.date, closestsihbydate.sih AS SIH, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) AS s15, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS s30, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 59 PRECEDING AND CURRENT ROW) AS s60 FROM (SELECT total(quantity) as dailyqty, x as date, itemcode FROM dates LEFT JOIN (SELECT daydate, total(quantity) AS quantity, itemcode AS itemcode FROM hourly WHERE itemcode=? GROUP BY daydate) daily ON dates.x = daily.daydate WHERE x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) GROUP BY x ORDER BY x) trendsfrommindate LEFT JOIN (SELECT x AS date, sih FROM (SELECT itemcode, x, min(datetime) AS closestpointinfuture FROM (SELECT itemcode, futures.x, datetime FROM (SELECT dates.x AS x, datetime, itemcode, sih FROM(SELECT datetime, itemcode, sih FROM (SELECT datetime, itemcode, sih FROM sih_history UNION SELECT substr(datetime('now'), 1, 16) as datetime, CAST(itemcode AS int) AS itemcode, CAST(sih AS int) FROM sih_current) WHERE itemcode=? ORDER BY datetime) RIGHT JOIN dates ON datetime > dates.x ORDER BY dates.x DESC) futures JOIN dates ON dates.x = futures.x ORDER BY dates.x) GROUP BY x) nearestfuture JOIN (SELECT * FROM (SELECT datetime, itemcode, sih FROM sih_history UNION SELECT substr(datetime('now'), 1, 16) as datetime, CAST(itemcode AS int) AS itemcode, CAST(sih AS int) FROM sih_current) WHERE itemcode=? ORDER BY datetime) history ON history.datetime = nearestfuture.closestpointinfuture ORDER BY datetime) closestsihbydate ON trendsfrommindate.date = closestsihbydate.date LEFT JOIN (SELECT itemcode, date, sum(sumsell)/sum(quantity), sum(sumcost)/sum(quantity), closestpastdatesfordates.closestpast FROM (SELECT dates.x AS date, closestpast FROM dates JOIN ( SELECT max(availabledate) AS closestpast, x FROM (SELECT * FROM dates WHERE x>date('now', '-366 days')) LEFT JOIN (SELECT daydate AS availabledate FROM hourly WHERE itemcode=?) availabledates ON availabledates.availabledate < x GROUP BY x) pasts ON pasts.x = dates.x) closestpastdatesfordates RIGHT JOIN hourly ON hourly.daydate = closestpastdatesfordates.closestpast GROUP BY date) pastcostsell ON pastcostsell.date=trendsfrommindate.date");
-$stmt = $stmt_sql->execute([$response->PLU_CODE, $response->PLU_CODE, $response->PLU_CODE, $response->PLU_CODE]);
+$stmt_sql = $dbh->prepare("SELECT trendsfrommindate.date, closestsihbydate.sih AS SIH, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) AS s15, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS s30, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 59 PRECEDING AND CURRENT ROW) AS s60, avgcost, avgsell FROM (SELECT total(quantity) as dailyqty, x as date, itemcode FROM dates LEFT JOIN (SELECT daydate, total(quantity) AS quantity, itemcode AS itemcode FROM hourly WHERE itemcode=? GROUP BY daydate) daily ON dates.x = daily.daydate WHERE x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) GROUP BY x ORDER BY x) trendsfrommindate LEFT JOIN (SELECT x AS date, sih FROM (SELECT itemcode, x, min(datetime) AS closestpointinfuture FROM (SELECT itemcode, futures.x, datetime FROM (SELECT dates.x AS x, datetime, itemcode, sih FROM(SELECT datetime, itemcode, sih FROM (SELECT datetime, itemcode, sih FROM sih_history UNION SELECT substr(datetime('now'), 1, 16) as datetime, CAST(itemcode AS int) AS itemcode, CAST(sih AS int) FROM sih_current) WHERE itemcode=? ORDER BY datetime) RIGHT JOIN dates ON datetime > dates.x ORDER BY dates.x DESC) futures JOIN dates ON dates.x = futures.x ORDER BY dates.x) GROUP BY x) nearestfuture JOIN (SELECT * FROM (SELECT datetime, itemcode, sih FROM sih_history UNION SELECT substr(datetime('now'), 1, 16) as datetime, CAST(itemcode AS int) AS itemcode, CAST(sih AS int) FROM sih_current) WHERE itemcode=? ORDER BY datetime) history ON history.datetime = nearestfuture.closestpointinfuture ORDER BY datetime) closestsihbydate ON trendsfrommindate.date = closestsihbydate.date LEFT JOIN (SELECT closestpastdatesfordates.itemcode, date, sum(sumsell)/sum(quantity) AS avgsell, sum(sumcost)/sum(quantity) AS avgcost, closestpastdatesfordates.closestpast FROM (SELECT itemcode, dates.x AS date, closestpast FROM dates JOIN ( SELECT itemcode, max(availabledate) AS closestpast, x FROM (SELECT * FROM dates WHERE x>date('now', '-366 days')) LEFT JOIN (SELECT itemcode, daydate AS availabledate FROM hourly WHERE itemcode=?) availabledates ON availabledates.availabledate < x GROUP BY x) pasts ON pasts.x = dates.x) closestpastdatesfordates RIGHT JOIN hourly ON hourly.itemcode = closestpastdatesfordates.itemcode AND hourly.daydate = closestpastdatesfordates.closestpast GROUP BY date) pastcostsell ON pastcostsell.date=trendsfrommindate.date");
+$stmt = $stmt_sql->execute([$response->PLU_CODE, $response->PLU_CODE, $response->PLU_CODE, $response->PLU_CODE, $response->PLU_CODE]);
 $past_data=$stmt_sql->fetchAll();
 $dbh->commit();
 $dbh_cost = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
@@ -57,6 +58,8 @@ $dbh_cost_grn->commit();
 var avgSales15 = [];
 var avgSales30 = [];
 var avgSales60 = [];
+var avgCost = [];
+var avgSell = [];
 var SIH = [];
 var deltaSales15 = [];
 var deltaSales30 = [];
@@ -65,6 +68,8 @@ var dates=[];
 for (var i=0; i<past_data.length-1; i++){avgSales15.push(past_data[i]['s15']/15)}
 for (var i=0; i<past_data.length-1; i++){avgSales30.push(past_data[i]['s30']/30)}
 for (var i=0; i<past_data.length-1; i++){avgSales60.push(past_data[i]['s60']/60)}
+for (var i=0; i<past_data.length-1; i++){avgCost.push(past_data[i]['avgcost'] ?? 0)}
+for (var i=0; i<past_data.length-1; i++){avgSell.push(past_data[i]['avgsell'] ?? 0)}
 for (var i=0; i<past_data.length-1; i++){SIH.push(past_data[i]['SIH'])}
 for (var i=0; i<past_data.length-1; i++){deltaSales15.push(past_data[i]['s15']- past_data[i+1]['s15'])}
 for (var i=0; i<past_data.length-1; i++){deltaSales30.push(past_data[i]['s30']- past_data[i+1]['s30'])}
@@ -105,7 +110,9 @@ function displayChart(){
 		labels: dates,
 		datasets: [{label: "Daily Average Sales (15d Average)", data: avgSales15, tenstion: 0.8, cubicInterpolationMode: 'monotone'},
 			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone'},
-			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone'}]
+			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone'},
+			{label: "Closest past average cost [360days+ only]", data: avgCost, tension: 0.4, cubicInterpolationMode: 'monotone'},
+			{label: "Closest past average selling price [360d+ only]", data: avgSell, tension: 0.4, cubicInterpolationMode: 'monotone'}]
 	},
 		options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}}, 
 				x: {grid: {color: "#077"}}},
