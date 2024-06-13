@@ -109,11 +109,11 @@ function displayChart(){
 	type: 'line',
 	data: {
 		labels: dates,
-		datasets: [{label: "Daily Average Sales (15d Average)", data: avgSales15, tenstion: 0.8, cubicInterpolationMode: 'monotone'},
-			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone'},
-			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone'},
-			{label: "Closest past average cost [360days+ only]", data: avgCost, tension: 0.4, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5},
-			{label: "Closest past average selling price [360d+ only]", data: avgSell, tension: 0.4, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5}]
+		datasets: [{label: "Daily Average Sales (15d Average)", data: avgSales15, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderWidth: 1},
+			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone', borderWidth: 1},
+			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone', borderWidth: 1},
+			{label: "Closest past average cost [360days+ only]", data: avgCost, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5, borderWidth: 2},
+			{label: "Closest past average selling price [360d+ only]", data: avgSell, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5, borderWidth: 2}]
 	},
 			options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}, y1: {beginAtZero: true}}, 
 		y1: {type: 'linear', display: true, position: 'right', grid: {drawOnChartArea: false}},
