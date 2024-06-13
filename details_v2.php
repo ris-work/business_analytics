@@ -109,9 +109,9 @@ function displayChart(){
 	type: 'line',
 	data: {
 		labels: dates,
-		datasets: [{label: "Daily Average Sales (15d Average)", data: avgSales15, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderWidth: 1},
-			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone', borderWidth: 1},
-			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone', borderWidth: 1},
+		datasets: [{label: "Daily Average Sales (15d Average)", data: avgSales15, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderWidth: 1, order: 11},
+			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone', borderWidth: 1, order: 12},
+			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone', borderWidth: 1, order: 13},
 			{label: "Closest past average cost [360days+ only]", data: avgCost, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5, borderWidth: 2},
 			{label: "Closest past average selling price [360d+ only]", data: avgSell, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5, borderWidth: 2}]
 	},
@@ -127,7 +127,7 @@ function displayChart(){
 	type: 'line',
 	data: {
 		labels: dates,
-		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000"}]
+		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000", pointRadius: 0.5, borderRadius: 1}]
 	},
 		options: {scales: {y: {beginAtZero: true, grid: {color: "#000"}, ticks: {color: "#000"}}, 
 				x: {grid: {color: "#000"}, ticks: {color: "#000"}}},
@@ -226,6 +226,6 @@ else if($response==null){
 </div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
 <a href="<?php echo "moredetails.php?id=$ID" ?>"><button class="moredetails"> <img  src="icons/clock.svg" style="filter: grayscale(100%) opacity(50%);height: max(6vh, 6vw); width:max(6vh, 6vw);"></button></a>
-<button class="graph" onclick="document.getElementById('chart_sales').style.visibility='visible'"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
+<button class="graph" onclick="(function(){let e = document.getElementById('chart_sales'); e.style.visibility='visible', e.scrollIntoView({behavior: 'smooth'});})()"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
 </body>
 </html>
