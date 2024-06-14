@@ -225,7 +225,7 @@ else if($response==null){
 <canvas id="chart_sales" width="795" height="650"></canvas>
 </div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
-<a href="<?php echo "moredetails.php?id=$ID" ?>"><button class="moredetails"> <img  src="icons/clock.svg" style="filter: grayscale(100%) opacity(50%);height: max(6vh, 6vw); width:max(6vh, 6vw);"></button></a>
+<a href="<?php echo "moredetails.php?id=$ID" ?>"><button class="moredetails"> <img  src="icons/clock.svg" style="filter: grayscale(100%) opacity(50%);height: max(6vh, 6vw); width:max(6vh, 6vw);;"></button></a>
 <button class="graph" onclick="(function(){let e = document.getElementById('chart_sales'); e.style.visibility='visible', e.scrollIntoView({behavior: 'smooth'});})()"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
 </body>
 </html>

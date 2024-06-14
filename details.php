@@ -216,7 +216,7 @@ else if($response==null){
 </div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
 <a href="<?php echo "moredetails.php?id=$ID" ?>"><button class="moredetails"> <img  src="icons/clock.svg" style="filter: grayscale(100%) opacity(50%);height: max(6vh, 6vw); width:max(6vh, 6vw);"></button></a>
-<a href="<?php echo "details_v2.php?id=$ID" ?>"><button class="moredetails"><span style="color: black; filter: grayscale(100%) opacity(50%);height: max(4em, 6vh, 6vw); width:max(4em, 6vh, 6vw); size:max(4em, 6vh, 6vw); font-size: xxx-large; vertical-align: bottom">|v2|</span></button></a>
+<a href="<?php echo "details_v2.php?id=$ID" ?>"><button class="moredetails"><span style="color: black; filter: grayscale(100%) opacity(50%);height: max(4em, 6vh, 6vw); width:max(4em, 6vh, 6vw); size:max(4em, 6vh, 6vw); font-size: max(5vh, 5vw); vertical-align: bottom; border: 4px solid black;">|v2|</span></button></a>
 <button class="graph" onclick="document.getElementById('chart_sales').style.visibility='visible'"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
 </body>
 </html>
