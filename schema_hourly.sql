@@ -67,3 +67,5 @@ CREATE TRIGGER full_inventory_history_logger AFTER UPDATE ON full_inventory_curr
 CREATE TRIGGER sih_history_logger AFTER UPDATE ON sih_current FOR EACH ROW WHEN OLD.sih <> NEW.sih OR OLD.sell <> NEW.sell OR OLD.cost <> NEW.cost BEGIN INSERT INTO sih_history VALUES (datetime(), cast(OLD.itemcode as int), "", cast(OLD.sih AS INT), cast(OLD.cost AS REAL), cast(OLD.sell AS REAL)); END;
 CREATE VIEW full_inventory_history_latest AS SELECT latest.itemcode, cost, sell FROM (SELECT itemcode, max(datetime) AS dt FROM full_inventory_history WHERE cost <> 0 AND sell <> 0 GROUP BY itemcode) latest JOIN full_inventory_history history ON latest.itemcode = history.itemcode AND latest.dt = history.datetime
 /* full_inventory_history_latest(itemcode,cost,sell) */;
+CREATE TRIGGER sih_history_desc_logger AFTER UPDATE ON sih_current FOR EACH ROW WHEN OLD.desc <> NEW.desc BEGIN INSERT INTO sih_history_desc VALUES (datetime(), cast(OLD.itemcode AS int), OLD.desc); END;
+CREATE TABLE sih_history_desc(datetime TEXT, itemcode INT, desc TEXT) STRICT;
