@@ -62,16 +62,19 @@ var avgSales60 = [];
 var avgCost = [];
 var avgSell = [];
 var SIH = [];
+var SIH_dates = [];
 var deltaSales15 = [];
 var deltaSales30 = [];
 var deltaSales60 = [];
+var sih_beginning = '2024-06-01';
 var dates=[];
 for (var i=0; i<past_data.length-1; i++){avgSales15.push(past_data[i]['s15']/15)}
 for (var i=0; i<past_data.length-1; i++){avgSales30.push(past_data[i]['s30']/30)}
 for (var i=0; i<past_data.length-1; i++){avgSales60.push(past_data[i]['s60']/60)}
 for (var i=0; i<past_data.length-1; i++){avgCost.push(past_data[i]['avgcost'] ?? 0)}
 for (var i=0; i<past_data.length-1; i++){avgSell.push(past_data[i]['avgsell'] ?? 0)}
-for (var i=0; i<past_data.length-1; i++){SIH.push(past_data[i]['SIH'])}
+for (var i=0; i<past_data.length-1; i++){past_data[i]['date'] > sih_beginning ? SIH.push(past_data[i]['SIH']) : null}
+for (var i=0; i<past_data.length-1; i++){past_data[i]['date'] > sih_beginning ? SIH_dates.push(past_data[i]['date']): 0}
 for (var i=0; i<past_data.length-1; i++){deltaSales15.push(past_data[i]['s15']- past_data[i+1]['s15'])}
 for (var i=0; i<past_data.length-1; i++){deltaSales30.push(past_data[i]['s30']- past_data[i+1]['s30'])}
 for (var i=0; i<past_data.length-1; i++){deltaSales60.push(past_data[i]['s60']- past_data[i+1]['s60'])}
@@ -126,7 +129,7 @@ function displayChart(){
 {
 	type: 'line',
 	data: {
-		labels: dates,
+		labels: SIH_dates,
 		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000", pointRadius: 0.5, borderRadius: 1}]
 	},
 		options: {scales: {y: {beginAtZero: true, grid: {color: "#000"}, ticks: {color: "#000"}}, 
