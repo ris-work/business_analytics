@@ -8,8 +8,10 @@ font-family: "Cousine";
 src: local('Cousine'), url("fonts/apache/cousine/Cousine-Regular.ttf") format("truetype");
 }
 body {
-  	width: 100vw;
-  	height: 100vh;
+  	min-width: 100vw;
+  	min-height: 100vh;
+width: fit-content;
+height: fit-content;
 padding:0;
 margin:0;
 }
