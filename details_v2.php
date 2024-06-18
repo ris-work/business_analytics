@@ -122,7 +122,7 @@ function displayChart(){
 			{label: "Closest past average selling price [360d+ only]", data: avgSell, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5, borderWidth: 2}]
 	},
 			options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}, y1: {beginAtZero: true}}, 
-		y1: {type: 'linear', display: true, position: 'right', grid: {drawOnChartArea: false}},
+		y1: {type: 'linear', display: true, position: 'right', grid: {drawOnChartArea: false}, beginAtZero: true},
 				x: {grid: {color: "#077"}}},
 			responsive: false
 		}
