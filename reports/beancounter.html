@@ -1,18 +1,56 @@
 <html>
 		<head>
 				<link rel="stylesheet" type="text/css" href="node_modules/98.css/style.css" />
-				<style></style>
+				<style>
+body{
+		background: var(--surface);
+		display: flex;
+		align-items: center;
+		justify-content: space-evenly;
+		flex-wrap: wrap;
+		flex-direction: row;
+}
+legend {
+		font-family: "PIXELATED MS SANS SERIF", "COURIER NEW", MONOSPACE, "IBM Courier";
+}
+fieldset{
+width: fit-content;
+display: flex;
+flex-direction: column;
+flex-wrap: wrap;
+margin: auto;
+}
+.container{
+		min-width: 400px;
+		align-items: center;
+		text-align: center;
+}
+button{
+		width: -webkit-fill-available;
+		width: -moz-available;
+}
+				</style>
 				<title>Bean counting reports 🫘🧮</title>
 		</head>
 		<body>
-				<div>
+				<div class='container'>
 						<fieldset>
-						<a href="costhist.php"><button>Recent cost changes</button></a><br />
+								<legend>Cost/selling price changes</legend>
+								<a href="costhist.php"><button>Recent cost changes</button></a>
 						<a href="costchg.php"><button>Recent cost/sell changes</button></a>
 						</fieldset>
+				</div> 
+				<div class='container'>
+						<fieldset>
+								<legend>Zero stock</legend>
+						<a href="nolongerinstock.php"><button>Sorted by gross profit<br />No longer sold</button></a>
+						</fieldset>
 				</div>
-				<div>
-						<a href="nolongersold.php"><button>Sorted by gross profit<br />No longer sold</button></a>
+				<div class='container'>
+						<fieldset>
+								<legend>Name history</legend>
+						<a href="namehist.php"><button>Name history<br />Recent</button></a>
+						</fieldset>
 				</div>
 		</body>
 </html>
