@@ -148,8 +148,11 @@ function displayChart(){
 }
 </script>
 </head>
-<body>
+<body class="cached-details">
 <table class="named">
+<tr>
+<td colspan=2>This page loads cached data.<br/>You pressed the (O) link.</td>
+</tr>
 <tr>
 <th>Name</th>
 <td><?php echo $data_cost_grn[0]["desc"]; ?></td>

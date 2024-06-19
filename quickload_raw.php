@@ -131,6 +131,7 @@ function pretty_print_filtered(filtered){
 	heading_row.appendChild(generate_data_heading("S (30)"));
 	heading_row.appendChild(generate_data_heading("S (60)"));
 	heading_row.appendChild(generate_data_heading("MORE"));
+	heading_row.appendChild(generate_data_heading("(O)"));
 	heading_row_bottom = heading_row.cloneNode(true);
 	heading_row.className += " theader";
 	heading_row_bottom.className += " theader_b";
@@ -152,6 +153,7 @@ function generate_table_row(v){
 		row.appendChild(generate_stock_data_element((v.S_D30) < 0 ? 0 : v.S_D30));
 		row.appendChild(generate_stock_data_element((v.S_D60) <0 ? 0 : v.S_D60));
 		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE}`, "More"));
+		row.appendChild(generate_link_element(`details_v2.php?id=${v.PLU_CODE}`, "(O)"));
 		//if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
 		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
 		if(parseInt(v.SIH) <=parseInt(v.S_D15))row.className="dangerous";
