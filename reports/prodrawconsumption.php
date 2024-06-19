@@ -32,7 +32,6 @@ word-break: break-word;
 white-space: pre;
 overflow-x: scroll;
 border: 1px dashed black;
-border-collapse: collapse;
 vertical-align: baseline;
 padding: 0.5em;
 }
@@ -52,6 +51,8 @@ background: #666;
 color: white;
 font-size: 1.2em;
 text-align: center;
+border-left: 1px dashed #fff;
+border-right: 1px dashed #fff;
 }
 table{
 border-collapse: collapse;
