@@ -121,11 +121,26 @@ function displayChart(){
 			{label: "Daily Average Sales (30d Average)", data: avgSales30, tension: 0.4, cubicInterpolationMode: 'monotone', borderWidth: 1, order: 12},
 			{label: "Daily Average Sales (60d Average)", data: avgSales60, tension: 0.4, cubicInterpolationMode: 'monotone', borderWidth: 1, order: 13},
 			{label: "Average since starting", data: avgrun, tension: 1, cubicInterpolationMode: 'monotone', borderWidth: 0.5, order: 20},
-			{label: "Closest past average cost [360days+ only]", data: avgCost, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5, borderWidth: 2},
-			{label: "Closest past average selling price [360d+ only]", data: avgSell, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y1', pointRadius: 0.5, borderWidth: 2}]
+			]
 	},
 			options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}, y1: {beginAtZero: true}}, 
-		y1: {type: 'linear', display: true, position: 'right', grid: {drawOnChartArea: false}, beginAtZero: true},
+		y1: {type: 'linear', display: false, position: 'right', grid: {drawOnChartArea: false}, beginAtZero: true},
+				x: {grid: {color: "#077"}}},
+			responsive: false
+		}
+}
+)
+	var daily_sales = new Chart(document.getElementById('chart_prices'),
+{
+	type: 'line',
+	data: {
+		labels: dates,
+		datasets: [
+			{label: "Closest past average cost [360days+ only]", data: avgCost, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y', pointRadius: 0.5, borderWidth: 2},
+			{label: "Closest past average selling price [360d+ only]", data: avgSell, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y', pointRadius: 0.5, borderWidth: 2}]
+	},
+			options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}, y1: {beginAtZero: true}}, 
+		y1: {type: 'linear', display: false, position: 'right', grid: {drawOnChartArea: false}, beginAtZero: true},
 				x: {grid: {color: "#077"}}},
 			responsive: false
 		}
@@ -151,7 +166,7 @@ function displayChart(){
 <body class="cached-details">
 <table class="named">
 <tr>
-<td colspan=2>This page loads cached data.<br/>You pressed the (O) link.</td>
+<td colspan=2 style="">This page loads cached data. You pressed the (O) link. You might want to go back to go to an up-to-date version.</td>
 </tr>
 <tr>
 <th>Name</th>
@@ -244,8 +259,11 @@ else if($response==null){
 <div class="centered-container">
 <canvas id="chart_sales" width="795" height="650"></canvas>
 </div>
+<div class="centered-container">
+<canvas id="chart_prices" width="795" height="650"></canvas>
+</div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
 <a href="<?php echo "moredetails.php?id=$ID" ?>"><button class="moredetails"> <img  src="icons/clock.svg" style="filter: grayscale(100%) opacity(50%);height: max(6vh, 6vw); width:max(6vh, 6vw);;"></button></a>
-<button class="graph" onclick="(function(){let e = document.getElementById('chart_sales'); e.style.visibility='visible', e.scrollIntoView({behavior: 'smooth'});})()"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
+<button class="graph" onclick="(function(){let e = document.getElementById('chart_sales'); e.style.visibility='visible'; let f = document.getElementById('chart_prices'); f.style.visibility='visible'; e.scrollIntoView({behavior: 'smooth'});})()"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
 </body>
 </html>
