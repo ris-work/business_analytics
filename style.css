@@ -245,6 +245,12 @@ margin-left: 2%;
 	width: min(100vh, 100vw) !important; */
 	visibility:collapse;
 }
+#chart_prices {
+	mix-blend-mode: difference;
+	/* height: min(66vh, 66vw) !important;
+	width: min(100vh, 100vw) !important; */
+	visibility:collapse;
+}
 
 tr:nth-child(odd){
        background: white;
