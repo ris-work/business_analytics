@@ -14,6 +14,7 @@ width: fit-content;
 height: fit-content;
 padding:0;
 margin:0;
+background: #444;
 }
 
 pre {
@@ -22,6 +23,36 @@ padding:0;
   	background: repeating-linear-gradient(to bottom, #ffd0d0ff 0em, #ffd0d0ff 1.1em, #8888ffff 1.1em, #8888ffff 1.2em, #a0eea0ff 1.2em, #a0eea0ff 2.3em, #ff8888ff 2.3em,  #ff8888ff 2.4em, #c0c0ffff 2.4em, #c0c0ffff 3.5em, #0000ff30 3.5em, #88aa88ff 3.5em, #88aa88ff 3.6em);
     line-height: 1.2em;
     filter: hue-rotate(270deg) grayscale(15%);
+}
+
+td{
+max-width: 15em;
+word-break: break-word;
+white-space: pre;
+overflow-x: scroll;
+border: 1px dashed black;
+border-collapse: collapse;
+vertical-align: baseline;
+padding: 0.5em;
+}
+td:nth-child(odd){
+background: #cff;
+}
+tr:nth-child(odd){
+background: #fec;
+}
+tr:nth-child(even){
+background: #fff;
+}
+th{
+position: sticky;
+top: 0;
+background: #666;
+color: white;
+}
+table{
+border-collapse: collapse;
+margin: auto;
 }
 </style>
 <pre style="font-family: 'Cousine', 'IBM Courier', 'Consolas', 'Lucida', MONOSPACE; font-weight: 500; color: indigo">
