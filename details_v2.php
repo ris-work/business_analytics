@@ -141,6 +141,7 @@ function displayChart(){
 		}
 }
 )
+		document.getElementById("sells_every").innerHTML = `${(1/avgrun[avgrun.length-1]).toFixed(2)} workday(s)`;
 }
 </script>
 </head>
@@ -181,6 +182,12 @@ function displayChart(){
 <tr>
 <th>Cost<sup> (<?php echo substr($data_cost_grn[0]["date"], 0, 10); ?>)</sup><sup style="font-size: 0.25em">GRN (<?php echo $data_cost_grn[0]["runno"]; ?>)</sup></th>
 <td><?php echo number_format($data_cost_grn[0]["cost"], 2); ?><sup> gross <?php echo number_format(100*$response->PLU_SELL/$data_cost_grn[0]["cost"] - 100, 2); ?>%</sup></td>
+</tr>
+<tr>
+<td>Sells every:</td>
+<td>
+<span id="sells_every"></span>
+</td>
 </tr>
 </table>
 <details>
