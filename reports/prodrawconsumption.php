@@ -30,10 +30,11 @@ td{
 max-width: 15em;
 word-break: break-word;
 white-space: pre;
+overflow-x: clip;
 overflow-x: scroll;
 border: 1px dashed black;
 vertical-align: baseline;
-padding: 0.5em;
+padding: 0.5em !important;
 }
 td:nth-child(odd){
 background: #cff;
