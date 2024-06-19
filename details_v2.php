@@ -21,12 +21,13 @@ curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 if (true || $response && !property_exists($response, "Message")){
 $BASEURL_ANALYTICS = "http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
 $req_analytics = curl_init();
-curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE");
+//curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE");
 curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req_analytics, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
+$response=null;
 if($response==null){$response = new class{public $PLU_CODE = "";}; $response->PLU_CODE=$_GET["id"];};
 //$response_analytics = json_decode(curl_exec($req_analytics));
-$SIH = $response_analytics->SIH;
+//$SIH = $response_analytics->SIH;
 $state_of_things="too-much";
 //var_dump($response);
 //var_dump($response_analytics);
