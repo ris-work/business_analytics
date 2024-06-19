@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="node_modules/98.css/style.css" />
 <style>
 @font-face{
 font-family: "IBM Courier";
@@ -8,13 +9,13 @@ font-family: "Cousine";
 src: local('Cousine'), url("fonts/apache/cousine/Cousine-Regular.ttf") format("truetype");
 }
 body {
-  	min-width: 100vw;
-  	min-height: 100vh;
+  	min-width: 99vw;
+  	min-height: 99vh;
 width: fit-content;
 height: fit-content;
 padding:0;
-margin:0;
-background: #444;
+margin:auto;
+background: var(--surface);
 }
 
 pre {
@@ -49,6 +50,8 @@ position: sticky;
 top: 0;
 background: #666;
 color: white;
+font-size: 1.2em;
+text-align: center;
 }
 table{
 border-collapse: collapse;
