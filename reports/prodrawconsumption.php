@@ -39,6 +39,9 @@ padding: 0.5em !important;
 td:nth-child(odd){
 background: #cff;
 }
+tr:nth-child(5n+1){
+border-bottom: 2px solid rebeccapurple;
+}
 tr:nth-child(odd){
 background: #fec;
 }
