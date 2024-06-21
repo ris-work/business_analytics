@@ -285,7 +285,13 @@ function displayChart(){
 </table>
 <?php
 echo "<pre>" . json_encode($response, JSON_PRETTY_PRINT) . "</pre>";
-echo "<pre>" . json_encode($last, JSON_PRETTY_PRINT) . "</pre>";
+echo "<pre>" .
+	json_encode(
+		$last,
+
+		JSON_PRETTY_PRINT
+	) .
+	"</pre>";
 
 } elseif ($response == null) { ?>
 	<h1 style="font-family: Monospace; text-align: center; color: darkgoldenrod; font-size: 5em; border: 0.2em double goldenrod; margin: 2em;">Server down or could not be reached.</h1>
