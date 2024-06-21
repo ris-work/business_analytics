@@ -9,8 +9,9 @@ font-family: "Cousine";
 src: local('Cousine'), url("fonts/apache/cousine/Cousine-Regular.ttf") format("truetype");
 }
 body {
-  	min-width: 99vw;
-  	min-height: 99vh;
+  	min-width: 98vw;
+  	min-height: 98vh;
+overflow-x: hidden;
 width: fit-content;
 height: fit-content;
 padding:0;

@@ -112,6 +112,7 @@ console.log(averageDailySales_60_d);
 <script>
 document.addEventListener('DOMContentLoaded', displayChart);
 function displayChart(){
+		Chart.defaults.color='#112';
 	var daily_sales = new Chart(document.getElementById('chart_sales'),
 {
 	type: 'line',
@@ -123,7 +124,7 @@ function displayChart(){
 			{label: "Average since starting", data: avgrun, tension: 1, cubicInterpolationMode: 'monotone', borderWidth: 0.5, order: 20},
 			]
 	},
-			options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}, y1: {beginAtZero: true}}, 
+			options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}, y1: {beginAtZero: true}, animation: false}, 
 		y1: {type: 'linear', display: false, position: 'right', grid: {drawOnChartArea: false}, beginAtZero: true},
 				x: {grid: {color: "#077"}}},
 			responsive: false
@@ -139,7 +140,7 @@ function displayChart(){
 			{label: "Closest past average cost [360days+ only]", data: avgCost, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y', pointRadius: 0.5, borderWidth: 2},
 			{label: "Closest past average selling price [360d+ only]", data: avgSell, tension: 0.1, cubicInterpolationMode: 'monotone', yAxisID: 'y', pointRadius: 0.5, borderWidth: 2}]
 	},
-			options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}, y1: {beginAtZero: true}}, 
+			options: {scales: {y: {beginAtZero: true, grid: {color: "#449944"}, y1: {beginAtZero: true}, animation: false}, 
 		y1: {type: 'linear', display: false, position: 'right', grid: {drawOnChartArea: false}, beginAtZero: true},
 				x: {grid: {color: "#077"}}},
 			responsive: false
@@ -153,7 +154,7 @@ function displayChart(){
 		labels: SIH_dates,
 		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000", pointRadius: 0.5, borderRadius: 1}]
 	},
-		options: {scales: {y: {beginAtZero: true, grid: {color: "#000"}, ticks: {color: "#000"}}, 
+			options: {scales: {y: {beginAtZero: true, grid: {color: "#000"}, ticks: {color: "#000"}, animation: false}, 
 				x: {grid: {color: "#000"}, ticks: {color: "#000"}}},
 			responsive: false
 		}
@@ -256,6 +257,7 @@ else if($response==null){
 </div>
 </div>
 </div>
+<br />
 <div class="centered-container">
 <canvas id="chart_sales" width="795" height="650"></canvas>
 </div>

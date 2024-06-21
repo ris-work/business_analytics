@@ -240,15 +240,18 @@ margin-left: 2%;
 	position: fixed;
 }
 #chart_sales {
-	mix-blend-mode: difference;
+	/*mix-blend-mode: difference;
 	/* height: min(66vh, 66vw) !important;
 	width: min(100vh, 100vw) !important; */
+		background: blanchedalmond;
+		background: #fed;
 	visibility:collapse;
 }
 #chart_prices {
-	mix-blend-mode: difference;
+	/*mix-blend-mode: difference;
 	/* height: min(66vh, 66vw) !important;
 	width: min(100vh, 100vw) !important; */
+		background: floralwhite;
 	visibility:collapse;
 }
 
