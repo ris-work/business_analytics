@@ -130,6 +130,7 @@ function pretty_print_filtered(filtered){
 	heading_row.appendChild(generate_data_heading("Fill sold (15)"));
 	heading_row.appendChild(generate_data_heading("F (30)"));
 	heading_row.appendChild(generate_data_heading("F (60)"));
+	heading_row.appendChild(generate_data_heading("DL"));
 	heading_row.appendChild(generate_data_heading("MORE"));
 	heading_row.appendChild(generate_data_heading("(O)"));
 	heading_row_bottom = heading_row.cloneNode(true);
@@ -152,6 +153,7 @@ function generate_table_row(v){
 		row.appendChild(generate_stock_data_element((v.S_D15-v.SIH) < 0 ? 0 : v.S_D15 - v.SIH));
 		row.appendChild(generate_stock_data_element((v.S_D30-v.SIH) < 0 ? 0 : v.S_D30 - v.SIH));
 		row.appendChild(generate_stock_data_element((v.S_D60-v.SIH) <0 ? 0 : v.S_D60 - v.SIH));
+		row.appendChild(generate_stock_data_element((v.SIH/v.S_D60)*60));
 		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE}`, "More"));
 		row.appendChild(generate_link_element(`details_v2.php?id=${v.PLU_CODE}`, "(O)"));
 		//if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
@@ -178,9 +180,12 @@ function generate_numeric_data_element(text){
 }
 function generate_stock_data_element(text){
 	var de = document.createElement('td');
+	if(!(text == "NaN") && !isNaN(text)){
 	de.innerText = Number.parseFloat(text).toFixed(1);
 	de.className += " numeric-data";
 	de.className += " stock-data";
+	}
+	else {de.innerText="E"}
 	return de;
 }
 function generate_link_element(href, text){
@@ -309,11 +314,10 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <td><?php echo $field; ?></td>
 <td><?php var_dump($value); ?></td>
 </tr>
-<?php } ?>
+<?php /*}*/ ?>
 </table>
 <?php
 //echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
- */<?php
 
 
 $t_q1_diff_ms = ($t_q1_end - $t_q1_start) * 1000;
