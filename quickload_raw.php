@@ -238,39 +238,50 @@ function normalize_keep_spaces(string) {
 window.onload=loaded;
 </script>
 <?php
-ini_set('display_errors', '1');
+ini_set("display_errors", "1");
 //error_reporting(E_ALL);
-require_once("/etc/auth.php");
+require_once "/etc/auth.php";
 $dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 //var_dump($IDs);
 //$dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 $t_q1_start = microtime(true);
 $dbh->query("pragma mmap_size=2000000000");
 $t = $dbh->beginTransaction();
-$stmt_sql = $dbh->prepare("SELECT sih_current.itemcode AS PLU_CODE, desc AS PLU_DESC, sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV, (iif(iif(latestsell.asell > 0, latestsell.asell, selling.sell) > 0, iif(latestsell.asell > 0, latestsell.asell, selling.sell), full_inventory_current.sell)) AS PLU_SELL, sih_current.sih AS SIH, coalesce(iif(cost_purchase.cost > 0, cost_purchase.cost, latestsell.acost), 'UNKNOWN') AS cost FROM sih_current INDEXED BY sih_cast_covering LEFT JOIN selling INDEXED BY selling_covering ON selling.itemcode = sih_current.itemcode LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode LEFT JOIN (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly) sales JOIN (SELECT max(daydate) AS maxdate, itemcode FROM hourly INDEXED BY hourly_index_for_trends GROUP BY itemcode) maxdates ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate) GROUP BY sales.itemcode) latestsell ON latestsell.itemcode = sih_current.itemcode LEFT JOIN full_inventory_current INDEXED BY full_inventory_current_covering ON cast(sih_current.itemcode AS int) = full_inventory_current.itemcode");
+$stmt_sql = $dbh->prepare(
+	"SELECT sih_current.itemcode AS PLU_CODE, desc AS PLU_DESC, sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV, (iif(iif(latestsell.asell > 0, latestsell.asell, selling.sell) > 0, iif(latestsell.asell > 0, latestsell.asell, selling.sell), full_inventory_current.sell)) AS PLU_SELL, sih_current.sih AS SIH, coalesce(iif(cost_purchase.cost > 0, cost_purchase.cost, latestsell.acost), 'UNKNOWN') AS cost FROM sih_current INDEXED BY sih_cast_covering LEFT JOIN selling INDEXED BY selling_covering ON selling.itemcode = sih_current.itemcode LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode LEFT JOIN (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly) sales JOIN (SELECT max(daydate) AS maxdate, itemcode FROM hourly INDEXED BY hourly_index_for_trends GROUP BY itemcode) maxdates ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate) GROUP BY sales.itemcode) latestsell ON latestsell.itemcode = sih_current.itemcode LEFT JOIN full_inventory_current INDEXED BY full_inventory_current_covering ON cast(sih_current.itemcode AS int) = full_inventory_current.itemcode"
+);
 $stmt = $stmt_sql->execute();
-$cur_data=$stmt_sql->fetchAll();
+$cur_data = $stmt_sql->fetchAll();
 $dbh->commit();
 //var_dump($past_data);
 $response = $cur_data;
-$response_dec = $response ;// json_decode($response);
+$response_dec = $response; // json_decode($response);
 $tlat = $dbh->beginTransaction();
-$stmt_sql_tlat = $dbh->prepare("SELECT max(daydate) AS last_updated FROM hourly");
+$stmt_sql_tlat = $dbh->prepare(
+	"SELECT max(daydate) AS last_updated FROM hourly"
+);
 $stmt_tlat = $stmt_sql_tlat->execute();
-$lastu=$stmt_sql_tlat->fetchAll();
+$lastu = $stmt_sql_tlat->fetchAll();
 $dbh->commit();
 $t_q1_end = microtime(true);
 $t_q2_start = microtime(true);
 $ta = $dbh->beginTransaction();
 //$stmta_sql = $dbh->prepare("SELECT ifnull(S_D60, 0) AS S_D60, ifnull(S_D30, 0) AS S_D30, ifnull(S_D15, 0) AS S_D15, everything.itemcode AS CODE FROM sih_current AS everything LEFT JOIN (SELECT total(quantity) as S_D60, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S60T ON everything.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S30T ON S30T.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) AS S15T ON S15T.itemcode = S30T.itemcode ");
 //$stmta_sql = $dbh->prepare("SELECT ifnull(S_D60, 0) AS S_D60, ifnull(S_D30, 0) AS S_D30, ifnull(S_D15, 0) AS S_D15, everything.itemcode AS CODE FROM sih_current AS everything LEFT JOIN (SELECT total(quantity) as S_D60, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S60T ON everything.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S30T ON S30T.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) AS S15T ON S15T.itemcode = S30T.itemcode ");
-$stmta_sql = $dbh->prepare("SELECT ifnull(S_D60, 0) AS S_D60, ifnull(S_D30, 0) AS S_D30, ifnull(S_D15, 0) AS S_D15, everything.itemcode AS CODE FROM sih_current AS everything LEFT JOIN (SELECT total(quantity) as S_D60, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S60T ON everything.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S30T ON S30T.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) AS S15T ON S15T.itemcode = S30T.itemcode ");
+$stmta_sql = $dbh->prepare(
+	"SELECT ifnull(S_D60, 0) AS S_D60, ifnull(S_D30, 0) AS S_D30, ifnull(S_D15, 0) AS S_D15, everything.itemcode AS CODE FROM sih_current AS everything LEFT JOIN (SELECT total(quantity) as S_D60, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S60T ON everything.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S30T ON S30T.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) AS S15T ON S15T.itemcode = S30T.itemcode "
+);
 $stmta = $stmta_sql->execute();
-$past_data=$stmta_sql->fetchAll();
+$past_data = $stmta_sql->fetchAll();
 $dbh->commit();
 $t_q2_end = microtime(true);
-echo "<script>var list = ".json_encode(json_encode($response))."; list_p = JSON.parse((list));</script>";
-echo "<script>var lista = ".json_encode(json_encode($past_data))."; list_a = JSON.parse((lista));</script>";
+echo "<script>var list = " .
+	json_encode(json_encode($response)) .
+	"; list_p = JSON.parse((list));</script>";
+echo "<script>var lista = " .
+	json_encode(json_encode($past_data)) .
+	"; list_a = JSON.parse((lista));</script>";
+
 //var_dump($response);
 ?>
 	<title>DETAILS: <?php echo $lastu[0][0]; ?></title>
@@ -282,7 +293,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <body class="cached">
 <button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh; z-index: 2;" id="back">🔙 Go back!</button><br />
 <div class="centered-container">
-<span class="notice">Data loaded on (please check today's date): <?php echo ($lastu[0][0]); ?></span> <br />
+<span class="notice">Data loaded on (please check today's date): <?php echo $lastu[0][0]; ?></span> <br />
 <input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
 </div>
 <details>
@@ -308,7 +319,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <th scope="col">Field</th>
 <th scope="col">Value</th>
 </tr>
-<?php /*foreach($response as $field=>$value) { ?>
+ /*foreach($response as $field=>$value) { ?>
 <tr>
 <td><?php echo $field; ?></td>
 <td><?php var_dump($value); ?></td>
@@ -317,9 +328,11 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 </table>
 <?php
 //echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
- */
-$t_q1_diff_ms = ($t_q1_end - $t_q1_start)*1000;
-$t_q2_diff_ms = ($t_q2_end - $t_q2_start)*1000;
+ */<?php
+
+
+$t_q1_diff_ms = ($t_q1_end - $t_q1_start) * 1000;
+$t_q2_diff_ms = ($t_q2_end - $t_q2_start) * 1000;
 echo "Took $t_q1_diff_ms milliseconds for query 1, $t_q2_diff_ms for query 2";
 ?>
 </details>

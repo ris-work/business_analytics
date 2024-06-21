@@ -7,9 +7,9 @@ function goback(){window.location.assign("/scan/")}
 function graph(){}
 </script>
 <?php
-ini_set('display_errors', '1');
+ini_set("display_errors", "1");
 error_reporting(E_ALL);
-require_once("/etc/auth.php");
+require_once "/etc/auth.php";
 $ID = $_GET["id"];
 $BASEURL = "http://127.0.0.1:9090/api/Items2/";
 $req = curl_init();
@@ -18,83 +18,113 @@ curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 $response = json_decode(curl_exec($req));
 //var_dump($response);
-if (strlen($ID) == 6 || ($response && !property_exists($response, "Message"))){
-$BASEURL_ANALYTICS = "http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
-$req_analytics = curl_init();
-curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE");
-curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($req_analytics, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
-$response_analytics = json_decode(curl_exec($req_analytics));
-$SIH = $response_analytics->SIH;
-$state_of_things="too-much";
-if($response){$id = $response->PLU_CODE;} else{$id = $_GET["id"];}
-//var_dump($response);
-//var_dump($response_analytics);
-$dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
-$t = $dbh->beginTransaction();
-$stmt_sql = $dbh->prepare("SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?");
-$stmt = $stmt_sql->execute([$response->PLU_CODE]);
-$past_data=$stmt_sql->fetchAll();
-$dbh->commit();
-function getsalesbyhour($itemcode){
-$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
-$t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("SELECT 100*hsq/sq AS psh, c.x as timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b) RIGHT JOIN (SELECT x FROM cnt LIMIT 17 OFFSET 6) c ON b.timehour = c.x ORDER BY c.x");
-$stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
-$past_datam=$stmtm_sql->fetchAll();
-$dbhm->commit();
-return $past_datam;
-}
-function getsalesbyday($itemcode){
-$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
-$t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, b.sq as rawsq, sum(b.sq/15) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) as da15, sum(b.sq/60) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as da60, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) AND a.x < (SELECT * FROM last_imported) ORDER BY a.x");
-$stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
-$past_datam=$stmtm_sql->fetchAll();
-$dbhm->commit();
-return $past_datam;
-}
-function lastimportedday(){
-$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
-$t = $dbhm->beginTransaction();
-$stmtm_sql = $dbhm->prepare("SELECT max(daydate) AS lastupdated FROM hourly");
-$stmtm = $stmtm_sql->execute([]);
-$past_datam=$stmtm_sql->fetchAll();
-$dbhm->commit();
-return $past_datam;
-}
-$salesdatabyhour=getsalesbyhour($id);
-$salesdatabyday=getsalesbyday($id);
-$salesdatalastimported=lastimportedday();
+if (strlen($ID) == 6 || ($response && !property_exists($response, "Message"))) {
 
-$daily_data_only = array_map(fn($x) => $x['quantity'], $salesdatabyday);
+	$BASEURL_ANALYTICS =
+		"http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
+	$req_analytics = curl_init();
+	curl_setopt(
+		$req_analytics,
+		CURLOPT_URL,
+		"$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE"
+	);
+	curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($req_analytics, CURLOPT_HTTPHEADER, [
+		"Authorization: Basic $ENCODED_AUTH",
+	]);
+	$response_analytics = json_decode(curl_exec($req_analytics));
+	$SIH = $response_analytics->SIH;
+	$state_of_things = "too-much";
+	if ($response) {
+		$id = $response->PLU_CODE;
+	} else {
+		$id = $_GET["id"];
+	}
+	//var_dump($response);
+	//var_dump($response_analytics);
+	$dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
+	$t = $dbh->beginTransaction();
+	$stmt_sql = $dbh->prepare(
+		"SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?"
+	);
+	$stmt = $stmt_sql->execute([$response->PLU_CODE]);
+	$past_data = $stmt_sql->fetchAll();
+	$dbh->commit();
+	function getsalesbyhour($itemcode)
+	{
+		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$t = $dbhm->beginTransaction();
+		$stmtm_sql = $dbhm->prepare(
+			"SELECT 100*hsq/sq AS psh, c.x as timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b) RIGHT JOIN (SELECT x FROM cnt LIMIT 17 OFFSET 6) c ON b.timehour = c.x ORDER BY c.x"
+		);
+		$stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
+		$past_datam = $stmtm_sql->fetchAll();
+		$dbhm->commit();
+		return $past_datam;
+	}
+	function getsalesbyday($itemcode)
+	{
+		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$t = $dbhm->beginTransaction();
+		$stmtm_sql = $dbhm->prepare(
+			"SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, b.sq as rawsq, sum(b.sq/15) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) as da15, sum(b.sq/60) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as da60, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) AND a.x < (SELECT * FROM last_imported) ORDER BY a.x"
+		);
+		$stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
+		$past_datam = $stmtm_sql->fetchAll();
+		$dbhm->commit();
+		return $past_datam;
+	}
+	function lastimportedday()
+	{
+		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$t = $dbhm->beginTransaction();
+		$stmtm_sql = $dbhm->prepare(
+			"SELECT max(daydate) AS lastupdated FROM hourly"
+		);
+		$stmtm = $stmtm_sql->execute([]);
+		$past_datam = $stmtm_sql->fetchAll();
+		$dbhm->commit();
+		return $past_datam;
+	}
+	$salesdatabyhour = getsalesbyhour($id);
+	$salesdatabyday = getsalesbyday($id);
+	$salesdatalastimported = lastimportedday();
 
-$desspec = array(
-	0 => array("pipe", "r"),
-	1 => array("pipe", "w"),
-	2 => array("pipe", "r")
-);
-$cwd = '/tmp';
-//var_dump(json_encode($daily_data_only));
+	$daily_data_only = array_map(fn($x) => $x["quantity"], $salesdatabyday);
 
-$process = proc_open('python3 analysis.py', $desspec, $pipes);
-if(is_resource($process)){
-	fwrite($pipes[0], json_encode($daily_data_only));
-	fclose($pipes[0]);
-	$spectrum = trim(stream_get_contents($pipes[1]));
-	//var_dump(stream_get_contents($pipes[2]));
-	fclose($pipes[1]);
-	proc_close($process);
-}
-else{
-	echo "Process creation failed.";
-}
-?>
-<script>"use strict"; var past_data = JSON.parse('<?php echo json_encode($past_data); ?>')</script>
-<script>"use strict"; var sales_data_by_hour = JSON.parse('<?php echo json_encode($salesdatabyhour); ?>')</script>
-<script>"use strict"; var sales_data_by_day = JSON.parse('<?php echo json_encode($salesdatabyday); ?>')</script>
-<script>"use strict"; var sales_data_updated = JSON.parse('<?php echo json_encode($salesdatalastimported); ?>')</script>
-<script>"use strict"; var sales_data_by_day_spectrum = JSON.parse('<?php echo ($spectrum); ?>')
+	$desspec = [
+		0 => ["pipe", "r"],
+		1 => ["pipe", "w"],
+		2 => ["pipe", "r"],
+	];
+	$cwd = "/tmp";
+	//var_dump(json_encode($daily_data_only));
+
+	$process = proc_open("python3 analysis.py", $desspec, $pipes);
+	if (is_resource($process)) {
+		fwrite($pipes[0], json_encode($daily_data_only));
+		fclose($pipes[0]);
+		$spectrum = trim(stream_get_contents($pipes[1]));
+		//var_dump(stream_get_contents($pipes[2]));
+		fclose($pipes[1]);
+		proc_close($process);
+	} else {
+		echo "Process creation failed.";
+	}
+	?>
+<script>"use strict"; var past_data = JSON.parse('<?php echo json_encode(
+	$past_data
+); ?>')</script>
+<script>"use strict"; var sales_data_by_hour = JSON.parse('<?php echo json_encode(
+	$salesdatabyhour
+); ?>')</script>
+<script>"use strict"; var sales_data_by_day = JSON.parse('<?php echo json_encode(
+	$salesdatabyday
+); ?>')</script>
+<script>"use strict"; var sales_data_updated = JSON.parse('<?php echo json_encode(
+	$salesdatalastimported
+); ?>')</script>
+<script>"use strict"; var sales_data_by_day_spectrum = JSON.parse('<?php echo $spectrum; ?>')
 var A = sales_data_by_day_spectrum[0];
 var w = sales_data_by_day_spectrum[1];
 var sarr=[];
@@ -223,7 +253,7 @@ function displayChart(){
 </script>
 </head>
 <body>
-<span><?php echo "Last updated (full sales data): {$salesdatalastimported[0]['lastupdated']}"; ?></span>
+<span><?php echo "Last updated (full sales data): {$salesdatalastimported[0]["lastupdated"]}"; ?></span>
 <table class="named">
 <tr>
 <th>Name</th>
@@ -280,13 +310,13 @@ function displayChart(){
 <th scope="col">Field</th>
 <th scope="col">Value</th>
 </tr>
-<?php foreach($response as $field=>$value) { ?>
+<?php foreach ($response as $field => $value) { ?>
 <tr>
 <td><?php echo $field; ?></td>
 <td><?php echo $value; ?></td>
 </tr>
 <?php } ?>
-<?php foreach($response_analytics as $field=>$value) { ?>
+<?php foreach ($response_analytics as $field => $value) { ?>
 <tr>
 <td><?php echo $field; ?></td>
 <td><?php echo $value; ?></td>
@@ -294,18 +324,14 @@ function displayChart(){
 <?php } ?>
 </table>
 <?php
-echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
-echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
-}
-else if($response==null){
-?>
+echo "<pre>" . json_encode($response, JSON_PRETTY_PRINT) . "</pre>";
+echo "<pre>" . json_encode($response_analytics, JSON_PRETTY_PRINT) . "</pre>";
+
+} elseif ($response == null) { ?>
 	<h1 style="font-family: Monospace; text-align: center; color: darkgoldenrod; font-size: 5em; border: 0.2em double goldenrod; margin: 2em;">Server down or could not be reached.</h1>
-<?php
-}else {
-?>
-	<h1 style="font-family: Monospace; text-align: center; color: darkred; font-size: 5em; border: 0.2em double red; margin: 2em;">Does not exist. <?php echo $response->Message ?></h1>
-<?php
-}
+<?php } else { ?>
+	<h1 style="font-family: Monospace; text-align: center; color: darkred; font-size: 5em; border: 0.2em double red; margin: 2em;">Does not exist. <?php echo $response->Message; ?></h1>
+<?php }
 ?>
 </details>
 <div class="centered-container">

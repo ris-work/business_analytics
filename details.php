@@ -7,9 +7,9 @@ function goback(){window.location.assign("/scan/")}
 function graph(){}
 </script>
 <?php
-ini_set('display_errors', '1');
+ini_set("display_errors", "1");
 error_reporting(E_ALL);
-require_once("/etc/auth.php");
+require_once "/etc/auth.php";
 $ID = $_GET["id"];
 $BASEURL = "http://127.0.0.1:9090/api/Items2/";
 $req = curl_init();
@@ -18,38 +18,59 @@ curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 $response = json_decode(curl_exec($req));
 //var_dump($response);
-if ($response && !property_exists($response, "Message")){
-$BASEURL_ANALYTICS = "http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
-$req_analytics = curl_init();
-curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE");
-curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($req_analytics, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
-$response_analytics = json_decode(curl_exec($req_analytics));
-$SIH = $response_analytics->SIH;
-$state_of_things="too-much";
-//var_dump($response);
-//var_dump($response_analytics);
-$dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
-$t = $dbh->beginTransaction();
-$stmt_sql = $dbh->prepare("SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?");
-$stmt = $stmt_sql->execute([$response->PLU_CODE]);
-$past_data=$stmt_sql->fetchAll();
-$dbh->commit();
-$dbh_cost = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
-$t_cost = $dbh_cost->beginTransaction();
-$stmt_sql_cost = $dbh_cost->prepare("SELECT itemcode, daydate, cost FROM cost WHERE itemcode=? AND daydate = (SELECT max(daydate) FROM cost WHERE itemcode = ?)");
-$stmt_cost = $stmt_sql_cost->execute([$response->PLU_CODE, $response->PLU_CODE]);
-$data_cost=$stmt_sql_cost->fetchAll();
-$dbh_cost->commit();
-$dbh_cost_grn = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
-$t_cost_grn = $dbh_cost_grn->beginTransaction();
-$stmt_sql_cost_grn = $dbh_cost_grn->prepare("SELECT itemcode, date, cost, runno FROM cost_purchase WHERE itemcode=?");
-$stmt_cost_grn = $stmt_sql_cost_grn->execute([$response->PLU_CODE]);
-$data_cost_grn=$stmt_sql_cost_grn->fetchAll();
-$dbh_cost_grn->commit();
-?>
-<script>"use strict"; var past_data = JSON.parse('<?php echo json_encode($past_data); ?>')</script>
-<script>"use strict"; var data_cost = JSON.parse('<?php echo json_encode($data_cost); ?>')</script>
+if ($response && !property_exists($response, "Message")) {
+
+	$BASEURL_ANALYTICS =
+		"http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
+	$req_analytics = curl_init();
+	curl_setopt(
+		$req_analytics,
+		CURLOPT_URL,
+		"$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE"
+	);
+	curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($req_analytics, CURLOPT_HTTPHEADER, [
+		"Authorization: Basic $ENCODED_AUTH",
+	]);
+	$response_analytics = json_decode(curl_exec($req_analytics));
+	$SIH = $response_analytics->SIH;
+	$state_of_things = "too-much";
+	//var_dump($response);
+	//var_dump($response_analytics);
+	$dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
+	$t = $dbh->beginTransaction();
+	$stmt_sql = $dbh->prepare(
+		"SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?"
+	);
+	$stmt = $stmt_sql->execute([$response->PLU_CODE]);
+	$past_data = $stmt_sql->fetchAll();
+	$dbh->commit();
+	$dbh_cost = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$t_cost = $dbh_cost->beginTransaction();
+	$stmt_sql_cost = $dbh_cost->prepare(
+		"SELECT itemcode, daydate, cost FROM cost WHERE itemcode=? AND daydate = (SELECT max(daydate) FROM cost WHERE itemcode = ?)"
+	);
+	$stmt_cost = $stmt_sql_cost->execute([
+		$response->PLU_CODE,
+		$response->PLU_CODE,
+	]);
+	$data_cost = $stmt_sql_cost->fetchAll();
+	$dbh_cost->commit();
+	$dbh_cost_grn = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$t_cost_grn = $dbh_cost_grn->beginTransaction();
+	$stmt_sql_cost_grn = $dbh_cost_grn->prepare(
+		"SELECT itemcode, date, cost, runno FROM cost_purchase WHERE itemcode=?"
+	);
+	$stmt_cost_grn = $stmt_sql_cost_grn->execute([$response->PLU_CODE]);
+	$data_cost_grn = $stmt_sql_cost_grn->fetchAll();
+	$dbh_cost_grn->commit();
+	?>
+<script>"use strict"; var past_data = JSON.parse('<?php echo json_encode(
+	$past_data
+); ?>')</script>
+<script>"use strict"; var data_cost = JSON.parse('<?php echo json_encode(
+	$data_cost
+); ?>')</script>
 	<title>DETAILS: <?php echo $response->PLU_DESC; ?></title>
 <script>
 "use strict";
@@ -159,12 +180,32 @@ function displayChart(){
 <td><?php echo $response_analytics->S_D60 - $response->SIH; ?></td>
 </tr>
 <tr>
-<th>Cost<sup> (<?php echo $data_cost[0]["daydate"]; ?>)</sup><sup style="font-size: 0.25em">Average of entries</sup></th>
-<td><?php echo number_format($data_cost[0]["cost"], 2); ?><sup> gross <?php echo number_format(100*$response->PLU_SELL/$data_cost[0]["cost"] - 100, 2); ?>%</sup></td>
+<th>Cost<sup> (<?php echo $data_cost[0][
+	"daydate"
+]; ?>)</sup><sup style="font-size: 0.25em">Average of entries</sup></th>
+<td><?php echo number_format(
+	$data_cost[0]["cost"],
+	2
+); ?><sup> gross <?php echo number_format(
+	(100 * $response->PLU_SELL) / $data_cost[0]["cost"] - 100,
+	2
+); ?>%</sup></td>
 </tr>
 <tr>
-<th>Cost<sup> (<?php echo substr($data_cost_grn[0]["date"], 0, 10); ?>)</sup><sup style="font-size: 0.25em">GRN (<?php echo $data_cost_grn[0]["runno"]; ?>)</sup></th>
-<td><?php echo number_format($data_cost_grn[0]["cost"], 2); ?><sup> gross <?php echo number_format(100*$response->PLU_SELL/$data_cost_grn[0]["cost"] - 100, 2); ?>%</sup></td>
+<th>Cost<sup> (<?php echo substr(
+	$data_cost_grn[0]["date"],
+	0,
+	10
+); ?>)</sup><sup style="font-size: 0.25em">GRN (<?php echo $data_cost_grn[0][
+	"runno"
+]; ?>)</sup></th>
+<td><?php echo number_format(
+	$data_cost_grn[0]["cost"],
+	2
+); ?><sup> gross <?php echo number_format(
+	(100 * $response->PLU_SELL) / $data_cost_grn[0]["cost"] - 100,
+	2
+); ?>%</sup></td>
 </tr>
 </table>
 <details>
@@ -175,13 +216,13 @@ function displayChart(){
 <th scope="col">Field</th>
 <th scope="col">Value</th>
 </tr>
-<?php foreach($response as $field=>$value) { ?>
+<?php foreach ($response as $field => $value) { ?>
 <tr>
 <td><?php echo $field; ?></td>
 <td><?php echo $value; ?></td>
 </tr>
 <?php } ?>
-<?php foreach($response_analytics as $field=>$value) { ?>
+<?php foreach ($response_analytics as $field => $value) { ?>
 <tr>
 <td><?php echo $field; ?></td>
 <td><?php echo $value; ?></td>
@@ -189,18 +230,14 @@ function displayChart(){
 <?php } ?>
 </table>
 <?php
-echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
-echo "<pre>".json_encode($response_analytics, JSON_PRETTY_PRINT)."</pre>";
-}
-else if($response==null){
-?>
+echo "<pre>" . json_encode($response, JSON_PRETTY_PRINT) . "</pre>";
+echo "<pre>" . json_encode($response_analytics, JSON_PRETTY_PRINT) . "</pre>";
+
+} elseif ($response == null) { ?>
 	<h1 style="font-family: Monospace; text-align: center; color: darkgoldenrod; font-size: 5em; border: 0.2em double goldenrod; margin: 2em;">Server down or could not be reached.</h1>
-<?php
-}else {
-?>
-	<h1 style="font-family: Monospace; text-align: center; color: darkred; font-size: 5em; border: 0.2em double red; margin: 2em;">Does not exist. <?php echo $response->Message ?></h1>
-<?php
-}
+<?php } else { ?>
+	<h1 style="font-family: Monospace; text-align: center; color: darkred; font-size: 5em; border: 0.2em double red; margin: 2em;">Does not exist. <?php echo $response->Message; ?></h1>
+<?php }
 ?>
 </details>
 <div class="centered-container">
@@ -215,8 +252,8 @@ else if($response==null){
 <canvas id="chart_sales" width="795" height="650"></canvas>
 </div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
-<a href="<?php echo "moredetails.php?id=$ID" ?>"><button class="moredetails"> <img  src="icons/clock.svg" style="filter: grayscale(100%) opacity(50%);height: max(6vh, 6vw); width:max(6vh, 6vw);"></button></a>
-<a href="<?php echo "details_v2.php?id=$ID" ?>"><button class="moredetails"><span style="color: black; filter: grayscale(100%) opacity(50%);height: max(4em, 6vh, 6vw); width:max(4em, 6vh, 6vw); size:max(4em, 6vh, 6vw); font-size: max(5vh, 5vw); vertical-align: bottom; border: 4px solid black;">|v2|</span></button></a>
+<a href="<?php echo "moredetails.php?id=$ID"; ?>"><button class="moredetails"> <img  src="icons/clock.svg" style="filter: grayscale(100%) opacity(50%);height: max(6vh, 6vw); width:max(6vh, 6vw);"></button></a>
+<a href="<?php echo "details_v2.php?id=$ID"; ?>"><button class="moredetails"><span style="color: black; filter: grayscale(100%) opacity(50%);height: max(4em, 6vh, 6vw); width:max(4em, 6vh, 6vw); size:max(4em, 6vh, 6vw); font-size: max(5vh, 5vw); vertical-align: bottom; border: 4px solid black;">|v2|</span></button></a>
 <button class="graph" onclick="document.getElementById('chart_sales').style.visibility='visible'"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
 </body>
 </html>
