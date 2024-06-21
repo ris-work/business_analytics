@@ -13,8 +13,8 @@ src: local('Cousine'), url("fonts/apache/cousine/Cousine-Regular.ttf") format("t
 error_reporting(E_ALL);
 require_once "./env.php";
 $arg_dbname = escapeshellarg($dbname);
-$arg_scriptname = escapeshellarg(".read " . __FILE__.".sql");
-echo "Run: ". ("/usr/bin/sqlite3 $arg_dbname $arg_scriptname") . "\n";
+$arg_scriptname = escapeshellarg(".read " . __FILE__ . ".sql");
+echo "Run: " . "/usr/bin/sqlite3 $arg_dbname $arg_scriptname" . "\n";
 echo shell_exec("/usr/bin/sqlite3 $arg_dbname $arg_scriptname");
 ?>
 </pre>
