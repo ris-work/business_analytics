@@ -77,7 +77,69 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	$dbh_cost_grn->commit();
 	$last = $past_data[count($past_data) - 1];
 
+	function getsalesbyhour($itemcode)
+	{
+		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$t = $dbhm->beginTransaction();
+		$stmtm_sql = $dbhm->prepare(
+			"SELECT 100*hsq/sq AS psh, c.x as timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b) RIGHT JOIN (SELECT x FROM cnt LIMIT 17 OFFSET 6) c ON b.timehour = c.x ORDER BY c.x"
+		);
+		$stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
+		$past_datam = $stmtm_sql->fetchAll();
+		$dbhm->commit();
+		return $past_datam;
+	}
+	function getsalesbyday($itemcode)
+	{
+		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$t = $dbhm->beginTransaction();
+		$stmtm_sql = $dbhm->prepare(
+			"SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, b.sq as rawsq, sum(b.sq/15) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) as da15, sum(b.sq/60) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as da60, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) AND a.x < (SELECT * FROM last_imported) ORDER BY a.x"
+		);
+		$stmtm = $stmtm_sql->execute([$itemcode, $itemcode]);
+		$past_datam = $stmtm_sql->fetchAll();
+		$dbhm->commit();
+		return $past_datam;
+	}
+	function lastimportedday()
+	{
+		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$t = $dbhm->beginTransaction();
+		$stmtm_sql = $dbhm->prepare(
+			"SELECT max(daydate) AS lastupdated FROM hourly"
+		);
+		$stmtm = $stmtm_sql->execute([]);
+		$past_datam = $stmtm_sql->fetchAll();
+		$dbhm->commit();
+		return $past_datam;
+	}
 	//var_dump($last);
+	$id = $response->PLU_CODE;
+	$salesdatabyhour = getsalesbyhour($id);
+	$salesdatabyday = getsalesbyday($id);
+	$salesdatalastimported = lastimportedday();
+
+	$daily_data_only = array_map(fn($x) => $x["quantity"], $salesdatabyday);
+
+	$desspec = [
+		0 => ["pipe", "r"],
+		1 => ["pipe", "w"],
+		2 => ["pipe", "r"],
+	];
+	$cwd = "/tmp";
+	//var_dump(json_encode($daily_data_only));
+
+	$process = proc_open("python3 analysis.py", $desspec, $pipes);
+	if (is_resource($process)) {
+		fwrite($pipes[0], json_encode($daily_data_only));
+		fclose($pipes[0]);
+		$spectrum = trim(stream_get_contents($pipes[1]));
+		//var_dump(stream_get_contents($pipes[2]));
+		fclose($pipes[1]);
+		proc_close($process);
+	} else {
+		echo "Process creation failed.";
+	}
 	?>
 <script>"use strict"; var past_data = JSON.parse('<?php echo json_encode(
 	$past_data
@@ -85,6 +147,29 @@ if (true || ($response && !property_exists($response, "Message"))) {
 <script>"use strict"; var data_cost = JSON.parse('<?php echo json_encode(
 	$data_cost
 ); ?>')</script>
+<script>"use strict"; var sales_data_by_hour = JSON.parse('<?php echo json_encode(
+	$salesdatabyhour
+); ?>')</script>
+<script>"use strict"; var sales_data_by_day = JSON.parse('<?php echo json_encode(
+	$salesdatabyday
+); ?>')</script>
+<script>"use strict"; var sales_data_updated = JSON.parse('<?php echo json_encode(
+	$salesdatalastimported
+); ?>')</script>
+<script>"use strict"; var sales_data_by_day_spectrum = JSON.parse('<?php echo $spectrum; ?>')
+var A = sales_data_by_day_spectrum[0];
+var w = sales_data_by_day_spectrum[1];
+var sarr=[];
+A.forEach((v,k)=>{sarr.push({A: v, w: w[k]})});
+var sarr_dup = sarr.map(x=>x);
+sarr_dup = sarr_dup.filter(x=>x.w<366);
+sarr_dup.sort((a,b)=>a.A<b.A?1:-1);
+//var sarr_dup = sarr.map(x=>x);
+if(sarr_dup[0].w==0) {sarr_dup.shift()}
+var most_varied=sarr_dup.slice(0,10);
+var avgsincefirstsale=A[0].toLocaleString();
+var variation_int =  `The daily average since first sold is ${A[0].toLocaleString()}. Sales commonly varies every ${sarr_dup[0].w.toLocaleString()} days by \u00b1${sarr_dup[0].A.toLocaleString()}, every ${sarr_dup[1].w.toLocaleString()} days by \u00b1${(sarr_dup[1].A).toLocaleString()} units.`;
+</script>
 	<title>DETAILS: <?php echo $data_cost_grn[0]["desc"]; ?></title>
 <script>
 "use strict";
@@ -101,6 +186,8 @@ var deltaSales30 = [];
 var deltaSales60 = [];
 var sih_beginning = '2024-06-01';
 var dates=[];
+var sales_hours = sales_data_by_hour.map(x => x['timehour']);
+var sales_hours_data = sales_data_by_hour.map(x => x['psh']);
 for (var i=0; i<past_data.length-1; i++){avgSales15.push(past_data[i]['s15']/15)}
 for (var i=0; i<past_data.length-1; i++){avgSales30.push(past_data[i]['s30']/30)}
 for (var i=0; i<past_data.length-1; i++){avgSales60.push(past_data[i]['s60']/60)}
@@ -184,6 +271,19 @@ function displayChart(){
 		datasets: [{label: "SIH", data: SIH, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000", pointRadius: 0.5, borderRadius: 1}]
 	},
 			options: {scales: {y: {beginAtZero: true, grid: {color: "#000"}, ticks: {color: "#000"}, animation: false}, 
+				x: {grid: {color: "#000"}, ticks: {color: "#000"}}},
+			responsive: false
+		}
+}
+)
+	var sales_by_hour = new Chart(document.getElementById('sales_by_hour'),
+{
+	type: 'bar',
+	data: {
+		labels: sales_hours,
+		datasets: [{label: "Sales %", data: sales_hours_data, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000"}]
+	},
+		options: {scales: {y: {beginAtZero: true, max: 100, grid: {color: "#000"}, ticks: {color: "#000"}}, 
 				x: {grid: {color: "#000"}, ticks: {color: "#000"}}},
 			responsive: false
 		}
@@ -312,11 +412,16 @@ echo "<pre>" .
 <div class="centered-container">
 <canvas id="chart_sales" width="795" height="650"></canvas>
 </div>
+<br />
 <div class="centered-container">
 <canvas id="chart_prices" width="795" height="650"></canvas>
 </div>
+<br />
+<div class="centered-container">
+<canvas id="sales_by_hour" width="795" height="650"></canvas>
+</div>
 <div id ="bottom"> <button onclick="goback()" class="btn goback" > <img  src="icons/back_button.png" style="height:55%; width:55%;"> </button>
 <a href="<?php echo "moredetails.php?id=$ID"; ?>"><button class="moredetails"> <img  src="icons/clock.svg" style="filter: grayscale(100%) opacity(50%);height: max(6vh, 6vw); width:max(6vh, 6vw);;"></button></a>
-<button class="graph" onclick="(function(){let e = document.getElementById('chart_sales'); e.style.visibility='visible'; let f = document.getElementById('chart_prices'); f.style.visibility='visible'; e.scrollIntoView({behavior: 'smooth'});})()"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
+<button class="graph" onclick="(function(){let e = document.getElementById('chart_sales'); e.style.visibility='visible'; let f = document.getElementById('chart_prices'); f.style.visibility='visible'; let g = document.getElementById('sales_by_hour'); g.style.visibility='visible'; e.scrollIntoView({behavior: 'smooth'});})()"> <img  src="icons/graph.png" style="height: 55%; width:55%; left:33%;"> </button> </div>
 </body>
 </html>

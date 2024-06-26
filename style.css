@@ -254,6 +254,13 @@ margin-left: 2%;
 		background: floralwhite;
 	visibility:collapse;
 }
+#sales_by_hour {
+	/*mix-blend-mode: difference;
+	/* height: min(66vh, 66vw) !important;
+	width: min(100vh, 100vw) !important; */
+		background: linear-gradient(to bottom, #88e, #faa);
+	visibility:collapse;
+}
 
 tr:nth-child(odd){
        background: white;
