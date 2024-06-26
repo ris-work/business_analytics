@@ -181,7 +181,8 @@ function generate_numeric_data_element(text){
 function generate_stock_data_element(text){
 	var de = document.createElement('td');
 	if(!(text == "NaN") && !isNaN(text)){
-	de.innerText = Number.parseFloat(text).toFixed(1);
+	//de.innerText = Number.parseFloat(text).toFixed(1);
+	de.innerText = text != Infinity ? Number.parseFloat(text).toFixed(1) : "I";
 	de.className += " numeric-data";
 	de.className += " stock-data";
 	}

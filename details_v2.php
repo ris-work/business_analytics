@@ -196,7 +196,7 @@ function displayChart(){
 <body class="cached-details">
 <table class="named">
 <tr>
-<td colspan=2 style="color: #008500; width: 20em;">This page loads cached data. You pressed the (O) link. You might want to go back to go to an up-to-date version.</td>
+<td colspan=2 style="color: #008500; width: 20em;">This page loads cached data. You pressed the (O) or v2 link. You might want to go back to go to an up-to-date version.</td>
 </tr>
 <tr>
 <th>Name</th>
