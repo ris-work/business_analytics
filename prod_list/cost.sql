@@ -1,4 +1,6 @@
 .bail on
+.timer on
+.echo on
 BEGIN TRANSACTION;
 DELETE FROM prod_list_import;
 .import --csv cost.csv prod_list_import
