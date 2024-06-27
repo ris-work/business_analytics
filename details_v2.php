@@ -279,12 +279,14 @@ function displayChart(){
 	var sales_by_hour = new Chart(document.getElementById('sales_by_hour'),
 {
 	type: 'bar',
+			color: "#fff",
 	data: {
 		labels: sales_hours,
-		datasets: [{label: "Sales %", data: sales_hours_data, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#000", backgroundColor: "#000"}]
+		color: "#fff",
+		datasets: [{label: "Sales %", data: sales_hours_data, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#eee", backgroundColor: "#ff9", color: "#fff"}]
 	},
-		options: {scales: {y: {beginAtZero: true, max: 100, grid: {color: "#000"}, ticks: {color: "#000"}}, 
-				x: {grid: {color: "#000"}, ticks: {color: "#000"}}},
+		options: {scales: {y: {beginAtZero: true, max: 100, grid: {color: "#ccc"}, ticks: {color: "#ccc"}}, 
+				x: {grid: {color: "#ccc"}, ticks: {color: "#ccc"}}},
 			responsive: false
 		}
 }

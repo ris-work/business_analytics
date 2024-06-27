@@ -258,7 +258,7 @@ margin-left: 2%;
 	/*mix-blend-mode: difference;
 	/* height: min(66vh, 66vw) !important;
 	width: min(100vh, 100vw) !important; */
-		background: linear-gradient(to bottom, #88e, #faa);
+		background: linear-gradient(to bottom, #336, #944);
 	visibility:collapse;
 }
 
