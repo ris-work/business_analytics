@@ -45,7 +45,30 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	$t = $dbh->beginTransaction();
 	//$stmt_sql = $dbh->prepare("SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?");
 	$stmt_sql = $dbh->prepare(
-		"WITH closestfuturedatesfordate_prices AS NOT MATERIALIZED (SELECT itemcode, x AS date, max(daydate) AS closestfuturedate FROM dates JOIN hourly ON dates.x > hourly.daydate WHERE itemcode=? GROUP BY date) SELECT trendsfrommindate.date, closestsihbydate.sih AS SIH, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) AS s15, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS s30, total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 59 PRECEDING AND CURRENT ROW) AS s60, avg(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS avgrun, avgcost, avgsell FROM (SELECT total(quantity) as dailyqty, x as date, itemcode FROM dates LEFT JOIN (SELECT daydate, total(quantity) AS quantity, itemcode AS itemcode FROM hourly WHERE itemcode=? GROUP BY daydate) daily ON dates.x = daily.daydate WHERE x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) GROUP BY x ORDER BY x) trendsfrommindate LEFT JOIN (SELECT x AS date, sih FROM (SELECT itemcode, x, min(datetime) AS closestpointinfuture FROM (SELECT itemcode, futures.x, datetime FROM (SELECT dates.x AS x, datetime, itemcode, sih FROM(SELECT datetime, itemcode, sih FROM (SELECT datetime, itemcode, sih FROM sih_history UNION SELECT substr(datetime('now'), 1, 16) as datetime, CAST(itemcode AS int) AS itemcode, CAST(sih AS int) FROM sih_current) WHERE itemcode=? ORDER BY datetime) RIGHT JOIN dates ON datetime > dates.x ORDER BY dates.x DESC) futures JOIN dates ON dates.x = futures.x ORDER BY dates.x) GROUP BY x) nearestfuture JOIN (SELECT * FROM (SELECT datetime, itemcode, sih FROM sih_history UNION SELECT substr(datetime('now'), 1, 16) as datetime, CAST(itemcode AS int) AS itemcode, CAST(sih AS int) FROM sih_current) WHERE itemcode=? ORDER BY datetime) history ON history.datetime = nearestfuture.closestpointinfuture ORDER BY datetime) closestsihbydate ON trendsfrommindate.date = closestsihbydate.date LEFT JOIN (SELECT closestfuturedatesfordate_prices.itemcode, date, closestfuturedatesfordate_prices.closestfuturedate, sum(sumcost)/sum(quantity) AS avgcost, sum(sumsell)/sum(quantity) AS avgsell FROM closestfuturedatesfordate_prices JOIN hourly ON closestfuturedatesfordate_prices.itemcode = hourly.itemcode AND closestfuturedatesfordate_prices.closestfuturedate = hourly.daydate GROUP BY date) pricechanges ON pricechanges.date=trendsfrommindate.date"
+			"WITH closestfuturedatesfordate_prices AS NOT MATERIALIZED (
+					SELECT itemcode, x AS date, max(daydate) AS closestfuturedate FROM dates JOIN hourly ON dates.x > hourly.daydate WHERE itemcode=? GROUP BY date
+			) SELECT trendsfrommindate.date, closestsihbydate.sih AS SIH, 
+		total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) AS s15, 
+		total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS s30, 
+		total(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN 59 PRECEDING AND CURRENT ROW) AS s60, 
+		avg(dailyqty) OVER (ORDER BY trendsfrommindate.date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS avgrun, 
+		avgcost, avgsell 
+	FROM (
+		SELECT total(quantity) as dailyqty, x as date, itemcode FROM dates LEFT JOIN (SELECT daydate, total(quantity) AS quantity, itemcode AS itemcode FROM hourly WHERE itemcode=? GROUP BY daydate) daily ON dates.x = daily.daydate WHERE x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) GROUP BY x ORDER BY x
+) trendsfrommindate 
+		LEFT JOIN (
+			SELECT x AS date, sih FROM (
+				SELECT itemcode, x, min(datetime) AS closestpointinfuture FROM (
+					SELECT itemcode, futures.x, datetime FROM (
+						SELECT dates.x AS x, datetime, itemcode, sih FROM(SELECT datetime, itemcode, sih FROM (
+							SELECT datetime, itemcode, sih FROM sih_history UNION SELECT substr(datetime('now'), 1, 16) as datetime, CAST(itemcode AS int) AS itemcode, CAST(sih AS int) FROM sih_current
+						) WHERE itemcode=? ORDER BY datetime) RIGHT JOIN dates ON datetime > dates.x ORDER BY dates.x DESC
+					) futures JOIN dates ON dates.x = futures.x ORDER BY dates.x
+				) GROUP BY x
+			) nearestfuture 
+				JOIN (SELECT * FROM (SELECT datetime, itemcode, sih FROM sih_history UNION SELECT substr(datetime('now'), 1, 16) as datetime, CAST(itemcode AS int) AS itemcode, CAST(sih AS int) FROM sih_current) WHERE itemcode=? ORDER BY datetime) history ON history.datetime = nearestfuture.closestpointinfuture ORDER BY datetime
+		) closestsihbydate ON trendsfrommindate.date = closestsihbydate.date 
+		LEFT JOIN (SELECT closestfuturedatesfordate_prices.itemcode, date, closestfuturedatesfordate_prices.closestfuturedate, sum(sumcost)/sum(quantity) AS avgcost, sum(sumsell)/sum(quantity) AS avgsell FROM closestfuturedatesfordate_prices JOIN hourly ON closestfuturedatesfordate_prices.itemcode = hourly.itemcode AND closestfuturedatesfordate_prices.closestfuturedate = hourly.daydate GROUP BY date) pricechanges ON pricechanges.date=trendsfrommindate.date"
 	);
 	$stmt = $stmt_sql->execute([
 		$response->PLU_CODE,
