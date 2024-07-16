@@ -243,7 +243,7 @@ $t = $dbh->beginTransaction();
 $stmt_sql = $dbh->prepare(
 		"
 WITH maxdates AS MATERIALIZED (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode),
-     sales AS MATERIALIZED (SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly INDEXED BY hourly_sold_prices),
+     sales (SELECT itemcode, daydate, sumsell/quantity as asell, sumcost/quantity as acost FROM hourly INDEXED BY hourly_sold_prices),
      latestsell AS MATERIALIZED (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode
          FROM (sales
          JOIN maxdates
