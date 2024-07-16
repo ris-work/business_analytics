@@ -242,9 +242,10 @@ $dbh->query("pragma mmap_size=2000000000");
 $t = $dbh->beginTransaction();
 $stmt_sql = $dbh->prepare(
 		"
-WITH maxdates AS (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode),
+WITH maxdates AS MATERIALIZED (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode),
+     sales AS MATERIALIZED (SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly INDEXED BY hourly_sold_prices),
      latestsell AS MATERIALIZED (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode
-         FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly INDEXED BY hourly_index_for_trends) sales
+         FROM (sales
          JOIN maxdates
          ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate)
          GROUP BY sales.itemcode)
