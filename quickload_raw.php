@@ -254,7 +254,28 @@ $t_q1_start = microtime(true);
 $dbh->query("pragma mmap_size=2000000000");
 $t = $dbh->beginTransaction();
 $stmt_sql = $dbh->prepare(
-	"SELECT sih_current.itemcode AS PLU_CODE, desc AS PLU_DESC, sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV, (iif(iif(latestsell.asell > 0, latestsell.asell, selling.sell) > 0, iif(latestsell.asell > 0, latestsell.asell, selling.sell), full_inventory_current.sell)) AS PLU_SELL, sih_current.sih AS SIH, coalesce(iif(cost_purchase.cost > 0, cost_purchase.cost, latestsell.acost), 'UNKNOWN') AS cost FROM sih_current INDEXED BY sih_cast_covering LEFT JOIN selling INDEXED BY selling_covering ON selling.itemcode = sih_current.itemcode LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode LEFT JOIN (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly) sales JOIN (SELECT max(daydate) AS maxdate, itemcode FROM hourly INDEXED BY hourly_index_for_trends GROUP BY itemcode) maxdates ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate) GROUP BY sales.itemcode) latestsell ON latestsell.itemcode = sih_current.itemcode LEFT JOIN full_inventory_current INDEXED BY full_inventory_current_covering ON cast(sih_current.itemcode AS int) = full_inventory_current.itemcode"
+		"
+WITH maxdates AS MATERIALIZED (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode),
+     sales AS (SELECT itemcode, daydate, sumsell/quantity as asell, sumcost/quantity as acost FROM hourly INDEXED BY hourly_sold_prices),
+     latestsell AS MATERIALIZED (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode
+         FROM (sales
+         JOIN maxdates
+         ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate)
+         GROUP BY sales.itemcode)
+SELECT
+  sih_current.itemcode AS PLU_CODE,
+  desc AS PLU_DESC,
+  sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV,
+  (iif(iif(latestsell.asell > 0, latestsell.asell, selling.sell) > 0,
+       iif(latestsell.asell > 0, latestsell.asell, selling.sell),
+       full_inventory_current.sell)) AS PLU_SELL,
+  sih_current.sih AS SIH,
+  coalesce(iif(cost_purchase.cost > 0, cost_purchase.cost, latestsell.acost), 'UNKNOWN') AS cost
+FROM sih_current
+LEFT JOIN selling ON selling.itemcode = sih_current.itemcode
+LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode
+LEFT JOIN latestsell ON latestsell.itemcode = sih_current.itemcode
+LEFT JOIN full_inventory_current ON sih_current.itemcode = full_inventory_current.itemcode"
 );
 $stmt = $stmt_sql->execute();
 $cur_data = $stmt_sql->fetchAll();
@@ -276,6 +297,35 @@ $ta = $dbh->beginTransaction();
 //$stmta_sql = $dbh->prepare("SELECT ifnull(S_D60, 0) AS S_D60, ifnull(S_D30, 0) AS S_D30, ifnull(S_D15, 0) AS S_D15, everything.itemcode AS CODE FROM sih_current AS everything LEFT JOIN (SELECT total(quantity) as S_D60, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S60T ON everything.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S30T ON S30T.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) AS S15T ON S15T.itemcode = S30T.itemcode ");
 $stmta_sql = $dbh->prepare(
 	"SELECT ifnull(S_D60, 0) AS S_D60, ifnull(S_D30, 0) AS S_D30, ifnull(S_D15, 0) AS S_D15, everything.itemcode AS CODE FROM sih_current AS everything LEFT JOIN (SELECT total(quantity) as S_D60, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S60T ON everything.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D30, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) S30T ON S30T.itemcode = S60T.itemcode LEFT JOIN (SELECT total(quantity) AS S_D15, itemcode FROM hourly INDEXED BY hourly_index_for_trends_replaceme WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days') AND date((SELECT max(daydate) FROM hourly), '-1 day') GROUP BY itemcode) AS S15T ON S15T.itemcode = S30T.itemcode "
+);
+$stmta_sql = $dbh->prepare(
+	"SELECT
+  ifnull(S_D60, 0) AS S_D60,
+  ifnull(S_D30, 0) AS S_D30,
+  ifnull(S_D15, 0) AS S_D15,
+  everything.itemcode AS CODE
+FROM sih_current AS everything
+LEFT JOIN (
+  SELECT total(quantity) as S_D60, itemcode
+  FROM hourly
+  WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days')
+                     AND date((SELECT max(daydate) FROM hourly), '-1 day')
+  GROUP BY itemcode
+) S60T ON everything.itemcode = S60T.itemcode
+LEFT JOIN (
+  SELECT total(quantity) AS S_D30, itemcode
+  FROM hourly
+  WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days')
+                     AND date((SELECT max(daydate) FROM hourly), '-1 day')
+  GROUP BY itemcode
+) S30T ON S30T.itemcode = S60T.itemcode
+LEFT JOIN (
+  SELECT total(quantity) AS S_D15, itemcode
+  FROM hourly
+  WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days')
+                     AND date((SELECT max(daydate) FROM hourly), '-1 day')
+  GROUP BY itemcode
+) AS S15T ON S15T.itemcode = S30T.itemcode"
 );
 $stmta = $stmta_sql->execute();
 $past_data = $stmta_sql->fetchAll();
