@@ -2,14 +2,11 @@ CREATE TABLE hourly_changes('DATETIME', 'itemcode', 'daydate', 'timehour', 'qty'
 CREATE TABLE sqlite_stat1(tbl,idx,stat);
 CREATE TABLE cost(itemcode TEXT, daydate TEXT, cost TEXT, PRIMARY KEY (itemcode, daydate));
 CREATE TABLE cost_import(itemcode TEXT, daydate TEXT, cost TEXT);
-CREATE TABLE cost_purchase(itemcode TEXT, runno TEXT, date TEXT, cost TEXT, PRIMARY KEY (itemcode));
 CREATE TABLE IF NOT EXISTS "cost_purchase_import"(
 "itemcode" TEXT, "RUNNO" TEXT, "date" TEXT, "cost" TEXT);
-CREATE TABLE IF NOT EXISTS "sih_current_old"(itemcode TEXT, desc TEXT, sih TEXT, cost TEXT, sell TEXT, PRIMARY KEY (itemcode));
 CREATE TABLE IF NOT EXISTS "sih_import"(
 "PLU_CODE" TEXT, "PLU_DESC" TEXT, "SIH" TEXT, "COSTVALUE" TEXT,
  "SELLVALUE" TEXT);
-CREATE TABLE selling(itemcode TEXT, sell TEXT, PRIMARY KEY (itemcode));
 CREATE TABLE IF NOT EXISTS "selling_import"(
 "code" TEXT, "sell" TEXT);
 CREATE TABLE prod_list(dest TEXT NOT NULL, src TEXT NOT NULL, cost_src TEXT NOT NULL, proportion TEXT NOT NULL, PRIMARY KEY (dest, src)) STRICT;
@@ -25,7 +22,6 @@ CREATE TABLE IF NOT EXISTS "tentative_revenue_import"(
 "productcode" TEXT, "daydate" TEXT, "timehour" TEXT, "qty" TEXT,
  "sumsell" TEXT, "sumcost" TEXT);
 CREATE TABLE tentative_revenue ("itemcode" TEXT, "daydate" TEXT, "timehour" TEXT, "quantity" TEXT, sumsell NOT NULL DEFAULT 0, sumcost NOT NULL DEFAULT 0, PRIMARY KEY (itemcode, daydate, timehour)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS "hourly_old" ("itemcode" TEXT, "daydate" TEXT, "timehour" TEXT, "quantity" TEXT, sumsell NOT NULL DEFAULT 0, sumcost NOT NULL DEFAULT 0, PRIMARY KEY (itemcode, daydate, timehour)) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS "full_inventory_current_import"(
 "itemcode" TEXT, "sell" TEXT, "cost" TEXT);
 CREATE TABLE full_inventory_current (itemcode INT, sell REAL, cost REAL, PRIMARY KEY (itemcode)) STRICT;
@@ -42,12 +38,16 @@ CREATE TABLE prod_list_history(
 );
 CREATE TABLE IF NOT EXISTS "hourly" ("itemcode" INT, "daydate" TEXT, "timehour" INT, "quantity" INT, sumsell REAL NOT NULL DEFAULT 0, sumcost REAL NOT NULL DEFAULT 0, PRIMARY KEY (itemcode, daydate, timehour)) WITHOUT ROWID, STRICT;
 CREATE TABLE sih_current(itemcode INT, desc TEXT, sih REAL, cost REAL, sell REAL, PRIMARY KEY (itemcode)) WITHOUT ROWID, STRICT;
-CREATE INDEX cost_purchase_itemcode ON cost_purchase(itemcode);
 CREATE INDEX tentative_revenue_everything ON tentative_revenue(itemcode, daydate, timehour, sumsell, sumcost);
 CREATE INDEX full_inventory_current_covering ON full_inventory_current(itemcode, sell, cost);
-CREATE INDEX selling_covering ON selling(itemcode, sell);
-CREATE INDEX cost_purchase_covering ON cost_purchase(itemcode, runno, date, cost);
 CREATE INDEX sih_covering ON sih_current(itemcode, desc, sih, cost, sell);
+CREATE INDEX product_id_with_date_and_hour ON hourly (itemcode,daydate,timehour);
+CREATE INDEX updated_dates ON hourly(daydate);
+CREATE INDEX hourly_index_for_trends ON hourly(itemcode, daydate, quantity);
+CREATE INDEX hourly_index_for_trends_replaceme ON hourly(daydate, itemcode, quantity);
+CREATE INDEX hourly_sales_averages ON hourly(itemcode, daydate, sumsell/quantity, sumcost/quantity);
+CREATE INDEX hourly_covering ON hourly(itemcode, daydate, timehour, quantity, sumsell, sumcost);
+CREATE INDEX hourly_sold_prices ON hourly(itemcode, daydate, sumsell/quantity, sumcost/quantity);
 CREATE VIEW dates as WITH RECURSIVE day(x) as (VALUES(date('2019-01-01')) UNION ALL SELECT date(x, '+1 day') FROM day WHERE x<date('now')) SELECT x from day
 /* dates(x) */;
 CREATE VIEW cnt AS WITH RECURSIVE cnta(x) as (SELECT 0 UNION ALL SELECT x+1 FROM cnta WHERE x < 1000) SELECT x FROM cnta
@@ -57,11 +57,6 @@ CREATE VIEW full_inventory_history_latest AS SELECT latest.itemcode, cost, sell 
 /* full_inventory_history_latest(itemcode,cost,sell) */;
 CREATE TRIGGER sih_history_logger AFTER UPDATE ON sih_current FOR EACH ROW WHEN OLD.sih <> NEW.sih OR OLD.sell <> NEW.sell OR OLD.cost <> NEW.cost BEGIN INSERT INTO sih_history VALUES (datetime(), cast(OLD.itemcode as int), '', cast(OLD.sih AS INT), cast(OLD.cost AS REAL), cast(OLD.sell AS REAL)); END;
 CREATE TRIGGER sih_history_desc_logger AFTER UPDATE ON sih_current FOR EACH ROW WHEN OLD.desc <> NEW.desc BEGIN INSERT INTO sih_history_desc VALUES (datetime(), cast(OLD.itemcode AS int), OLD.desc); END;
-CREATE INDEX product_id_with_date_and_hour ON hourly (itemcode,daydate,timehour);
-CREATE INDEX updated_dates ON hourly(daydate);
-CREATE INDEX hourly_index_for_trends ON hourly(itemcode, daydate, quantity);
-CREATE INDEX hourly_index_for_trends_replaceme ON hourly(daydate, itemcode, quantity);
-CREATE INDEX hourly_sales_averages ON hourly(itemcode, daydate, sumsell/quantity, sumcost/quantity);
 CREATE VIEW last_imported AS SELECT max(daydate) FROM hourly
 /* last_imported("max(daydate)") */;
 CREATE VIEW hourly_existing_entries AS SELECT itemcode, daydate, timehour FROM hourly
@@ -71,3 +66,9 @@ CREATE VIEW everything_itemcode_in_hourly AS SELECT DISTINCT itemcode FROM hourl
 CREATE VIEW t_sumrev AS SELECT itemcode, sum(sumsell) AS cumulativesell, sum(sumcost) AS cumulativecost FROM hourly GROUP BY itemcode
 /* t_sumrev(itemcode,cumulativesell,cumulativecost) */;
 CREATE TRIGGER hourly_changes_logger BEFORE UPDATE ON hourly FOR EACH ROW BEGIN INSERT INTO hourly_changes VALUES (date()||'T'||time(), OLD.itemcode, OLD.daydate, OLD.timehour, OLD.quantity, OLD.quantity - NEW.quantity); END;
+CREATE TABLE IF NOT EXISTS "selling" (itemcode INT, sell REAL, PRIMARY KEY (itemcode)) STRICT, WITHOUT ROWID;
+CREATE TABLE cost_purchase_2 (itemcode INT, runno INT, date TEXT, cost TEXT, PRIMARY KEY (itemcode)) STRICT, WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS "cost_purchase" (itemcode INT, runno INT, date TEXT, cost REAL, PRIMARY KEY (itemcode)) STRICT, WITHOUT ROWID;
+CREATE INDEX cost_purchase_itemcode ON cost_purchase(itemcode);
+CREATE INDEX cost_purchase_covering ON cost_purchase(itemcode, runno, date, cost);
+CREATE INDEX selling_covering ON selling(itemcode, sell);
