@@ -256,7 +256,7 @@ LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode
 LEFT JOIN (
   SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode
   FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly) sales
-  JOIN (SELECT max(daydate) AS maxdate, itemcode FROM hourly INDEXED BY hourly_index_for_trends GROUP BY itemcode) maxdates
+  JOIN (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode) maxdates
   ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate)
   GROUP BY sales.itemcode
 ) latestsell ON latestsell.itemcode = sih_current.itemcode
@@ -286,21 +286,21 @@ $stmta_sql = $dbh->prepare(
 FROM sih_current AS everything
 LEFT JOIN (
   SELECT total(quantity) as S_D60, itemcode
-  FROM hourly INDEXED BY hourly_index_for_trends_replaceme
+  FROM hourly
   WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-61 days')
                      AND date((SELECT max(daydate) FROM hourly), '-1 day')
   GROUP BY itemcode
 ) S60T ON everything.itemcode = S60T.itemcode
 LEFT JOIN (
   SELECT total(quantity) AS S_D30, itemcode
-  FROM hourly INDEXED BY hourly_index_for_trends_replaceme
+  FROM hourly
   WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-31 days')
                      AND date((SELECT max(daydate) FROM hourly), '-1 day')
   GROUP BY itemcode
 ) S30T ON S30T.itemcode = S60T.itemcode
 LEFT JOIN (
   SELECT total(quantity) AS S_D15, itemcode
-  FROM hourly INDEXED BY hourly_index_for_trends_replaceme
+  FROM hourly
   WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-16 days')
                      AND date((SELECT max(daydate) FROM hourly), '-1 day')
   GROUP BY itemcode
