@@ -46,17 +46,17 @@ CREATE INDEX tentative_revenue_everything ON tentative_revenue(itemcode, daydate
 CREATE INDEX product_id_with_date_and_hour ON hourly (itemcode,daydate,timehour);
 CREATE INDEX updated_dates ON hourly(daydate);
 CREATE INDEX full_inventory_current_covering ON full_inventory_current(itemcode, sell, cost);
-CREATE INDEX sih_cast_covering ON sih_current(itemcode, desc, sih, cost, sell, cast(itemcode as int));
+-- CREATE INDEX sih_cast_covering ON sih_current(itemcode, desc, sih, cost, sell, cast(itemcode as int));
 CREATE INDEX hourly_index_for_trends ON hourly(itemcode, daydate, quantity);
 CREATE INDEX selling_covering ON selling(itemcode, sell);
 CREATE INDEX cost_purchase_covering ON cost_purchase(itemcode, runno, date, cost);
 CREATE INDEX hourly_index_for_trends_replaceme ON hourly(daydate, itemcode, quantity);
-CREATE INDEX hourly_sales_averages ON hourly(cast(itemcode AS int), daydate, sumsell/quantity, sumcost/quantity);
-CREATE INDEX maxdates_int ON hourly(cast(itemcode AS int), daydate);
-CREATE INDEX sih_cast_covering_beginning ON sih_current(cast(itemcode as int), desc, sih, cost, sell);
-CREATE INDEX hourly_index_for_trends_cast ON hourly(daydate, cast(itemcode AS int), quantity);
-CREATE INDEX sih_cast_covering_beginning_with_uncast ON sih_current(cast(itemcode as int), itemcode, desc, sih, cost, sell);
-CREATE INDEX hourly_index_for_trends_cast_with_uncast ON hourly(daydate, itemcode, cast(itemcode AS int), quantity);
+CREATE INDEX hourly_sales_averages ON hourly(itemcode AS int, daydate, sumsell/quantity, sumcost/quantity);
+--CREATE INDEX maxdates_int ON hourly(cast(itemcode AS int), daydate);
+--CREATE INDEX sih_cast_covering_beginning ON sih_current(cast(itemcode as int), desc, sih, cost, sell);
+--CREATE INDEX hourly_index_for_trends_cast ON hourly(daydate, cast(itemcode AS int), quantity);
+--CREATE INDEX sih_cast_covering_beginning_with_uncast ON sih_current(cast(itemcode as int), itemcode, desc, sih, cost, sell);
+--CREATE INDEX hourly_index_for_trends_cast_with_uncast ON hourly(daydate, itemcode, cast(itemcode AS int), quantity);
 CREATE VIEW dates as WITH RECURSIVE day(x) as (VALUES(date('2019-01-01')) UNION ALL SELECT date(x, '+1 day') FROM day WHERE x<date('now')) SELECT x from day
 /* dates(x) */;
 CREATE VIEW cnt AS WITH RECURSIVE cnta(x) as (SELECT 0 UNION ALL SELECT x+1 FROM cnta WHERE x < 1000) SELECT x FROM cnta
