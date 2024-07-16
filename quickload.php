@@ -241,7 +241,14 @@ $t_q1_start = microtime(true);
 $dbh->query("pragma mmap_size=2000000000");
 $t = $dbh->beginTransaction();
 $stmt_sql = $dbh->prepare(
-	"SELECT
+		"
+WITH maxdates AS (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode),
+     latestsell AS MATERIALIZED (SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode
+         FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly INDEXED BY hourly_index_for_trends) sales
+         JOIN maxdates
+         ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate)
+         GROUP BY sales.itemcode)
+SELECT
   sih_current.itemcode AS PLU_CODE,
   desc AS PLU_DESC,
   sih_current.sell/iif(sih=0,1,sih) AS PLU_SELL_AV,
@@ -253,13 +260,7 @@ $stmt_sql = $dbh->prepare(
 FROM sih_current
 LEFT JOIN selling ON selling.itemcode = sih_current.itemcode
 LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode
-LEFT JOIN (
-  SELECT min(asell) AS asell, max(acost) AS acost, maxdates.itemcode AS itemcode
-  FROM ((SELECT sumsell/quantity as asell, sumcost/quantity as acost, daydate, itemcode FROM hourly) sales
-  JOIN (SELECT max(daydate) AS maxdate, itemcode FROM hourly GROUP BY itemcode) maxdates
-  ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate)
-  GROUP BY sales.itemcode
-) latestsell ON latestsell.itemcode = sih_current.itemcode
+LEFT JOIN latestsell ON latestsell.itemcode = sih_current.itemcode
 LEFT JOIN full_inventory_current ON sih_current.itemcode = full_inventory_current.itemcode"
 );
 $stmt = $stmt_sql->execute();
