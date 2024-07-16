@@ -250,7 +250,7 @@ $stmt_sql = $dbh->prepare(
        full_inventory_current.sell)) AS PLU_SELL,
   sih_current.sih AS SIH,
   coalesce(iif(cost_purchase.cost > 0, cost_purchase.cost, latestsell.acost), 'UNKNOWN') AS cost
-FROM sih_current INDEXED BY sih_cast_covering
+FROM sih_current
 LEFT JOIN selling INDEXED BY selling_covering ON selling.itemcode = sih_current.itemcode
 LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode
 LEFT JOIN (
@@ -260,7 +260,7 @@ LEFT JOIN (
   ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate)
   GROUP BY sales.itemcode
 ) latestsell ON latestsell.itemcode = sih_current.itemcode
-LEFT JOIN full_inventory_current INDEXED BY full_inventory_current_covering ON cast(sih_current.itemcode AS int) = full_inventory_current.itemcode"
+LEFT JOIN full_inventory_current ON cast(sih_current.itemcode AS int) = full_inventory_current.itemcode"
 );
 $stmt = $stmt_sql->execute();
 $cur_data = $stmt_sql->fetchAll();
