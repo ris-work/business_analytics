@@ -417,7 +417,7 @@ function displayChart(){
 </tr>
 <?php foreach($data_cost_supl as $vendor){?>
 <tr>
-<td><a href="vendor.php?id=<?php echo $vendor["vendorcode"] ?>"><?php echo $vendor["vendorname"] ?></a></td>
+<td><a href="ql_sup.php?vendorcode=<?php echo $vendor["vendorcode"] ?>"><?php echo $vendor["vendorname"] ?></a></td>
 <td class="numeric-data"><?php echo number_format($vendor["cost"], 2) ?></td>
 </tr>
 <?php } ?>
