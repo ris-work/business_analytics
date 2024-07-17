@@ -111,6 +111,14 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	$stmt_cost_grn = $stmt_sql_cost_grn->execute([$response->PLU_CODE]);
 	$data_cost_grn = $stmt_sql_cost_grn->fetchAll();
 	$dbh_cost_grn->commit();
+	$dbh_cost_supl = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$t_cost_supl = $dbh_cost_supl->beginTransaction();
+	$stmt_sql_cost_supl = $dbh_cost_supl->prepare(
+		"SELECT vendors.vendorname, product_vendors.cost, vendors.vendorcode FROM product_vendors JOIN vendors ON vendors.vendorcode = product_vendors.vendorcode WHERE itemcode=?"
+	);
+	$stmt_cost_supl = $stmt_sql_cost_supl->execute([$response->PLU_CODE]);
+	$data_cost_supl = $stmt_sql_cost_supl->fetchAll();
+	$dbh_cost_supl->commit();
 	$last = $past_data[count($past_data) - 1];
 
 	function getsalesbyhour($itemcode)
@@ -397,6 +405,23 @@ function displayChart(){
 <td>Sells every:</td>
 <td>
 <span id="sells_every"></span>
+</td>
+</tr>
+<tr>
+<td>Vendors</td>
+<td>
+<table class="inner-table">
+<tr>
+<th>Vendor</th>
+<th>Cost</th>
+</tr>
+<?php foreach($data_cost_supl as $vendor){?>
+<tr>
+<td><a href="vendor.php?id=<?php echo $vendor["vendorcode"] ?>"><?php echo $vendor["vendorname"] ?></a></td>
+<td class="numeric-data"><?php echo number_format($vendor["cost"], 2) ?></td>
+</tr>
+<?php } ?>
+</table>
 </td>
 </tr>
 </table>
