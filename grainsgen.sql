@@ -89,8 +89,19 @@ INSERT INTO sqlite_stat1 VALUES('processed_types','processed_types','23 1');
 INSERT INTO sqlite_stat1 VALUES('grains','grains','20 1');
 CREATE INDEX covering_products ON products(itemcode, desc, cost, sell);
 COMMIT;
-INSERT INTO products(desc, cost, sell, itemcode) SELECT *, row_number() OVER () as itemcode FROM (SELECT grains.name || " " ||processed_types.name || " " || weights.weight || " " || packaging.name AS desc, cost * (1+processed_types.markup) * (weights.units) * (1+flavouring.markup) + packaging.surcharge AS cost, sell * (1+processed_types.markup) * (weights.units) * (1+flavouring.markup) + packaging.surcharge AS sell FROM grains JOIN processed_types JOIN weights JOIN packaging JOIN flavouring ORDER BY RANDOM() ) LIMIT 50000;
+INSERT INTO products(desc, cost, sell, itemcode) SELECT *, row_number() OVER () as itemcode FROM (SELECT grains.name || " " ||processed_types.name || " " || weights.weight || " " || packaging.name AS desc, cost * (1+processed_types.markup) * (weights.units) * (1+flavouring.markup) + packaging.surcharge AS cost, sell * (1+processed_types.markup) * (weights.units) * (1+flavouring.markup) + packaging.surcharge AS sell FROM grains JOIN processed_types JOIN weights JOIN packaging JOIN flavouring ORDER BY RANDOM() ) LIMIT 40000;
 INSERT INTO full_inventory_current SELECT itemcode, sell, cost FROM products;
 INSERT INTO cost_purchase SELECT itemcode, ABS(RANDOM()%100), date('now', '-10 days'), cost FROM products;
 INSERT INTO sih_current SELECT itemcode, desc, ABS(RANDOM()%1000), cost, sell FROM products;
 INSERT INTO hourly SELECT * FROM (WITH randomdates AS (SELECT x AS date FROM dates WHERE x BETWEEN datetime('now', '-90 days') AND datetime('now')), madeup AS (SELECT itemcode, randomdates.date, 10+ABS(RANDOM())%10 AS timehour, ABS(RANDOM())%100 AS qty, cost, sell FROM randomdates, products WHERE ABS(RANDOM()%4)=1) SELECT itemcode, date as daydate, timehour, qty AS quantity, sell*qty AS sumsell, cost*qty AS sumcost FROM madeup) ORDER BY RANDOM() LIMIT 1000000;
+INSERT INTO vendors VALUES (001, "FLAX VENDOR");
+INSERT INTO vendors VALUES (002, "RICE VENDOR");
+INSERT INTO vendors VALUES (003, "QUINOA VENDOR");
+INSERT INTO vendors VALUES (004, "WHEAT VENDOR");
+INSERT INTO product_vendors SELECT 001, itemcode, cost, sell FROM (SELECT itemcode, cost, sell FROM sih_current WHERE desc LIKE 'FLAX%');
+INSERT INTO product_vendors SELECT 002, itemcode, cost, sell FROM (SELECT itemcode, cost, sell FROM sih
+_current WHERE desc LIKE 'RICE%');
+INSERT INTO product_vendors SELECT 003, itemcode, cost, sell FROM (SELECT itemcode, cost, sell FROM sih
+_current WHERE desc LIKE 'QUINOA%');
+INSERT INTO product_vendors SELECT 004, itemcode, cost, sell FROM (SELECT itemcode, cost, sell FROM sih
+_current WHERE desc LIKE 'WHEAT%');
