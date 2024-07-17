@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS "sih_import"(
  "SELLVALUE" TEXT);
 CREATE TABLE IF NOT EXISTS "selling_import"(
 "code" TEXT, "sell" TEXT);
-CREATE TABLE prod_list(dest TEXT NOT NULL, src TEXT NOT NULL, cost_src TEXT NOT NULL, proportion TEXT NOT NULL, PRIMARY KEY (dest, src)) STRICT;
 CREATE TABLE IF NOT EXISTS "prod_list_import"(
 "dest" TEXT, "src" TEXT, "cost_src" TEXT, "proportion" TEXT);
 CREATE TABLE inventory(itemcode TEXT NOT NULL, productname TEXT, PRIMARY KEY (itemcode)) STRICT;
@@ -41,6 +40,11 @@ CREATE TABLE IF NOT EXISTS "selling" (itemcode INT, sell REAL, PRIMARY KEY (item
 CREATE TABLE cost_purchase_2 (itemcode INT, runno INT, date TEXT, cost TEXT, PRIMARY KEY (itemcode)) STRICT, WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS "cost_purchase" (itemcode INT, runno INT, date TEXT, cost REAL, PRIMARY KEY (itemcode)) STRICT, WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS "cost"(itemcode INT, daydate TEXT, cost REAL, PRIMARY KEY(itemcode, daydate));
+CREATE TABLE product_vendors_import(itemcode, vendorcode, cost, sell, PRIMARY KEY (itemcode, vendorcode));
+CREATE TABLE product_vendors(itemcode INT, vendorcode INT, cost REAL, sell REAL, PRIMARY KEY (itemcode, vendorcode)) STRICT, WITHOUT ROWID;
+CREATE TABLE vendors_import(vendorcode, vendorname, PRIMARY KEY (vendorcode));
+CREATE TABLE vendors(vendorcode INT, vendorname TEXT, PRIMARY KEY (vendorcode)) STRICT, WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS "prod_list"(dest INT NOT NULL, src INT NOT NULL, cost_src REAL NOT NULL, proportion REAL NOT NULL, PRIMARY KEY (dest, src)) STRICT, WITHOUT ROWID;
 CREATE INDEX tentative_revenue_everything ON tentative_revenue(itemcode, daydate, timehour, sumsell, sumcost);
 CREATE INDEX full_inventory_current_covering ON full_inventory_current(itemcode, sell, cost);
 CREATE INDEX sih_covering ON sih_current(itemcode, desc, sih, cost, sell);

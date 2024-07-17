@@ -40,3 +40,15 @@ pwsh cost.ps1
 sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
 rm cost.csv
 cd ..
+cd vendor_details
+echo vendor_details
+pwsh cost.ps1
+sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
+rm cost.csv
+cd ..
+cd product_vendors
+echo product_vendors
+pwsh cost.ps1
+sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
+rm cost.csv
+cd ..
