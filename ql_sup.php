@@ -84,6 +84,7 @@ async function displaySelected(){
 				}else{break;}
 			}
 			//console.log(analytics);
+			data_with_analytics.sort((a,b) => {var cmp = (a.SIH/a.S_D60) - (b.SIH/b.S_D60); if(!isNaN(cmp)) return cmp; else if(isNaN(a.SIH/a.S_D60)) return 1; else return -1;});
 			console.log(data_with_analytics);
 		}
 		pretty_print_filtered((data_with_analytics));
@@ -295,12 +296,20 @@ $dbh->commit();
 $ta = $dbh->beginTransaction();
 $stmta_sql = $dbh->prepare(
 	"SELECT
+  ifnull(S_A, 0) AS S_A,
   ifnull(S_D60, 0) AS S_D60,
   ifnull(S_D30, 0) AS S_D30,
   ifnull(S_D15, 0) AS S_D15,
   everything.itemcode AS CODE
 FROM product_vendors
 INNER JOIN sih_current AS everything ON product_vendors.itemcode = everything.itemcode
+LEFT JOIN (
+  SELECT total(quantity) as S_A, itemcode
+  FROM hourly
+  WHERE daydate BETWEEN date((SELECT max(daydate) FROM hourly), '-366 days')
+                     AND date((SELECT max(daydate) FROM hourly), '-1 day')
+  GROUP BY itemcode
+) SAT ON everything.itemcode = SAT.itemcode
 LEFT JOIN (
   SELECT total(quantity) as S_D60, itemcode
   FROM hourly
