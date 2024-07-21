@@ -16,6 +16,8 @@ $req = curl_init();
 curl_setopt($req, CURLOPT_URL, "$BASEURL/$ID");
 curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
+echo "Taking time? Try cached results <a href=\"details_v2.php?id=$ID\">HERE</a>.";
+ob_flush();
 $response = json_decode(curl_exec($req));
 //var_dump($response);
 if ($response && !property_exists($response, "Message")) {

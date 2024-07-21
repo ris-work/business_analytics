@@ -42,6 +42,13 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	//var_dump($response_analytics);
 	$dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
 	$dbh->query("pragma mmap_size=2000000000");
+	$t_lookup = $dbh->beginTransaction();
+	$stmt_lookup = $dbh->prepare(
+			"SELECT itemcode FROM (SELECT itemcode AS barcode, itemcode FROM sih_current UNION ALL SELECT barcode, itemcode FROM barcodes WHERE barcode NOT IN (SELECT itemcode FROM sih_current)) WHERE barcode=CAST(? AS int)"
+	);
+	$stmt_lookup->execute([$response->PLU_CODE]);
+	$response->PLU_CODE = ($stmt_lookup->fetchAll())[0][0];
+	$dbh->commit();
 	$t = $dbh->beginTransaction();
 	//$stmt_sql = $dbh->prepare("SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?");
 	$stmt_sql = $dbh->prepare(
