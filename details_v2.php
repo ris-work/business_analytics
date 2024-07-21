@@ -334,7 +334,7 @@ function displayChart(){
 	data: {
 		labels: sales_hours,
 		color: "#fff",
-		datasets: [{label: "Sales %", data: sales_hours_data, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#eee", backgroundColor: "#ff9", color: "#fff"}]
+		datasets: [{label: "Sales %", data: sales_hours_data, tenstion: 0.8, cubicInterpolationMode: 'monotone', borderColor: "#eee", backgroundColor: "#ff9", color: "#fff", background: "linear-gradient(to right, rgb(30, 77, 125) 0%, rgb(19, 108, 132) 27%, rgb(140, 154, 81) 47%, rgb(125, 136, 102) 61%, rgb(26, 103, 141) 73%, rgb(128, 60, 60) 99%);;"}]
 	},
 		options: {scales: {y: {beginAtZero: true, max: 100, grid: {color: "#ccc"}, ticks: {color: "#ccc"}}, 
 				x: {grid: {color: "#ccc"}, ticks: {color: "#ccc"}}},
@@ -433,8 +433,8 @@ function displayChart(){
 </tr>
 </table>
 <details>
-<summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:42%; width:42%;"> </button></summary>
-<summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:42%; width:42%;"> </button></summary>
+<summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:2em; width:2em;"> </button></summary>
+<summary><button class="btn goback" > <img  src="icons/down_button.png" style= "height:2em; width:2em;"> </button></summary>
 <table class="others">
 <tr>
 <th scope="col">Field</th>
@@ -471,7 +471,7 @@ echo "<pre>" .
 ?>
 </details>
 <div class="centered-container">
-<div style="background: linear-gradient(180deg, lightseagreen, red)">
+<div style="background: linear-gradient(180deg, lightseagreen, red);">
 <!--<span style="mix-blend-mode: color-burn; color: white; background: black">Hello! Chart area...</span>-->
 <div style="background: white; mix-blend-mode: lighten;">
 <canvas id="chart_sih" style="" width="795" height="650"></canvas>

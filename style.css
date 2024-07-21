@@ -259,6 +259,7 @@ margin-left: 2%;
 	/* height: min(66vh, 66vw) !important;
 	width: min(100vh, 100vw) !important; */
 		background: linear-gradient(to bottom, #336, #944);
+		background: linear-gradient(to right, rgb(30, 77, 125) 0%, rgb(19, 108, 132) 27%, rgb(140, 154, 81) 47%, rgb(125, 136, 102) 61%, rgb(26, 103, 141) 73%, rgb(128, 60, 60) 99%);
 	visibility:collapse;
 }
 
