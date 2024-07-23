@@ -154,7 +154,7 @@ function generate_table_row(v){
 		row.appendChild(generate_stock_data_element((v.S_D30-v.SIH) < 0 ? 0 : v.S_D30 - v.SIH));
 		row.appendChild(generate_stock_data_element((v.S_D60-v.SIH) <0 ? 0 : v.S_D60 - v.SIH));
 		row.appendChild(generate_stock_data_element((v.SIH/v.S_D60)*60));
-		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE}`, "More"));
+		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE.toString().padStart(6,'0')}`, "More"));
 		row.appendChild(generate_link_element(`details_v2.php?id=${v.PLU_CODE}`, "(O)"));
 		//if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
 		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";

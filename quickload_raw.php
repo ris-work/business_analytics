@@ -145,7 +145,7 @@ function generate_table_row(v){
 	row = document.createElement("tr");
 	//console.log(v);
 	if(v){
-		row.appendChild(generate_data_element(v.PLU_CODE));
+		row.appendChild(generate_right_data_element(v.PLU_CODE));
 		row.appendChild(generate_data_element(v.PLU_DESC));
 		row.appendChild(generate_numeric_data_element(v.PLU_SELL));
 		row.appendChild(generate_numeric_data_element(v.cost));
@@ -154,7 +154,7 @@ function generate_table_row(v){
 		row.appendChild(generate_stock_data_element((v.S_D30) < 0 ? 0 : v.S_D30));
 		row.appendChild(generate_stock_data_element((v.S_D60) <0 ? 0 : v.S_D60));
 		row.appendChild(generate_stock_data_element((v.SIH/v.S_D60)*60));
-		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE}`, "More"));
+		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE.toString().padStart(6, '0')}`, "More"));
 		row.appendChild(generate_link_element(`details_v2.php?id=${v.PLU_CODE}`, "(O)"));
 		//if(!v.PLU_ACTIVE) {row.style.backgroundColor="darkcyan"};
 		if(parseInt(v.SIH)==0 && parseInt(v.S_D15)==0 && parseInt(v.S_D30)==0 && parseInt(v.S_D60)==0) row.className = "always-empty";
@@ -175,6 +175,12 @@ function generate_data_element(text){
 function generate_numeric_data_element(text){
 	var de = document.createElement('td');
 	de.innerText = Number.parseFloat(text).toFixed(2);
+	de.className += " numeric-data";
+	return de;
+}
+function generate_right_data_element(text){
+	var de = document.createElement('td');
+	de.innerText = Number.parseFloat(text).toFixed(0);
 	de.className += " numeric-data";
 	return de;
 }
@@ -261,7 +267,13 @@ WITH maxdates AS MATERIALIZED (SELECT max(daydate) AS maxdate, itemcode FROM hou
          FROM (sales
          JOIN maxdates
          ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate)
-         GROUP BY sales.itemcode)
+         GROUP BY sales.itemcode),
+	 possible_barcodes AS (SELECT itemcode, group_concat(barcode, ',') AS possible_barcodes 
+		 FROM (
+			SELECT itemcode AS barcode, itemcode FROM sih_current UNION ALL 
+			SELECT barcode, itemcode FROM barcodes WHERE barcode NOT IN (SELECT itemcode FROM sih_current)
+		 )
+		 GROUP BY itemcode)
 SELECT
   sih_current.itemcode AS PLU_CODE,
   desc AS PLU_DESC,
@@ -270,12 +282,15 @@ SELECT
        iif(latestsell.asell > 0, latestsell.asell, selling.sell),
        full_inventory_current.sell)) AS PLU_SELL,
   sih_current.sih AS SIH,
-  coalesce(iif(cost_purchase.cost > 0, cost_purchase.cost, latestsell.acost), 'UNKNOWN') AS cost
+  coalesce(iif(cost_purchase.cost > 0, cost_purchase.cost, latestsell.acost), 'UNKNOWN') AS cost,
+  possible_barcodes
 FROM sih_current
 LEFT JOIN selling ON selling.itemcode = sih_current.itemcode
 LEFT JOIN cost_purchase ON cost_purchase.itemcode = sih_current.itemcode
 LEFT JOIN latestsell ON latestsell.itemcode = sih_current.itemcode
-LEFT JOIN full_inventory_current ON sih_current.itemcode = full_inventory_current.itemcode"
+LEFT JOIN full_inventory_current ON sih_current.itemcode = full_inventory_current.itemcode
+LEFT JOIN possible_barcodes ON sih_current.itemcode = possible_barcodes.itemcode
+"
 );
 $stmt = $stmt_sql->execute();
 $cur_data = $stmt_sql->fetchAll();
