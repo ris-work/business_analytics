@@ -223,7 +223,7 @@ function loaded(){
 		document.getElementById("abjad").addEventListener("change", updateOptions)
 		document.getElementById("starts-with").addEventListener("change", updateOptions)
 		json_p=list_p;
-	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC); return copy});
+	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.PLU_DESC + copy.possible_barcodes); return copy});
 	json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
 	Clock = window.setInterval(displaySelected, 250);
 }
@@ -268,7 +268,7 @@ WITH maxdates AS MATERIALIZED (SELECT max(daydate) AS maxdate, itemcode FROM hou
          JOIN maxdates
          ON maxdates.itemcode = sales.itemcode AND maxdates.maxdate = sales.daydate)
          GROUP BY sales.itemcode),
-	 possible_barcodes AS (SELECT itemcode, group_concat(barcode, ',') AS possible_barcodes 
+	 possible_barcodes AS (SELECT itemcode, group_concat(format('%013d', barcode), ',') AS possible_barcodes 
 		 FROM (
 			SELECT itemcode AS barcode, itemcode FROM sih_current UNION ALL 
 			SELECT barcode, itemcode FROM barcodes WHERE barcode NOT IN (SELECT itemcode FROM sih_current)
