@@ -418,6 +418,7 @@ echo "<script>var lista = " .
 		<link rel="apple-touch-icon" size="152x152" type="image/png" href="/srm-icons/barcode_152.png" />
 		<link rel="apple-touch-icon" size="any" type="image/svg+xml" href="/srm-icons/barcode.svg" />
 		<script src="html5-qrcode.min.js" type="text/javascript"></script>
+		<script src="printd.umd.min.js" type="module"></script>
 		<script>
 			document.addEventListener("DOMContentLoaded", start)
 			document.addEventListener("DOMContentLoaded", initevents)
@@ -502,18 +503,6 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <div id="printer"></div>
 <details>
 <summary>More details</summary>
-<table class="others">
-<tr>
-<th scope="col">Field</th>
-<th scope="col">Value</th>
-</tr>
- /*foreach($response as $field=>$value) { ?>
-<tr>
-<td><?php echo $field; ?></td>
-<td><?php var_dump($value); ?></td>
-</tr>
-<?php //} ?>
-</table>
 <?php
 //echo "<pre>".json_encode($response, JSON_PRETTY_PRINT)."</pre>";
 
