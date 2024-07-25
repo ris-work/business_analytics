@@ -52,3 +52,9 @@ pwsh cost.ps1
 sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
 rm cost.csv
 cd ..
+cd barcode
+echo barcode
+pwsh cost.ps1
+sqlite3 /saru/www-data/hourly.sqlite3 ".read cost.sql"
+rm cost.csv
+cd ..
