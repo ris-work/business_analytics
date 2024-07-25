@@ -148,15 +148,16 @@ function pretty_print_filtered(filtered){
 	table.style.borderCollapse="collapse";
 	heading_row = document.createElement("tr");
 	heading_row.appendChild(generate_data_heading("S"));
-	heading_row.appendChild(generate_data_heading("Code"));
+	heading_row.appendChild(generate_data_heading_noprint("Code"));
 	heading_row.appendChild(generate_data_heading("Description"));
 	heading_row.appendChild(generate_data_heading_noprint("Sell"));
 	heading_row.appendChild(generate_data_heading_noprint("Cost"));
 	heading_row.appendChild(generate_data_heading("SIH"));
-	heading_row.appendChild(generate_data_heading("Sold (15)"));
-	heading_row.appendChild(generate_data_heading("S (30)"));
-	heading_row.appendChild(generate_data_heading("S (60)"));
-	heading_row.appendChild(generate_data_heading("DL"));
+	heading_row.appendChild(generate_data_heading("Want"));
+	heading_row.appendChild(generate_data_heading_noprint("Sold (15)"));
+	heading_row.appendChild(generate_data_heading_noprint("S (30)"));
+	heading_row.appendChild(generate_data_heading_noprint("S (60)"));
+	heading_row.appendChild(generate_data_heading_noprint("DL"));
 	heading_row.appendChild(generate_data_heading_noprint("MORE"));
 	heading_row.appendChild(generate_data_heading_noprint("(O)"));
 	heading_row_bottom = heading_row.cloneNode(true);
@@ -171,7 +172,7 @@ function generate_table_row(v,k){
 	row = document.createElement("tr");
 	//console.log(v);
 	if(v){
-		var seq_no = generate_right_data_element(k);
+		var seq_no = generate_right_serial_element(k);
 		seq_no.id="seq_no";
 		row.appendChild(seq_no);
 		row.appendChild(generate_right_data_element(v.PLU_CODE));
@@ -179,10 +180,11 @@ function generate_table_row(v,k){
 		row.appendChild(generate_numeric_data_element(v.PLU_SELL));
 		row.appendChild(generate_numeric_data_element(v.cost));
 		row.appendChild(generate_stock_data_element(v.SIH));
-		row.appendChild(generate_stock_data_element((v.S_D15) < 0 ? 0 : v.S_D15));
-		row.appendChild(generate_stock_data_element((v.S_D30) < 0 ? 0 : v.S_D30));
-		row.appendChild(generate_stock_data_element((v.S_D60) <0 ? 0 : v.S_D60));
-		row.appendChild(generate_stock_data_element((v.SIH/v.S_D60)*60));
+		row.appendChild(generate_textbox_element((v.S_D15 - v.SIH) < 0 ? 0 : v.S_D15 - v.SIH));
+		row.appendChild(generate_stock_data_element_noprint((v.S_D15) < 0 ? 0 : v.S_D15));
+		row.appendChild(generate_stock_data_element_noprint((v.S_D30) < 0 ? 0 : v.S_D30));
+		row.appendChild(generate_stock_data_element_noprint((v.S_D60) <0 ? 0 : v.S_D60));
+		row.appendChild(generate_stock_data_element_noprint((v.SIH/v.S_D60)*60));
 		row.appendChild(generate_link_element(`details.php?id=${v.PLU_CODE.toString().padStart(6, '0')}`, "More"));
 		row.appendChild(generate_link_element(`details_v2.php?id=${v.PLU_CODE}`, "(O)"));
 		row.appendChild(generate_button_close_element());
@@ -196,6 +198,20 @@ function generate_table_row(v,k){
 		
 	}
 	return row;
+}
+function generate_textbox_element(text){
+	var de = document.createElement('td');
+	var tb = document.createElement('input');
+	tb.type = "text";
+	tb.value = text;
+	tb.maxLength = 3;
+	tb.style.width = "3.6em";
+	tb.style.fontSize = "1.2em";
+	tb.style.textAlign = "right";
+	tb.style.background = "rgba(255,255,255,0)";
+	tb.style.fontFamily = "Courier New, MONOSPACE";
+	de.appendChild(tb);
+	return de;
 }
 function generate_data_element(text){
 	var de = document.createElement('td');
@@ -213,6 +229,13 @@ function generate_right_data_element(text){
 	var de = document.createElement('td');
 	de.innerText = Number.parseFloat(text).toFixed(0);
 	de.className += " numeric-data";
+	de.className += " no-print";
+	return de;
+}
+function generate_right_serial_element(text){
+	var de = document.createElement('td');
+	de.innerText = Number.parseFloat(text).toFixed(0);
+	de.className += " numeric-data";
 	return de;
 }
 function generate_stock_data_element(text){
@@ -224,6 +247,18 @@ function generate_stock_data_element(text){
 	de.className += " stock-data";
 	}
 	else {de.innerText="E"}
+	return de;
+}
+function generate_stock_data_element_noprint(text){
+	var de = document.createElement('td');
+	if(!(text == "NaN") && !isNaN(text)){
+	//de.innerText = Number.parseFloat(text).toFixed(1);
+	de.innerText = text != Infinity ? Number.parseFloat(text).toFixed(1) : "I";
+	de.className += " numeric-data";
+	de.className += " stock-data";
+	}
+	else {de.innerText="E"}
+	de.className += " no-print";
 	return de;
 }
 var removal_locked = false;
@@ -499,7 +534,7 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <summary>More options...</summary>
 <div class="centered-container">
 <button onclick="(new printd.Printd()).print(document.getElementById('printer'), ['https://in.test.vz.al/scan/style.css'])">Print/export PDF</button>
-<button onclick="">Print/export CSV</button>
+<button onclick="">Copy as TSV</button>
 </div>
 <fieldset id="search-options">
 <legend>Search options:</legend>
