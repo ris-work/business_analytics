@@ -20,10 +20,12 @@ function updateSelected(e){
 }
 function goBack(){window.location.assign("/scan/")}
 var Blocked=false;
+var json_filtered = [];
 function lookupAndAdd(barcode){
+		console.log(`Called to add: ${barcode}`);
 		if(barcode && barcode.length < 6 && barcode.length >= 1) return;
 		if(barcode)
-			json_filtered.push(...json_pa.filter(a => a.PLU_DESC.contains(barcode)));
+			json_filtered.push(...json_pa.filter(a => a.PLU_DESC.includes(barcode)));
 		data = json_filtered;
 		localStorage.setItem("looked_up", JSON.stringify(json_filtered));
 		var data_with_analytics=[];
@@ -268,7 +270,7 @@ function updateOptions(){
 var json_p, json_pa;
 function loaded(){
 	document.getElementById("back").addEventListener("click", goBack)
-		document.getElementById("search").addEventListener("input", updateSelected)
+		//document.getElementById("search").addEventListener("input", updateSelected)
 		document.getElementById("abjad").addEventListener("change", updateOptions)
 		document.getElementById("starts-with").addEventListener("change", updateOptions)
 		json_p=list_p;
@@ -405,6 +407,56 @@ echo "<script>var lista = " .
 //var_dump($response);
 ?>
 	<title>DETAILS: <?php echo $lastu[0][0]; ?></title>
+		<link rel="stylesheet" type="text/css" href="style.css?ref=no-cache-5" />
+		<link rel="icon" type="image/svg+xml" href="/srm-icons/barcode.svg" />
+		<link rel="apple-touch-icon" size="180x180" type="image/png" href="/srm-icons/barcode_180.png" />
+		<link rel="apple-touch-icon" size="120x120" type="image/png" href="/srm-icons/barcode_120.png" />
+		<link rel="apple-touch-icon" size="152x152" type="image/png" href="/srm-icons/barcode_152.png" />
+		<link rel="apple-touch-icon" size="any" type="image/svg+xml" href="/srm-icons/barcode.svg" />
+		<script src="html5-qrcode.min.js" type="text/javascript"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", start)
+			document.addEventListener("DOMContentLoaded", initevents)
+			var htmlQrcodeScanner;
+			var qrbox_size=200;
+			function start(){
+				var resultContainer = document.getElementById('qr-reader-results');
+				var lastResult, countResults = 0;
+
+				function onScanSuccess(decodedText, decodedResult) {
+					console.log(`1: Scan result ${decodedText}`, decodedResult);
+					//if (decodedText !== lastResult) {
+						++countResults;
+						lastResult = decodedText;
+						// Handle on success condition with the decoded message.
+						console.log(`2: Scan result ${decodedText}`, decodedResult);
+						lookupAndAdd(`${decodedText}`);
+						console.log(`3: Scan result ${decodedText}`, decodedResult);
+					//}
+				}
+
+				html5QrcodeScanner = new Html5QrcodeScanner(
+					"qr-reader", { fps: 10, qrbox: qrbox_size, aspectRatio: 0.5, 
+						videoConstraints: {
+							/*"zoom": {ideal: 0.5},*/
+							facingMode: {ideal: "environment"},
+							focusMode: "continuous",
+							height: {ideal: 1080}
+							/*"height": {"min": 1080}*/
+						} 
+					});
+				html5QrcodeScanner.render(onScanSuccess);
+			}
+			async function stop(){
+				await html5QrcodeScanner.clear();
+			}
+			async function restart(){await stop();start();}
+			function initevents(){
+			document.getElementById("qrbox_l").addEventListener("click", function(){qrbox_size=300; restart()});
+			document.getElementById("qrbox_m").addEventListener("click", function(){qrbox_size=200; restart()});
+			document.getElementById("qrbox_s").addEventListener("click", function(){qrbox_size=150; restart()});
+			}
+		</script>
 <script>
 list_p.forEach((v) => {DataCache.set(v.PLU_CODE, v)});
 list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
@@ -414,7 +466,18 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 <button onclick="goback()" class="navigation-button" style="position: fixed; bottom: 0; left: 0; font-size: 4vh; z-index: 2;" id="back">🔙 Go back!</button><br />
 <div class="centered-container">
 <span class="notice">Data loaded on (please check today's date): <?php echo $lastu[0][0]; ?></span> <br />
-<input type="text" placeholder="Search (enter at least 3 letters)... 🔍" id="search" /><br />
+		<div id="everything">
+		<div id="qr-reader" style="width:50vw"></div>
+		<div id="qr-reader-results"></div><br />
+		<br />
+		<br />
+		<div class="centered-container">
+		<button id="qrbox_l">QRbox: large</button>
+		<button id="qrbox_m">QRbox: med</button>
+		<button id="qrbox_s">QRbox: small</button>
+		</div>
+		<br />
+		</div>
 </div>
 <details>
 <summary>More options...</summary>
