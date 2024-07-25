@@ -150,8 +150,8 @@ function pretty_print_filtered(filtered){
 	heading_row.appendChild(generate_data_heading("S"));
 	heading_row.appendChild(generate_data_heading("Code"));
 	heading_row.appendChild(generate_data_heading("Description"));
-	heading_row.appendChild(generate_data_heading("Sell"));
-	heading_row.appendChild(generate_data_heading("Cost"));
+	heading_row.appendChild(generate_data_heading_noprint("Sell"));
+	heading_row.appendChild(generate_data_heading_noprint("Cost"));
 	heading_row.appendChild(generate_data_heading("SIH"));
 	heading_row.appendChild(generate_data_heading("Sold (15)"));
 	heading_row.appendChild(generate_data_heading("S (30)"));
@@ -205,6 +205,7 @@ function generate_data_element(text){
 function generate_numeric_data_element(text){
 	var de = document.createElement('td');
 	de.innerText = Number.parseFloat(text).toFixed(2);
+	de.className += " no-print";
 	de.className += " numeric-data";
 	return de;
 }
