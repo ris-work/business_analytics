@@ -277,6 +277,10 @@ function loaded(){
 	json_pa=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = normalize(copy.possible_barcodes); return copy});
 	json_pl=json_p.map(v => {var copy = Object.assign({}, v); copy.PLU_DESC = (copy.PLU_DESC.toLowerCase()); return copy});
 	Clock = window.setInterval(displaySelected, 250);
+	if(localStorage.getItem("looked_up")){
+			json_filtered = JSON.parse(localStorage.getItem("looked_up"));
+			lookupAndAdd();
+	}
 }
 function normalize(string) {
 	string = string.toLowerCase()
@@ -418,6 +422,7 @@ echo "<script>var lista = " .
 			document.addEventListener("DOMContentLoaded", start)
 			document.addEventListener("DOMContentLoaded", initevents)
 			var htmlQrcodeScanner;
+			var lastScanResult="";
 			var qrbox_size=200;
 			function start(){
 				var resultContainer = document.getElementById('qr-reader-results');
@@ -425,14 +430,14 @@ echo "<script>var lista = " .
 
 				function onScanSuccess(decodedText, decodedResult) {
 					console.log(`1: Scan result ${decodedText}`, decodedResult);
-					//if (decodedText !== lastResult) {
+					if (decodedText !== lastScanResult) {
 						++countResults;
-						lastResult = decodedText;
+						lastScanResult = decodedText;
 						// Handle on success condition with the decoded message.
 						console.log(`2: Scan result ${decodedText}`, decodedResult);
 						lookupAndAdd(`${decodedText}`);
 						console.log(`3: Scan result ${decodedText}`, decodedResult);
-					//}
+					}
 				}
 
 				html5QrcodeScanner = new Html5QrcodeScanner(
