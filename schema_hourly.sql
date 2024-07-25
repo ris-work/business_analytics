@@ -45,6 +45,8 @@ CREATE TABLE product_vendors(itemcode INT, vendorcode INT, cost REAL, sell REAL,
 CREATE TABLE vendors_import(vendorcode, vendorname, PRIMARY KEY (vendorcode));
 CREATE TABLE vendors(vendorcode INT, vendorname TEXT, PRIMARY KEY (vendorcode)) STRICT, WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS "prod_list"(dest INT NOT NULL, src INT NOT NULL, cost_src REAL NOT NULL, proportion REAL NOT NULL, PRIMARY KEY (dest, src)) STRICT, WITHOUT ROWID;
+CREATE TABLE barcodes(barcode INT, itemcode INT, PRIMARY KEY (barcode, itemcode)) STRICT, WITHOUT ROWID;
+CREATE TABLE barcodes_import(barcode TEXT, itemcode TEXT);
 CREATE INDEX tentative_revenue_everything ON tentative_revenue(itemcode, daydate, timehour, sumsell, sumcost);
 CREATE INDEX full_inventory_current_covering ON full_inventory_current(itemcode, sell, cost);
 CREATE INDEX sih_covering ON sih_current(itemcode, desc, sih, cost, sell);
@@ -58,6 +60,10 @@ CREATE INDEX hourly_sold_prices ON hourly(itemcode, daydate, sumsell/quantity, s
 CREATE INDEX cost_purchase_itemcode ON cost_purchase(itemcode);
 CREATE INDEX cost_purchase_covering ON cost_purchase(itemcode, runno, date, cost);
 CREATE INDEX selling_covering ON selling(itemcode, sell);
+CREATE INDEX product_vendors_covering ON product_vendors(vendorcode, itemcode, cost, sell);
+CREATE INDEX vendors_covering ON vendors(vendorcode, vendorname);
+CREATE INDEX barcode_covering ON barcodes(barcode, itemcode);
+CREATE INDEX barcode_covering_reverse ON barcodes(itemcode, barcode);
 CREATE VIEW dates as WITH RECURSIVE day(x) as (VALUES(date('2019-01-01')) UNION ALL SELECT date(x, '+1 day') FROM day WHERE x<date('now')) SELECT x from day
 /* dates(x) */;
 CREATE VIEW cnt AS WITH RECURSIVE cnta(x) as (SELECT 0 UNION ALL SELECT x+1 FROM cnta WHERE x < 1000) SELECT x FROM cnta
