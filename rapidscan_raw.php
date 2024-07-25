@@ -157,8 +157,8 @@ function pretty_print_filtered(filtered){
 	heading_row.appendChild(generate_data_heading("S (30)"));
 	heading_row.appendChild(generate_data_heading("S (60)"));
 	heading_row.appendChild(generate_data_heading("DL"));
-	heading_row.appendChild(generate_data_heading("MORE"));
-	heading_row.appendChild(generate_data_heading("(O)"));
+	heading_row.appendChild(generate_data_heading_noprint("MORE"));
+	heading_row.appendChild(generate_data_heading_noprint("(O)"));
 	heading_row_bottom = heading_row.cloneNode(true);
 	heading_row.className += " theader";
 	heading_row_bottom.className += " theader_b";
@@ -243,12 +243,14 @@ function generate_button_close_element(){
 		close_button.innerText = "X";
 		close_button.style.fontSize="1.2em";
 		close_button.style.verticalAlign="center";
+		de.className = "no-print";
 		de.appendChild(close_button);
 		return de;
 }
 function generate_link_element(href, text){
 	var de=document.createElement('td');
 	var le = document.createElement('a');
+	de.className = "no-print";
 	le.href = href;
 	le.innerText = text;
 	de.appendChild(le);
@@ -257,6 +259,13 @@ function generate_link_element(href, text){
 function generate_data_heading(text){
 	var de = document.createElement('th');
 	de.innerText = text;
+	de.style.border="1px solid black";
+	return de;
+}
+function generate_data_heading_noprint(text){
+	var de = document.createElement('th');
+	de.innerText = text;
+	de.className = "no-print";
 	de.style.border="1px solid black";
 	return de;
 }
@@ -487,6 +496,10 @@ list_a.forEach((v) => {AnalyticsCache.set(v.CODE, v)});
 </div>
 <details>
 <summary>More options...</summary>
+<div class="centered-container">
+<button onclick="(new printd.Printd()).print(document.getElementById('printer'), ['https://in.test.vz.al/scan/style.css'])">Print/export PDF</button>
+<button onclick="">Print/export CSV</button>
+</div>
 <fieldset id="search-options">
 <legend>Search options:</legend>
 <div>

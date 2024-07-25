@@ -262,6 +262,15 @@ margin-left: 2%;
 		background: linear-gradient(to right, rgb(30, 77, 125) 0%, rgb(19, 108, 132) 27%, rgb(140, 154, 81) 47%, rgb(125, 136, 102) 61%, rgb(26, 103, 141) 73%, rgb(128, 60, 60) 99%);
 	visibility:collapse;
 }
+@media print{
+		.no-print {
+				display: none !important;
+		}
+}
+#printer {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+}
 
 tr:nth-child(odd){
        background: white;
