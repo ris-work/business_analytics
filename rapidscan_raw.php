@@ -30,7 +30,7 @@ function lookupAndAdd(barcode){
 					looked_up_from_existing_or_current = [barcode];
 			json_filtered.push(...looked_up_from_existing_or_current);
 		}
-		data = json_filtered.reverse();
+		data = json_filtered.map(x => x).reverse();
 		localStorage.setItem("looked_up", JSON.stringify(json_filtered));
 		var data_with_analytics=[];
 			var datacount=0;

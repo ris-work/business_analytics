@@ -132,6 +132,12 @@ tr[class=too-much] td{
 	color: rgb(11, 11, 0)
 
 }
+tr[class=not-found] td{
+	background-color: rgba(127, 0, 0, 1);
+	color: rgb(255, 255, 200);
+	text-align: right;
+	font-family: "IBM Courier", MONOSPACE;
+}
 tr > td:nth-child(even){
 		filter: saturate(150%);
 }
