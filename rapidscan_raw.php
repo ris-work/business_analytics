@@ -23,7 +23,7 @@ var Blocked=false;
 var json_filtered = [];
 function lookupAndAdd(barcode){
 		console.log(`Called to add: ${barcode}`);
-		if(barcode && barcode.length < 6 && barcode.length >= 1) return;
+		if(barcode && barcode.toString().length < 6 && barcode.toString().length >= 1) return;
 		if(barcode){
 			var looked_up_from_existing_or_current = json_pa.filter(a => a.PLU_DESC.includes(barcode));
 			if(looked_up_from_existing_or_current.length == 0)
