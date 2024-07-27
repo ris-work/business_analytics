@@ -24,9 +24,13 @@ var json_filtered = [];
 function lookupAndAdd(barcode){
 		console.log(`Called to add: ${barcode}`);
 		if(barcode && barcode.length < 6 && barcode.length >= 1) return;
-		if(barcode)
-			json_filtered.push(...json_pa.filter(a => a.PLU_DESC.includes(barcode)));
-		data = json_filtered;
+		if(barcode){
+			var looked_up_from_existing_or_current = json_pa.filter(a => a.PLU_DESC.includes(barcode));
+			if(looked_up_from_existing_or_current.length == 0)
+					looked_up_from_existing_or_current = [barcode];
+			json_filtered.push(...looked_up_from_existing_or_current);
+		}
+		data = json_filtered.reverse();
 		localStorage.setItem("looked_up", JSON.stringify(json_filtered));
 		var data_with_analytics=[];
 			var datacount=0;
@@ -34,8 +38,20 @@ function lookupAndAdd(barcode){
 				if (datacount < 100){
 				try{
 					var dwa = Object.create({});
-					Object.assign(dwa, DataCache.get(data[i1].PLU_CODE));
-					Object.assign(dwa, AnalyticsCache.get(data[i1].PLU_CODE));
+					if(DataCache.get(data[i1].PLU_CODE) != undefined){
+						Object.assign(dwa, DataCache.get(data[i1].PLU_CODE));
+						Object.assign(dwa, AnalyticsCache.get(data[i1].PLU_CODE));
+					}
+					else {
+						dwa = {
+							PLU_CODE: -1,
+							PLU_DESC: data[i1],
+							SIH: 0,
+							S_D15: 0,
+							S_D30: 0,
+							S_D60: 0,
+						};
+					}
 					data_with_analytics.push(dwa);
 					datacount++;
 				}catch(e){}
@@ -195,6 +211,7 @@ function generate_table_row(v,k){
 		if(parseInt(v.SIH) >= parseInt(v.S_D15)&&parseInt(v.SIH)<parseInt(v.S_D30))row.className="good";
 		if(parseInt(v.SIH) >=parseInt(v.S_D30)&&parseInt(v.SIH)<parseInt(v.S_D60))row.className="very-good";
 		if(parseInt(v.SIH) >=parseInt(v.S_D60))row.className="too-much";
+		if(parseInt(v.PLU_CODE) < 0)row.className="not-found";
 		
 	}
 	return row;
