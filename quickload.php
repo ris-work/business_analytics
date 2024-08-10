@@ -163,7 +163,7 @@ function generate_table_row(v){
 		if(parseInt(v.SIH) >= parseInt(v.S_D15)&&parseInt(v.SIH)<parseInt(v.S_D30))row.className="good";
 		if(parseInt(v.SIH) >=parseInt(v.S_D30)&&parseInt(v.SIH)<parseInt(v.S_D60))row.className="very-good";
 		if(parseInt(v.SIH) >=parseInt(v.S_D60))row.className="too-much";
-		if(parseInt(v.SIH) <parseInt((v.S_D60)*7/60))row.className="very-dangerous";
+		if(parseInt(v.SIH) <parseInt((v.S_D60))*7/60)row.className="very-dangerous";
 		
 	}
 	return row;

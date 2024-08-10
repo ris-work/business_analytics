@@ -66,6 +66,7 @@ if ($response && !property_exists($response, "Message")) {
 	$stmt_cost_grn = $stmt_sql_cost_grn->execute([$response->PLU_CODE]);
 	$data_cost_grn = $stmt_sql_cost_grn->fetchAll();
 	$dbh_cost_grn->commit();
+	$ID = str_pad($ID, 6, "0", STR_PAD_LEFT);
 	?>
 <script>"use strict"; var past_data = JSON.parse('<?php echo json_encode(
 	$past_data
