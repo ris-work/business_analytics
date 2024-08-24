@@ -1,0 +1,62 @@
+<html>
+<head>
+<style>
+.loginform {
+display: flex;
+flex-direction: column;
+color: white;
+top: auto;
+	mix-blend-mode: multiply;
+	bottom: 0;
+	background: black;
+}
+.field, label{
+	margin-left: auto;
+	margin-right: auto;
+font-size: min(10vh, 10vw);
+font-family: "COURIER";
+}
+input{
+	min-width: 10em;
+	font-size: min(7vh, 7vw);
+}
+body{
+	background: black;
+}
+.mix {
+	mix-blend-mode: multiply;
+	margin: 0;
+	padding: 1.5em;
+	color: white;
+	border: 0;
+	border-color:  white;
+	background: black;
+}
+.mix_h {
+	mix-blend-mode: multiply;
+	color: white;
+	background: black;
+	margin: 0;
+	padding: 1em;
+	border: 9px double white;
+	font-family: MONOSPACE, "Courier";
+font-size: max(3vh, 3vw);
+}
+.form-container{
+	/*mix-blend-mode: multiply;*/
+	background: linear-gradient(45deg, hsl(0deg 50% 40%),hsl(60deg 50% 40%),hsl(120deg 50% 40%),hsl(180deg 50% 40%),hsl(270deg 50% 40%),hsl(360deg 50% 40%));
+}
+</style>
+</head>
+<body>
+	<div class="form-container">
+		<h3 class="mix_h">Wrong password! No, not today!</h3>
+		<hr class="mix" />
+<form class="loginform" id="loginform" method="POST" action="/dologin_srmfa.html">
+	<div class="field"><label for="username">Username: </label><input type="text" id="username" name="httpd_username" /></div><br />
+	<div class="field"><label for="password">Password: </label><input type="password" id="password" name="httpd_password" /></div><br />
+	<div class="field"><input type="submit" name="login" value="Login" /></div>
+</form>
+	</div>
+</body>
+</html>

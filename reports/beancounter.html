@@ -1,0 +1,87 @@
+<html>
+		<head>
+				<meta charset="utf8"/>
+				<link rel="stylesheet" type="text/css" href="node_modules/98.css/style.css" />
+		<link rel="icon" type="image/svg+xml" href="/srm-icons/bean-sack.svg" />
+		<link rel="apple-touch-icon" size="180x180" type="image/png" href="/srm-icons/bean-sack_180.png" />
+		<link rel="apple-touch-icon" size="120x120" type="image/png" href="/srm-icons/bean-sack_120.png" />
+		<link rel="apple-touch-icon" size="152x152" type="image/png" href="/srm-icons/bean-sack_152.png" />
+		<link rel="apple-touch-icon" size="any" type="image/svg+xml" href="/srm-icons/bean-sack.svg" />
+				<style>
+body{
+		background: var(--surface);
+		display: flex;
+		align-items: center;
+		justify-content: space-evenly;
+		flex-wrap: wrap;
+		flex-direction: row;
+}
+legend {
+		font-family: "PIXELATED MS SANS SERIF", "COURIER NEW", MONOSPACE, "IBM Courier";
+}
+fieldset{
+width: fit-content;
+display: flex;
+flex-direction: column;
+flex-wrap: wrap;
+margin: auto;
+}
+.container{
+		min-width: 400px;
+		align-items: center;
+		text-align: center;
+}
+button, label{
+		font-size: min(4vh, 4vw);
+		padding: min(2vh, 2vw);
+		width: -webkit-fill-available;
+		width: -moz-available;
+}
+a {
+		text-decoration: none;
+}
+				</style>
+				<title>Bean counting reports 🫘🧮</title>
+		</head>
+		<body>
+				<div class='container'>
+						<fieldset>
+								<legend>What is this?</legend>
+								<a href="#"><label>Bean counter reports!</label></a>
+								<label>When do we want it?</label>
+								<a href="#"><label>Right now! (🫘🧮🖥)</label></a>
+						</fieldset>
+				</div> 
+				<div class='container'>
+						<fieldset>
+								<legend>Cost/selling price changes</legend>
+								<a href="costhist.php"><button>Recent cost changes (all)</button></a>
+								<a href="costchg_v2.php"><button>Recent cost/sell changes<br />(last change once per item only)</button></a>
+						</fieldset>
+				</div> 
+				<div class='container'>
+						<fieldset>
+								<legend>Zero stock</legend>
+						<a href="nolongerinstock.php"><button>Sorted by gross profit<br />No longer sold</button></a>
+						</fieldset>
+				</div>
+				<div class='container'>
+						<fieldset>
+								<legend>Name history</legend>
+						<a href="namehist_v2.php"><button>Name history<br />Recent</button></a>
+						</fieldset>
+				</div>
+				<div class='container'>
+						<fieldset>
+								<legend>Production</legend>
+						<a href="prodrawconsumption.php"><button>Raw material consumption<br />Recent</button></a>
+						</fieldset>
+				</div>
+				<div class='container'>
+						<fieldset>
+								<legend>Suppliers</legend>
+						<a href="suppliers.php"><button>Suppliers<br />More...</button></a>
+						</fieldset>
+				</div>
+		</body>
+</html>

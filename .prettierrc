@@ -1,0 +1,4 @@
+{
+		useTabs: true,
+		"plugins": ["@prettier/plugin-php", "prettier-plugin-embed", "prettier-plugin-sql"]
+}
