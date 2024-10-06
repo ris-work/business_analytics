@@ -11,7 +11,7 @@ ini_set("display_errors", "1");
 error_reporting(E_ALL);
 require_once "/etc/auth.php";
 $ID = $_GET["id"];
-$BASEURL = "http://127.0.0.1:9090/api/Items2/";
+$BASEURL = "http://127.0.0.1:9090/api/Items2/$SUFFIX";
 $req = curl_init();
 curl_setopt($req, CURLOPT_URL, "$BASEURL/$ID");
 curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
@@ -21,7 +21,7 @@ curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 if (true || ($response && !property_exists($response, "Message"))) {
 
 	$BASEURL_ANALYTICS =
-		"http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
+		"http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis$SUFFIX";
 	$req_analytics = curl_init();
 	//curl_setopt($req_analytics, CURLOPT_URL, "$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE");
 	curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);

@@ -204,13 +204,13 @@ function normalize(string) {
 window.onload=loaded;
 </script>
 <?php
-//ini_set('display_errors', '1');
-//error_reporting(E_ALL);
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
 require_once("/etc/auth.php");
 $ID = "";
 $BASEURL = "http://127.0.0.1:9090/api/Items2";
 $req = curl_init();
-curl_setopt($req, CURLOPT_URL, "$BASEURL");
+curl_setopt($req, CURLOPT_URL, "$BASEURL$SUFFIX");
 curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 $response = curl_exec($req);

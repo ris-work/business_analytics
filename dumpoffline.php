@@ -212,7 +212,7 @@ function normalize(string) {
 //error_reporting(E_ALL);
 require_once("/etc/auth.php");
 $ID = "";
-$BASEURL = "http://127.0.0.1:9090/api/Items2";
+$BASEURL = "http://127.0.0.1:9090/api/Items2$$SUFFIX";
 $req = curl_init();
 curl_setopt($req, CURLOPT_URL, "$BASEURL");
 curl_setopt($req, CURLOPT_RETURNTRANSFER, true);

@@ -11,7 +11,7 @@ $REQUESTS = [];
 $mh = curl_multi_init();
 foreach($IDs as $ID){
 $req = curl_init();
-curl_setopt($req, CURLOPT_URL, "$BASEURL/$ID");
+curl_setopt($req, CURLOPT_URL, "$BASEURL/$ID$SUFFIX");
 curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 curl_multi_add_handle($mh, $req);

@@ -14,7 +14,7 @@ for($i=0;$i<30000;$i+=100)
 	$mh = curl_multi_init();
 	foreach($IDs as $ID){
 		$req = curl_init();
-		curl_setopt($req, CURLOPT_URL, "$BASEURL?PLU_CODE=$ID");
+		curl_setopt($req, CURLOPT_URL, "$BASEURL?PLU_CODE=$ID$SUFFIX_NOQ");
 		curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 		curl_multi_add_handle($mh, $req);
@@ -42,7 +42,7 @@ for($i=0;$i<30000;$i+=100)
 	foreach($IDs as $ID){
 		$req2 = curl_init();
 		$ID_padded = str_pad($ID, 6, "0", STR_PAD_LEFT);
-		curl_setopt($req2, CURLOPT_URL, "$BASEURL2/$ID_padded");
+		curl_setopt($req2, CURLOPT_URL, "$BASEURL2/$ID_padded$SUFFIX_NOQ");
 		curl_setopt($req2, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($req2, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 		curl_multi_add_handle($mh2, $req2);

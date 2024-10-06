@@ -13,7 +13,7 @@ require_once "/etc/auth.php";
 $ID = $_GET["id"];
 $BASEURL = "http://127.0.0.1:9090/api/Items2/";
 $req = curl_init();
-curl_setopt($req, CURLOPT_URL, "$BASEURL/$ID");
+curl_setopt($req, CURLOPT_URL, "$BASEURL/$ID$SUFFIX");
 curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($req, CURLOPT_HTTPHEADER, ["Authorization: Basic $ENCODED_AUTH"]);
 echo "Taking time? Try cached results <a href=\"details_v2.php?id=$ID\">HERE</a>.";
@@ -28,7 +28,7 @@ if ($response && !property_exists($response, "Message")) {
 	curl_setopt(
 		$req_analytics,
 		CURLOPT_URL,
-		"$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE"
+		"$BASEURL_ANALYTICS?$SUFFIX_NOQ&PLU_CODE=$response->PLU_CODE"
 	);
 	curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($req_analytics, CURLOPT_HTTPHEADER, [
