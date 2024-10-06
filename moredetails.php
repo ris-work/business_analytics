@@ -21,12 +21,12 @@ $response = json_decode(curl_exec($req));
 if (strlen($ID) == 6 || ($response && !property_exists($response, "Message"))) {
 
 	$BASEURL_ANALYTICS =
-		"http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis$SUFFIX";
+		"http://127.0.0.1:9090/api/Items2/GetSalesDataForAnalysis";
 	$req_analytics = curl_init();
 	curl_setopt(
 		$req_analytics,
 		CURLOPT_URL,
-		"$BASEURL_ANALYTICS?PLU_CODE=$response->PLU_CODE$SUFFIX_NOQ"
+		"$BASEURL_ANALYTICS?$SUFFIX_NOQ&PLU_CODE=$response->PLU_CODE"
 	);
 	curl_setopt($req_analytics, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($req_analytics, CURLOPT_HTTPHEADER, [
