@@ -21,7 +21,7 @@
 						++countResults;
 						lastResult = decodedText;
 						// Handle on success condition with the decoded message.
-						window.location.replace(`details.php?id=${decodedText}`);
+						window.location.replace(`details_v2.php?id=${decodedText}`);
 						console.log(`Scan result ${decodedText}`, decodedResult);
 					}
 				}
@@ -66,7 +66,7 @@
 		</div>
 		<br />
 		<div class="centered-container">
-		<a href="quickload.php" class="link-button"><span>Quick (Fill)</span></a>
+		<a href="quickload.php" class="link-button-large"><span>Quick (Fill)</span></a>
 		</div>
 		<br />
 		<div class="centered-container">
