@@ -498,7 +498,7 @@ echo "<script>var lista = " .
 						lastScanResult = decodedText;
 						// Handle on success condition with the decoded message.
 						console.log(`2: Scan result ${decodedText}`, decodedResult);
-						lookupAndAdd(`${decodedText}`);
+						lookupAndAdd(`${decodedText.trim()}`);
 						console.log(`3: Scan result ${decodedText}`, decodedResult);
 					}
 				}
