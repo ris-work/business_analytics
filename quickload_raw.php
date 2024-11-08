@@ -210,7 +210,7 @@ function generate_data_heading(text){
 	de.style.border="1px solid black";
 	return de;
 }
-var abjad = false;
+var abjad = true;
 var starts_with=false;
 function updateOptions(){
 	starts_with = document.getElementById("starts-with").checked;
