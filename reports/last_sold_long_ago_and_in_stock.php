@@ -36,12 +36,16 @@ position: relative;
 height: 1em;
 top: 0;
 }
+thead > th {
+color: #000 !important;
+background: #fff;
+}
 td:nth-child(1){
 text-align: right;
 }
-th:nth-child(3), td:nth-child(3){
+/*th:nth-child(3), td:nth-child(3){
 display: none;
-}
+}*/
 th:nth-child(4), td:nth-child(4){
 display: none;
 }
@@ -54,11 +58,14 @@ color: #fff;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
-table > tr:nth-child(even){
+table > tr:nth-child(even) > td{
 background: #fff !important;
 color: #000;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
+}
+.table-container {
+text-align: left;
 }
 table>tbody>tr>td{
 padding-bottom: 0 !important;
@@ -93,7 +100,7 @@ background: #cff;
 td:nth-child(1){
 text-align: right;
 }
-td:nth-child(3){
+td:nth-child(2){
 text-align: right;
 }
 td:nth-child(4){
