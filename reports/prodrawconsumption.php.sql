@@ -5,9 +5,9 @@
 .timer on
 .echo off
 .mode html
-pragma temp_store_directory='/www';
-pragma temp_directory='/www';
-pragma temp_store=MEMORY;
+--pragma temp_store_directory='/www';
+--pragma temp_directory='/www';
+--pragma temp_store=MEMORY;
 .print "</pre><div style='text-align: center; font-family: \"Cousine\", \"IBM Courier\"; color: black; white-space: pre;'><table>"
 WITH trends AS (
   SELECT
