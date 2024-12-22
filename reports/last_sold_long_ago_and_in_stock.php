@@ -26,6 +26,53 @@ padding:0;
     line-height: 1.2em;
     filter: hue-rotate(270deg) grayscale(15%);
 }
+@media print {
+pre{
+text-align: left;
+display: none;
+}
+thead > * {
+position: relative;
+height: 1em;
+top: 0;
+}
+td:nth-child(1){
+text-align: right;
+}
+th:nth-child(3), td:nth-child(3){
+display: none;
+}
+th:nth-child(4), td:nth-child(4){
+display: none;
+}
+th:nth-child(5), td:nth-child(5){
+display: none;
+}
+tbody > tr:nth-child(odd) > td{
+background: rgba(0,0,0,1) !important;
+color: #fff;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+table > tr:nth-child(even){
+background: #fff !important;
+color: #000;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+table>tbody>tr>td{
+padding-bottom: 0 !important;
+padding-top: 0 !important;
+padding-left: 0.5em;
+padding-right: 0.5em;
+overflow-x: clip;
+padding: 0;
+height: fit-content;
+}
+body > table{
+margin-left: 0 !important;
+}
+}
 
 td{
 max-width: 20em;
@@ -35,7 +82,10 @@ overflow-x: clip;
 overflow-x: scroll;
 border: 1px dashed black;
 vertical-align: baseline;
-padding: 0.5em !important;
+padding: 0.5em;
+}
+table > tbody > tr > td {
+padding: 0.5em;
 }
 td:nth-child(odd){
 background: #cff;
