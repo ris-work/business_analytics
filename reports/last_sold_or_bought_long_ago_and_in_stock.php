@@ -52,6 +52,12 @@ th:nth-child(4), td:nth-child(4){
 th:nth-child(5), td:nth-child(5){
 display: none;
 }
+th:nth-child(6), td:nth-child(6){
+display: none;
+}
+th:nth-child(7), td:nth-child(7){
+display: none;
+}
 tbody > tr:nth-child(odd) > td{
 background: rgba(0,0,0,1) !important;
 color: #fff;
@@ -107,6 +113,12 @@ td:nth-child(3){
 text-align: right;
 }
 td:nth-child(5){
+text-align: right;
+}
+td:nth-child(6){
+text-align: right;
+}
+td:nth-child(7){
 text-align: right;
 }
 tr:nth-child(5n+1){
