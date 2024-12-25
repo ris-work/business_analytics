@@ -33,6 +33,6 @@ WHERE sih_current.sih > 0 AND
 sih_current.itemcode NOT IN 
 	(SELECT src FROM prod_list) 
 ORDER BY min(days_since_last_sold, days_since_last_bought) DESC 
-LIMIT 100;
+LIMIT 500;
 .print "</table></div><br /><pre>"
 .stats
