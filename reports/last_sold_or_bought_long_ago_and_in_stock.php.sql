@@ -1,14 +1,17 @@
 .echo off
 .mode box --wrap 25 --wordwrap off
 .header on
-.changes on
-.timer on
+--.changes on
+--.timer on
 .echo off
 .mode html
 --pragma temp_store_directory='/www';
 --pragma temp_directory='/www';
 --pragma temp_store=MEMORY;
 .print "LAST SOLD () DAYS AGO"
+.print "</pre><div style='text-align: center; font-family: \"Cousine\", \"IBM Courier\"; color: black; white-space: pre;' class='table-container'>LAST SALE WHEN UPDATED<br /><table>"
+SELECT '≥ ' || daydate AS date, '≥ ' || max(timehour) AS time FROM hourly WHERE daydate=(SELECT max(daydate) AS max_daydate FROM hourly) GROUP BY daydate;
+.print "</table></div><br /><pre>"
 .print "</pre><div style='text-align: center; font-family: \"Cousine\", \"IBM Courier\"; color: black; white-space: pre;' class='table-container'>LAST SOLD () DAYS AGO<br /><table>"
 WITH days_since_last_sold AS 
 	(SELECT julianday('now') - julianday(max(daydate)) AS days_since_last_sold, 
