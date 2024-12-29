@@ -164,24 +164,60 @@ tr > td:nth-child(even){
 	margin-right: auto;
 	display: block;
 	width: max-content;
+	margin-top: min(2vh, 2vw);
+	margin-bottom: min(2vh, 2vw);
+}
+.stretched-container{
+	/*margin-left: auto;
+	margin-right: auto;*/
+	display: block;
+	/*width: max-content;*/
+	margin-top: min(1vh, 1vw);
+	margin-bottom: min(1vh, 1vw);
 }
 .link-button {
 	color: black;
-	font-size: 2em;
+	font-size: max(4vh, 4vw);
 	background: #aaa;
 	padding: 0.125em;
 	border: 4px double black;
 	border-radius: 0.25em;
 	text-decoration: none;
+	margin: max(1vw, 1vh);
+}
+.link-button-stretched {
+		display: block;
+		text-align: center;
+	color: black;
+	font-size: max(4vh, 4vw);
+	background: #aaa;
+	padding: 0.125em;
+	border: 4px double black;
+	/*border-radius: 0.25em;*/
+	text-decoration: none;
+	margin: max(1vw, 1vh);
 }
 .link-button-large {
 	color: black;
-	font-size: 3.5em;
+	font-size: max(6vh, 6vw);
 	background: #aaa;
 	padding: 0.125em;
 	border: 4px double black;
 	border-radius: 0.25em;
 	text-decoration: none;
+	margin: max(0.5vw, 0.5vh);
+}
+.link-button-large-stretched {
+		display: block;
+		text-align: center;
+	color: black;
+	font-size: max(6vh, 6vw);
+	background: #aaa;
+	padding: 0.125em;
+	border: 4px double black;
+	/*border-radius: 0.25em;*/
+	text-decoration: none;
+	margin: max(0.5vw, 0.5vh);
 }
 .link-button:hover {
 	background: darkgoldenrod;
