@@ -52,53 +52,56 @@ print-color-adjust: exact;
 }
 .as-is table td{
 width: max-content;
-min-width: 10em !important;
+min-width: 12ex !important;
 }
 th:nth-child(2), td:nth-child(2){
 background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
-background-size: 0.2em 0.2em !important;
+background-size: 0.3em 0.3em !important;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
 th:nth-child(5), td:nth-child(5){
 background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
-background-size: 0.2em 0.2em !important;
+background-size: 0.3em 0.3em !important;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
 th:nth-child(9), td:nth-child(9){
 background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
-background-size: 0.2em 0.2em !important;
+background-size: 0.3em 0.3em !important;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
 td:nth-child(1){
 text-align: right;
-max-width: 2.5em;
+max-width: 2.5ex;
 }
 td:nth-child(2){
 text-align: right;
-max-width: 2.5em;
+max-width: 2.5ex;
 }
 /*th:nth-child(3), td:nth-child(3){
 display: none;
 }*/
 th:nth-child(3), td:nth-child(3){
 display: none;
-max-width: 2.5em;
+max-width: 3ex;
 }
 th:nth-child(5), td:nth-child(5){
 /*display: none;*/
-max-width: 2.5em;
+max-width: 3.5ex;
 }
 th:nth-child(6), td:nth-child(6){
 display: none;
 }
 th:nth-child(7), td:nth-child(7){
-max-width: 7em;
+max-width: 9ex;
 }
 th:nth-child(8), td:nth-child(8){
 display: none;
+}
+th:nth-child(9), td:nth-child(9){
+max-width: 5ex;
 }
 tbody > tr:nth-child(odd) > td{
 background: rgba(0,0,0,1) !important;
@@ -120,7 +123,8 @@ padding-bottom: 0 !important;
 padding-top: 0 !important;
 overflow-x: clip;
 overflow-y: clip;
-margin-left: 1em;
+margin-left: 0.5ex;
+margin-right: 0.5ex;
 }
 }
 
@@ -151,7 +155,7 @@ position: sticky;
 top: 0;
 background: #666;
 color: white;
-font-size: 1.2em;
+font-size: 2.5ex;
 text-align: center;
 border-left: 1px dashed #fff;
 border-right: 1px dashed #fff;
