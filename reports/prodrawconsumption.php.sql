@@ -8,7 +8,7 @@
 --pragma temp_store_directory='/www';
 --pragma temp_directory='/www';
 --pragma temp_store=MEMORY;
-.print "</pre><div style='text-align: center; font-family: \"Cousine\", \"IBM Courier\"; color: black; white-space: pre;' class='table-container'>LAST SALE WHEN UPDATED<br /><table>"
+.print "</pre><div style='text-align: center; font-family: \"Cousine\", \"IBM Courier\"; color: black; white-space: pre;' class='table-container as-is'>LAST SALE WHEN UPDATED<br /><table>"
 SELECT '≥ ' || daydate AS date, '≥ ' || max(timehour) AS time FROM hourly WHERE daydate=(SELECT max(daydate) AS max_daydate FROM hourly) GROUP BY daydate;
 .print "</table></div><br /><pre>"
 .print "</pre><div style='text-align: center; font-family: \"Cousine\", \"IBM Courier\"; color: black; white-space: pre;'><table>"

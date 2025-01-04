@@ -26,6 +26,103 @@ padding:0;
     line-height: 1.2em;
     filter: hue-rotate(270deg) grayscale(15%);
 }
+@media print {
+body{
+}
+pre{
+text-align: left;
+display: none;
+}
+thead > * {
+position: relative;
+height: 1em;
+top: 0;
+}
+thead > th {
+color: #000 !important;
+background: #fff;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+th {
+color: #000 !important;
+background: #fff !important;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+.as-is table td{
+width: max-content;
+min-width: 10em !important;
+}
+th:nth-child(2), td:nth-child(2){
+background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
+background-size: 0.2em 0.2em !important;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+th:nth-child(5), td:nth-child(5){
+background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
+background-size: 0.2em 0.2em !important;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+th:nth-child(9), td:nth-child(9){
+background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
+background-size: 0.2em 0.2em !important;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+td:nth-child(1){
+text-align: right;
+max-width: 2.5em;
+}
+td:nth-child(2){
+text-align: right;
+max-width: 2.5em;
+}
+/*th:nth-child(3), td:nth-child(3){
+display: none;
+}*/
+th:nth-child(3), td:nth-child(3){
+display: none;
+max-width: 2.5em;
+}
+th:nth-child(5), td:nth-child(5){
+/*display: none;*/
+max-width: 2.5em;
+}
+th:nth-child(6), td:nth-child(6){
+display: none;
+}
+th:nth-child(7), td:nth-child(7){
+max-width: 7em;
+}
+th:nth-child(8), td:nth-child(8){
+display: none;
+}
+tbody > tr:nth-child(odd) > td{
+background: rgba(0,0,0,1) !important;
+color: #fff;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+table > tr:nth-child(even) > td{
+background: #fff !important;
+color: #000;
+print-color-adjust: exact;
+-webkit-print-color-adjust: exact;
+}
+.table-container {
+text-align: left;
+}
+table>tbody>tr>td{
+padding-bottom: 0 !important;
+padding-top: 0 !important;
+overflow-x: clip;
+overflow-y: clip;
+margin-left: 1em;
+}
+}
 
 td{
 max-width: 15em;
