@@ -9,9 +9,11 @@
 				<link rel="stylesheet" type="text/css" href="reports/node_modules/98.css/style.css" />
 		<script src="html5-qrcode.min.js" type="text/javascript"></script>
 		<script>
+				document.cookie="style=xp; Secure"
 				function ninetyeight(e){
 						e.preventDefault();
 						document.cookie="style=98; Secure"
+						return false;
 				}
 				function ninetyeight_bl(e){
 						document.cookie="style=98; Secure"

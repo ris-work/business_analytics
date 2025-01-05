@@ -1,7 +1,10 @@
+<?php require_once("style.php");
+ERROR_REPORTING(E_ALL);
+?>
 <html>
 		<head>
 				<meta charset="utf8"/>
-				<link rel="stylesheet" type="text/css" href="node_modules/98.css/style.css" />
+				<link rel="stylesheet" type="text/css" href="<?php echo $stylesheet; ?>" />
 		<link rel="icon" type="image/svg+xml" href="/srm-icons/bean-sack.svg" />
 		<link rel="apple-touch-icon" size="180x180" type="image/png" href="/srm-icons/bean-sack_180.png" />
 		<link rel="apple-touch-icon" size="120x120" type="image/png" href="/srm-icons/bean-sack_120.png" />
