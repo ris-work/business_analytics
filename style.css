@@ -196,6 +196,8 @@ tr > td:nth-child(even){
 	/*border-radius: 0.25em;*/
 	text-decoration: none;
 	margin: max(1vw, 1vh);
+	margin-left: 25vmin;
+	margin-right: 25vmin;
 }
 .link-button-large {
 	color: black;
@@ -218,6 +220,8 @@ tr > td:nth-child(even){
 	/*border-radius: 0.25em;*/
 	text-decoration: none;
 	margin: max(0.5vw, 0.5vh);
+	margin-left: 25vmin;
+	margin-right: 25vmin;
 }
 .link-button:hover {
 	background: darkgoldenrod;
