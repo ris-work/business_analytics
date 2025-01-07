@@ -61,7 +61,7 @@ min-width: 4rem !important;
 }
 .as-is table th{
 width: max-content !important;
-min-width: 12rem !important;
+min-width: 6rem !important;
 }
 th:nth-child(2), td:nth-child(2){
 /*background: repeating-linear-gradient(45deg, #000 0rem 0.1rem, white 0.1rem 0.6rem) !important;*/
