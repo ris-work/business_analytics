@@ -1,8 +1,10 @@
 .echo on
+SELECT datetime('now');
+--SELECT unixepoch('subsecond');
 .mode box --wrap 25 --wordwrap off
 .header on
 --.changes on
-.timer on
+--.timer on
 .echo off
 .mode html
 --pragma temp_store_directory='/www';
@@ -60,3 +62,5 @@ GROUP BY src
 ORDER BY (CASE WHEN CAST(t_D60 AS REAL)<>0 THEN CAST(daysl AS REAL) ELSE 1000 END);
 .print "</table></div><br /><pre>"
 .stats
+SELECT datetime('now');
+--SELECT datetime('now', '%f');

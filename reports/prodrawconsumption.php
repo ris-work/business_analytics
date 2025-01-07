@@ -51,57 +51,67 @@ print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
 .as-is table td{
-width: max-content;
-min-width: 12ex !important;
+width: max-content !important;
+min-width: 12rem !important;
+}
+.as-is table td:nth-child(2){
+width: max-content !important;
+background: #ccc !important;
+min-width: 12rem !important;
+}
+.as-is table th{
+width: max-content !important;
+min-width: 12rem !important;
 }
 th:nth-child(2), td:nth-child(2){
-background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
-background-size: 0.3em 0.3em !important;
+/*background: repeating-linear-gradient(45deg, #000 0rem 0.1rem, white 0.1rem 0.6rem) !important;*/
+/*background: repeating-linear-gradient(45deg, #000 0px 1px, white 1px 7px) !important;*/
+background: #ccc;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
 th:nth-child(5), td:nth-child(5){
-background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
-background-size: 0.3em 0.3em !important;
+/*background: repeating-linear-gradient(30deg, #000 0.5px 1px, white 1px 11px, #000 11.5px 12px) !important;*/
+background: #ccc;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
 th:nth-child(9), td:nth-child(9){
-background: repeating-linear-gradient(90deg, #bbb 0% 50%, white 50% 100%) !important;
-background-size: 0.3em 0.3em !important;
+/*background: repeating-linear-gradient(-30deg, #000 0px 0.1px, white 0.1px 0.6px) !important;*/
+background: #ccc;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
-td:nth-child(1){
+th:nth-child(1), td:nth-child(1){
 text-align: right;
-max-width: 2.5ex;
+max-width: 2.25rem;
 }
-td:nth-child(2){
+th:nth-child(2), td:nth-child(2){
 text-align: right;
-max-width: 2.5ex;
+max-width: 2rem;
 }
 /*th:nth-child(3), td:nth-child(3){
 display: none;
 }*/
 th:nth-child(3), td:nth-child(3){
 display: none;
-max-width: 3ex;
+max-width: 1.25rem;
 }
 th:nth-child(5), td:nth-child(5){
 /*display: none;*/
-max-width: 3.5ex;
+max-width: 1.5rem;
 }
 th:nth-child(6), td:nth-child(6){
 display: none;
 }
 th:nth-child(7), td:nth-child(7){
-max-width: 9ex;
+max-width: 5rem;
 }
 th:nth-child(8), td:nth-child(8){
 display: none;
 }
 th:nth-child(9), td:nth-child(9){
-max-width: 5ex;
+max-width: 2rem;
 }
 tbody > tr:nth-child(odd) > td{
 background: rgba(0,0,0,1) !important;
@@ -123,8 +133,8 @@ padding-bottom: 0 !important;
 padding-top: 0 !important;
 overflow-x: clip;
 overflow-y: clip;
-margin-left: 0.5ex;
-margin-right: 0.5ex;
+margin-left: 0.15rem;
+margin-right: 0.15rem;
 }
 }
 
