@@ -52,12 +52,12 @@ print-color-adjust: exact;
 }
 .as-is table td{
 width: max-content !important;
-min-width: 12rem !important;
+min-width: 10rem !important;
 }
 .as-is table td:nth-child(2){
 width: max-content !important;
 background: #ccc !important;
-min-width: 12rem !important;
+min-width: 4rem !important;
 }
 .as-is table th{
 width: max-content !important;
@@ -66,19 +66,19 @@ min-width: 12rem !important;
 th:nth-child(2), td:nth-child(2){
 /*background: repeating-linear-gradient(45deg, #000 0rem 0.1rem, white 0.1rem 0.6rem) !important;*/
 /*background: repeating-linear-gradient(45deg, #000 0px 1px, white 1px 7px) !important;*/
-background: #ccc;
+background: #bbb;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
 th:nth-child(5), td:nth-child(5){
 /*background: repeating-linear-gradient(30deg, #000 0.5px 1px, white 1px 11px, #000 11.5px 12px) !important;*/
-background: #ccc;
+background: #bbb;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
 th:nth-child(9), td:nth-child(9){
 /*background: repeating-linear-gradient(-30deg, #000 0px 0.1px, white 0.1px 0.6px) !important;*/
-background: #ccc;
+background: #bbb;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
