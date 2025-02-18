@@ -44,13 +44,13 @@ WITH trends AS (
   ) AS S15T ON S15T.itemcode = S30T.itemcode
 )
 SELECT
-  printf("%6.1f", total(produced.S_D60*proportion) + soldasraw.S_D60) AS t_D60,
-  printf("%5.1f", total(produced.S_D30*proportion) + soldasraw.S_D30) AS t_D30,
-  printf("%6.2f", total(produced.S_D15*proportion) + soldasraw.S_D15) AS t_D15,
+  sjd.desc AS srcdesc,
   printf("%6.2f", sjd.sih) AS craw,
   printf("%7.3f", total(djd.sih*proportion)) AS cdone,
+  printf("%6.2f", total(produced.S_D15*proportion) + soldasraw.S_D15) AS D15,
+  printf("%5.1f", total(produced.S_D30*proportion) + soldasraw.S_D30) AS D30,
+  printf("%6.1f", total(produced.S_D60*proportion) + soldasraw.S_D60) AS D60,
   produced.itemcode,
-  sjd.desc AS srcdesc,
   group_concat(djd.desc, CHAR(10)) AS destdesc,
   printf("%5.1f", 60 * (sjd.sih+total(djd.sih*proportion))/(total(produced.S_D60*proportion) + soldasraw.S_D60)) AS daysl
 FROM prod_list
@@ -59,7 +59,7 @@ JOIN sih_current sjd ON sjd.itemcode = prod_list.src
 JOIN sih_current djd ON djd.itemcode = prod_list.dest
 JOIN trends soldasraw ON prod_list.src = soldasraw.itemcode
 GROUP BY src
-ORDER BY (CASE WHEN CAST(t_D60 AS REAL)<>0 THEN CAST(daysl AS REAL) ELSE 1000 END);
+ORDER BY (CASE WHEN CAST(D60 AS REAL)<>0 THEN CAST(daysl AS REAL) ELSE 1000 END);
 .print "</table></div><br /><pre>"
 .stats
 SELECT datetime('now');

@@ -63,28 +63,9 @@ min-width: 4rem !important;
 width: max-content !important;
 min-width: 6rem !important;
 }
-th:nth-child(2), td:nth-child(2){
-/*background: repeating-linear-gradient(45deg, #000 0rem 0.1rem, white 0.1rem 0.6rem) !important;*/
-/*background: repeating-linear-gradient(45deg, #000 0px 1px, white 1px 7px) !important;*/
-background: #bbb;
-print-color-adjust: exact;
--webkit-print-color-adjust: exact;
-}
-th:nth-child(5), td:nth-child(5){
-/*background: repeating-linear-gradient(30deg, #000 0.5px 1px, white 1px 11px, #000 11.5px 12px) !important;*/
-background: #bbb;
-print-color-adjust: exact;
--webkit-print-color-adjust: exact;
-}
-th:nth-child(9), td:nth-child(9){
-/*background: repeating-linear-gradient(-30deg, #000 0px 0.1px, white 0.1px 0.6px) !important;*/
-background: #bbb;
-print-color-adjust: exact;
--webkit-print-color-adjust: exact;
-}
 th:nth-child(1), td:nth-child(1){
-text-align: right;
-max-width: 2.25rem;
+text-align: left;
+max-width: 5rem;
 }
 th:nth-child(2), td:nth-child(2){
 text-align: right;
@@ -94,7 +75,7 @@ max-width: 2rem;
 display: none;
 }*/
 th:nth-child(3), td:nth-child(3){
-display: none;
+text-align: right;
 max-width: 1.25rem;
 }
 th:nth-child(5), td:nth-child(5){
@@ -105,7 +86,7 @@ th:nth-child(6), td:nth-child(6){
 display: none;
 }
 th:nth-child(7), td:nth-child(7){
-max-width: 5rem;
+max-width: 2.5rem;
 }
 th:nth-child(8), td:nth-child(8){
 display: none;
@@ -114,8 +95,8 @@ th:nth-child(9), td:nth-child(9){
 max-width: 2rem;
 }
 tbody > tr:nth-child(odd) > td{
-background: rgba(0,0,0,1) !important;
-color: #fff;
+background: rgba(190,190,190,1) !important;
+color: #000;
 print-color-adjust: exact;
 -webkit-print-color-adjust: exact;
 }
