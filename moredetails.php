@@ -42,7 +42,7 @@ if (strlen($ID) == 6 || ($response && !property_exists($response, "Message"))) {
 	}
 	//var_dump($response);
 	//var_dump($response_analytics);
-	$dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
+	$dbh = new PDO($apidbpath);
 	$t = $dbh->beginTransaction();
 	$stmt_sql = $dbh->prepare(
 		"SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?"
@@ -52,7 +52,7 @@ if (strlen($ID) == 6 || ($response && !property_exists($response, "Message"))) {
 	$dbh->commit();
 	function getsalesbyhour($itemcode)
 	{
-		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
 			"SELECT 100*hsq/sq AS psh, c.x as timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b) RIGHT JOIN (SELECT x FROM cnt LIMIT 17 OFFSET 6) c ON b.timehour = c.x ORDER BY c.x"
@@ -64,7 +64,7 @@ if (strlen($ID) == 6 || ($response && !property_exists($response, "Message"))) {
 	}
 	function getsalesbyday($itemcode)
 	{
-		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
 			"SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, b.sq as rawsq, sum(b.sq/15) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) as da15, sum(b.sq/60) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as da60, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) AND a.x < (SELECT * FROM last_imported) ORDER BY a.x"
@@ -76,7 +76,7 @@ if (strlen($ID) == 6 || ($response && !property_exists($response, "Message"))) {
 	}
 	function lastimportedday()
 	{
-		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
 			"SELECT max(daydate) AS lastupdated FROM hourly"

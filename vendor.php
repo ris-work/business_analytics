@@ -13,7 +13,7 @@
 	error_reporting(E_ALL);
 if($_GET["id"]){
 	$CODE = $_GET["id"];
-	$dbh_v = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$dbh_v = new PDO($dbpath);
 	$t_cost = $dbh_v->beginTransaction();
 	$stmt_sql_cost = $dbh_v->prepare(
 		"SELECT sih_current.itemcode AS itemcode, desc, sih_current.cost/sih AS cost, sih_current.sell/sih AS sell FROM product_vendors JOIN sih_current ON sih_current.itemcode = product_vendors.itemcode WHERE vendorcode=?"

@@ -40,7 +40,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	$state_of_things = "too-much";
 	//var_dump($response);
 	//var_dump($response_analytics);
-	$dbh = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$dbh = new PDO($dbpath);
 	$dbh->query("pragma mmap_size=2000000000");
 	$t_lookup = $dbh->beginTransaction();
 	$stmt_lookup = $dbh->prepare(
@@ -99,7 +99,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	]);
 	$past_data = $stmt_sql->fetchAll();
 	$dbh->commit();
-	$dbh_cost = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$dbh_cost = new PDO($dbpath);
 	$t_cost = $dbh_cost->beginTransaction();
 	$stmt_sql_cost = $dbh_cost->prepare(
 		"SELECT itemcode, daydate, cost FROM cost WHERE itemcode=? AND daydate = (SELECT max(daydate) FROM cost WHERE itemcode = ?)"
@@ -110,7 +110,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	]);
 	$data_cost = $stmt_sql_cost->fetchAll();
 	$dbh_cost->commit();
-	$dbh_cost_grn = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$dbh_cost_grn = new PDO($dbpath);
 	$t_cost_grn = $dbh_cost_grn->beginTransaction();
 	$stmt_sql_cost_grn = $dbh_cost_grn->prepare(
 		"SELECT cost_purchase.itemcode, date, cost_purchase.cost, runno, desc, sih FROM cost_purchase LEFT JOIN sih_current ON sih_current.itemcode=cost_purchase.itemcode WHERE cost_purchase.itemcode=?"
@@ -118,7 +118,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	$stmt_cost_grn = $stmt_sql_cost_grn->execute([$response->PLU_CODE]);
 	$data_cost_grn = $stmt_sql_cost_grn->fetchAll();
 	$dbh_cost_grn->commit();
-	$dbh_cost_supl = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$dbh_cost_supl = new PDO($dbpath);
 	$t_cost_supl = $dbh_cost_supl->beginTransaction();
 	$stmt_sql_cost_supl = $dbh_cost_supl->prepare(
 		"SELECT vendors.vendorname, product_vendors.cost, vendors.vendorcode FROM product_vendors JOIN vendors ON vendors.vendorcode = product_vendors.vendorcode WHERE itemcode=?"
@@ -130,7 +130,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 
 	function getsalesbyhour($itemcode)
 	{
-		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
 			"SELECT 100*hsq/sq AS psh, c.x as timehour FROM ((select sum(quantity) AS sq, * FROM hourly WHERE itemcode=?) a CROSS JOIN (SELECT itemcode, timehour, sum(quantity) AS hsq FROM hourly WHERE itemcode=? GROUP BY timehour) b) RIGHT JOIN (SELECT x FROM cnt LIMIT 17 OFFSET 6) c ON b.timehour = c.x ORDER BY c.x"
@@ -142,7 +142,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	}
 	function getsalesbyday($itemcode)
 	{
-		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
 			"SELECT a.x AS daydate_full, ifnull(b.sq, 0) AS quantity, b.sq as rawsq, sum(b.sq/15) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN 14 PRECEDING AND CURRENT ROW) as da15, sum(b.sq/60) FILTER (WHERE b.sq IS NOT null) OVER (ORDER BY a.x ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as da60, * FROM dates a LEFT JOIN (SELECT sum(quantity) AS sq, daydate FROM hourly WHERE itemcode=? GROUP BY daydate) b ON a.x=b.daydate WHERE a.x < date('now') AND a.x > (SELECT min(daydate) FROM hourly WHERE itemcode=?) AND a.x < (SELECT * FROM last_imported) ORDER BY a.x"
@@ -154,7 +154,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	}
 	function lastimportedday()
 	{
-		$dbhm = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
 			"SELECT max(daydate) AS lastupdated FROM hourly"

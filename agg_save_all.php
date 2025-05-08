@@ -64,7 +64,7 @@ for($i=0;$i<30000;$i+=100)
 		array_push($RESPONSES2, json_decode($res2));
 	};
 	var_dump($RESPONSES2);
-	$dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
+	$dbh = new PDO($apidbpath);
 	$t = $dbh->beginTransaction();
 	$stmt_sql = $dbh->prepare("insert into productsattime ('ID', 'SIH', 's15', 's30', 's60') values (?, ?, ?, ?, ?)");
 	$stmt_sql_misc = $dbh->prepare("insert into productsattime_misc ('ID', 'DESC', 'BARCODE', 'SELL') values (?, ?, ?, ?)");

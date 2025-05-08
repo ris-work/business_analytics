@@ -39,7 +39,7 @@ if ($response && !property_exists($response, "Message")) {
 	$state_of_things = "too-much";
 	//var_dump($response);
 	//var_dump($response_analytics);
-	$dbh = new PDO("sqlite:/saru/www-data/db.sqlite3");
+	$dbh = new PDO($apidbpath);
 	$t = $dbh->beginTransaction();
 	$stmt_sql = $dbh->prepare(
 		"SELECT productsattime.TIME, s15, s30, s60, date as date, * FROM productsattime INNER JOIN productsattime_dailylatest ON productsattime_dailylatest.ID=productsattime.ID AND productsattime_dailylatest.latest=productsattime.TIME WHERE productsattime.ID=?"
@@ -47,7 +47,7 @@ if ($response && !property_exists($response, "Message")) {
 	$stmt = $stmt_sql->execute([$response->PLU_CODE]);
 	$past_data = $stmt_sql->fetchAll();
 	$dbh->commit();
-	$dbh_cost = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$dbh_cost = new PDO($dbpath);
 	$t_cost = $dbh_cost->beginTransaction();
 	$stmt_sql_cost = $dbh_cost->prepare(
 		"SELECT itemcode, daydate, cost FROM cost WHERE itemcode=? AND daydate = (SELECT max(daydate) FROM cost WHERE itemcode = ?)"
@@ -58,7 +58,7 @@ if ($response && !property_exists($response, "Message")) {
 	]);
 	$data_cost = $stmt_sql_cost->fetchAll();
 	$dbh_cost->commit();
-	$dbh_cost_grn = new PDO("sqlite:/saru/www-data/hourly.sqlite3");
+	$dbh_cost_grn = new PDO($dbpath);
 	$t_cost_grn = $dbh_cost_grn->beginTransaction();
 	$stmt_sql_cost_grn = $dbh_cost_grn->prepare(
 		"SELECT itemcode, date, cost, runno FROM cost_purchase WHERE itemcode=?"

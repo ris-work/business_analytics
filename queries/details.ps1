@@ -1,4 +1,4 @@
-. /saru/auth.ps1
+. /etc/auth.ps1
 #tables.csv: has SELECT TABLE_NAME FROM information_schema.tables
 #$query = Get-Content sih.sql
 #$query_t = Get-Content sih_t.sql
