@@ -140,7 +140,7 @@ function generate_table_row(v){
 	//console.log(v);
 	if(v){
 		row.appendChild(generate_right_data_element(v.itemcode));
-		row.appendChild(generate_data_element(v.label_i18n_si));
+		row.appendChild(generate_data_element(v.label_i18n_en));
 		row.appendChild(generate_data_element(v.label_i18n_ta));
 		row.appendChild(generate_data_element(v.label_i18n_si));
 		
