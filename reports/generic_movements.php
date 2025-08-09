@@ -22,15 +22,20 @@
     background-color: #f2f2f2;
     color: #333;
     font-weight: 600;
-    padding: 12px 15px;
+    padding: 2px 6px;
     text-align: left;
     border-bottom: 2px solid #ddd;
+    position: sticky;
   }
+thead * {
+position: sticky;
+top: 0;
+}
 
   td {
-    padding: 10px 15px;
+    padding: 2px 5px;
     color: #444;
-    border-bottom: 1px solid #eee;
+    border-bottom: 2px dotted #aaa;
   }
 
   /* zebra striping */
@@ -45,8 +50,8 @@
 
   /* —— GLOBAL NUMERIC ALIGNMENT —— */
   /* presentedformaxdate (col 3), sales (6), c_sales (7), purchases (8), c_purchases (9), past_stock (11) */
-  th:nth-child(3),
-  td:nth-child(3),
+  th:nth-child(5),
+  td:nth-child(5),
   th:nth-child(6),
   td:nth-child(6),
   th:nth-child(7),
@@ -78,17 +83,17 @@
     th, td {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
-      border: 1px solid #000 !important;
+      border: 2px solid #000 !important;
       background-color: #f9f9f9 !important;
       font-size: 10pt;
-      padding: 6px 8px;
+      padding: 3px 4px;
     }
 
     /* hide generic ID and generic-description (cols 1 & 4) */
     th:nth-child(1),
     td:nth-child(1),
-    th:nth-child(4),
-    td:nth-child(4) {
+    th:nth-child(3),
+    td:nth-child(3) {
       display: none !important;
     }
 
@@ -232,11 +237,11 @@ uncumulative AS (
 )
 
 SELECT
-    generic,
-    code,
-    presentedformaxdate,
-    genericdesc,
-    description,
+    CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN generic ELSE '' END AS genericp,
+    CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN code ELSE '' END AS codep,
+    CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN genericdesc ELSE '' END AS genericdescp,
+    CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN description ELSE '' END AS descriptionp,
+    presentedformaxdate AS as_at,
     total_sales AS sales,
     total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales,
     total_purchases AS purchases,
@@ -270,7 +275,7 @@ $rows = $stmt->fetchAll();
 
 // 6. Render results as an HTML table
 if (!empty($rows)) {
-    echo '<table border="1" cellpadding="5" cellspacing="0">';
+    echo '<table border="2" cellpadding="5" cellspacing="0">';
     echo '<thead><tr>';
     // Header row
     foreach (array_keys($rows[0]) as $colName) {
