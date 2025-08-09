@@ -47,6 +47,14 @@ CREATE TABLE vendors(vendorcode INT, vendorname TEXT, PRIMARY KEY (vendorcode)) 
 CREATE TABLE IF NOT EXISTS "prod_list"(dest INT NOT NULL, src INT NOT NULL, cost_src REAL NOT NULL, proportion REAL NOT NULL, PRIMARY KEY (dest, src)) STRICT, WITHOUT ROWID;
 CREATE TABLE barcodes(barcode INT, itemcode INT, PRIMARY KEY (barcode, itemcode)) STRICT, WITHOUT ROWID;
 CREATE TABLE barcodes_import(barcode TEXT, itemcode TEXT);
+CREATE TABLE label_i18n (itemcode INTEGER PRIMARY KEY, label_i18n_ta TEXT, label_i18n_si TEXT) STRICT, WITHOUT ROWID;
+CREATE TABLE label_i18n_changes (datetime TEXT, itemcode INTEGER, label_i18n_ta TEXT, label_i18n_si TEXT) STRICT;
+CREATE TABLE IF NOT EXISTS "label_i18n_import"(
+"itemcode" TEXT, "label_i18n_ta" TEXT, "label_i18n_si" TEXT);
+CREATE TABLE generic_info_import(category, classification, description);
+CREATE TABLE generic_info(category INTEGER, classification INTEGER, description TEXT, PRIMARY KEY (category, classification)) STRICT, WITHOUT ROWID;
+CREATE TABLE generic_moves_import(cumulative_total_sales, cumulative_total_purchases, total_sales, total_purchases, referenceinvoices, code, invoicedate, description);
+CREATE TABLE generic_moves(cumulative_total_sales REAL, cumulative_total_purchases REAL, total_sales REAL, total_purchases REAL, referenceinvoices TEXT, code INTEGER, invoicedate TEXT, description TEXT, PRIMARY KEY (code, invoicedate)) STRICT, WITHOUT ROWID;
 CREATE INDEX tentative_revenue_everything ON tentative_revenue(itemcode, daydate, timehour, sumsell, sumcost);
 CREATE INDEX full_inventory_current_covering ON full_inventory_current(itemcode, sell, cost);
 CREATE INDEX sih_covering ON sih_current(itemcode, desc, sih, cost, sell);
@@ -82,6 +90,7 @@ CREATE VIEW everything_itemcode_in_hourly AS SELECT DISTINCT itemcode FROM hourl
 CREATE VIEW t_sumrev AS SELECT itemcode, sum(sumsell) AS cumulativesell, sum(sumcost) AS cumulativecost FROM hourly GROUP BY itemcode
 /* t_sumrev(itemcode,cumulativesell,cumulativecost) */;
 CREATE TRIGGER hourly_changes_logger BEFORE UPDATE ON hourly FOR EACH ROW BEGIN INSERT INTO hourly_changes VALUES (date()||'T'||time(), OLD.itemcode, OLD.daydate, OLD.timehour, OLD.quantity, OLD.quantity - NEW.quantity); END;
-CREATE TABLE label_i18n (itemcode INTEGER PRIMARY KEY, label_i18n_ta TEXT, label_i18n_si TEXT) STRICT, WITHOUT ROWID;
-CREATE TABLE label_i18n_changes (datetime TEXT, itemcode INTEGER, label_i18n_ta TEXT, label_i18n_si TEXT) STRICT;
 CREATE TRIGGER label_i18n_changes_logger BEFORE UPDATE ON label_i18n FOR EACH ROW BEGIN INSERT INTO label_i18n_changes VALUES (date()||'T'||time(), OLD.itemcode, OLD.label_i18n_ta, OLD.label_i18n_si); END;
+CREATE TRIGGER label_i18n_deletes_logger BEFORE DELETE ON label_i18n FOR EACH ROW BEGIN INSERT INTO label_i18n_changes VALUES (date()||'T'||time(), OLD.itemcode, OLD.label_i18n_ta, OLD.label_i18n_si); END;
+CREATE TABLE generic_product_info_import(itemcode, classification, category);
+CREATE TABLE generic_product_info(itemcode INT, classification INT, category INT, PRIMARY KEY (itemcode, classification)) WITHOUT ROWID, STRICT;
