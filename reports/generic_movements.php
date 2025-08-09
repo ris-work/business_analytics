@@ -1,3 +1,51 @@
+<style>
+  /* Center the table and add a subtle drop-shadow */
+  table {
+    margin: 30px auto;           /* center horizontally with auto-margins */
+    width: 90%;                  /* adjust as needed */
+    max-width: 1200px;
+    border-collapse: collapse;   /* merge borders into single lines */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+  }
+
+  /* Header styling */
+  table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: 600;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+  }
+
+  /* Body cell styling */
+  table td {
+    padding: 10px 15px;
+    color: #444;
+    border-bottom: 1px solid #eee;
+  }
+
+  /* Zebra stripes on alternate rows */
+  table tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+
+  /* Hover effect for better readability */
+  table tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* Optional caption styling */
+  table caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 1.1em;
+    padding: 8px;
+    color: #666;
+  }
+</style>
 <?php
 error_reporting(E_ALL);
 require_once "./env.php";
@@ -45,10 +93,14 @@ $pdo = new PDO($dsn, null, null, $options);
 
 // 2. Define the SQL with unnamed placeholders (?)
 $sql = <<<SQL
+
 WITH moves AS (
     SELECT
-        code, generic, invoicedate,
-        total_sales, total_purchases
+        code,
+        generic,
+        invoicedate,
+        total_sales,
+        total_purchases
     FROM
         generic_moves
         JOIN generic_product_info
@@ -59,48 +111,63 @@ WITH moves AS (
 
 nearestpast AS (
     SELECT
-        sih_history.itemcode,
-        MAX(sih_history.datetime)    AS maxdate,
+        generic_moves.code           AS itemcode,
+        (
+          SELECT
+            MAX(sh.datetime)
+          FROM
+            sih_history AS sh
+          WHERE
+            sh.itemcode  = generic_moves.code
+            AND sh.datetime < generic_moves.invoicedate
+        )                            AS maxdate,
         generic_moves.invoicedate    AS presentedformaxdate
     FROM
         generic_moves
-        JOIN sih_history
-            ON generic_moves.code = sih_history.itemcode
-           AND generic_moves.invoicedate > sih_history.datetime
-    GROUP BY
-        sih_history.itemcode,
-        generic_moves.invoicedate
 ),
 
 moves_with_hist AS (
     SELECT
-        generic_moves.generic, description, nearestpast.presentedformaxdate,
-        sih_history.sih          AS sih_past,   generic_moves.code,    sih_history.datetime AS matcheddate,
-        generic_moves.total_sales, generic_moves.total_purchases, generic_moves.referenceinvoices
+        generic_moves.generic,
+        description,
+        nearestpast.presentedformaxdate,
+        sih_history.sih             AS sih_past,
+        generic_moves.code,
+        sih_history.datetime        AS matcheddate,
+        generic_moves.total_sales,
+        generic_moves.total_purchases,
+        generic_moves.referenceinvoices
     FROM
         generic_moves
         JOIN nearestpast
-            ON generic_moves.code = nearestpast.itemcode
-           AND nearestpast.presentedformaxdate = generic_moves.invoicedate
+          ON generic_moves.code              = nearestpast.itemcode
+         AND generic_moves.invoicedate       = nearestpast.presentedformaxdate
         JOIN sih_history
-            ON sih_history.itemcode = nearestpast.itemcode
-           AND sih_history.datetime = nearestpast.maxdate
+          ON sih_history.itemcode           = nearestpast.itemcode
+         AND sih_history.datetime           = nearestpast.maxdate
 ),
 
 uncumulative AS (
     SELECT
-        generic, code, presentedformaxdate,
-        TOTAL(total_sales)          AS total_sales,           TOTAL(total_purchases)       AS total_purchases,
+        generic,
+        code,
+        presentedformaxdate,
+        TOTAL(total_sales)            AS total_sales,
+        TOTAL(total_purchases)        AS total_purchases,
         GROUP_CONCAT(referenceinvoices) AS referenceinvoices,
-        generic_info.description, MAX(moves_with_hist.description) AS description_1, sih_past
+        generic_info.description,
+        MAX(moves_with_hist.description) AS description_1,
+        sih_past
     FROM
         moves_with_hist
         JOIN generic_info
-            ON generic_info.classification = 3
-           AND moves_with_hist.generic     = generic_info.category
-           AND generic_info.category       = ?
+          ON generic_info.classification  = 3
+         AND moves_with_hist.generic      = generic_info.category
+         AND generic_info.category        = ?
     GROUP BY
-        generic, code, presentedformaxdate
+        generic,
+        code,
+        presentedformaxdate
 )
 
 SELECT
@@ -110,7 +177,10 @@ FROM
 WHERE
     presentedformaxdate BETWEEN ? AND ?
 ORDER BY
-    generic, code, presentedformaxdate;
+    generic,
+    code,
+    presentedformaxdate;
+
 
 SQL;
 
@@ -118,9 +188,9 @@ SQL;
 $stmt = $pdo->prepare($sql);
 
 // 4. Define your parameter values in an indexed array
-$startDate = '2025-06-02';
-$endDate   = '2025-06-11';
+//$params    = [$generic, $startDateIso, $endDateIso];
 $params    = [$generic, $startDateIso, $endDateIso];
+//$params    = [$generic];
 
 // 5. Execute with array binding and fetch all rows
 $stmt->execute($params);
@@ -146,9 +216,9 @@ if (!empty($rows)) {
     echo '</tbody></table>';
 } else {
     echo '<p>No records found between '
-         . htmlspecialchars($startDate)
+         . htmlspecialchars($startDateIso)
          . ' and '
-         . htmlspecialchars($endDate)
+         . htmlspecialchars($endDateIso)
          . '.</p>';
 }
 
