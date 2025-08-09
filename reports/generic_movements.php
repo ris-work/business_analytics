@@ -45,7 +45,73 @@ $pdo = new PDO($dsn, null, null, $options);
 
 // 2. Define the SQL with unnamed placeholders (?)
 $sql = <<<SQL
- WITH moves AS (SELECT code, generic, invoicedate, total_sales, total_purchases FROM generic_moves JOIN generic_product_info ON generic_moves.generic = generic_product_info.category WHERE generic_product_info.classification=3), nearestpast AS (SELECT sih_history.itemcode, max(sih_history.datetime) AS maxdate, generic_moves.invoicedate AS presentedformaxdate FROM generic_moves JOIN sih_history ON generic_moves.invoicedate > sih_history.datetime AND generic_moves.code = sih_history.itemcode GROUP BY itemcode, generic_moves.invoicedate), moves_with_hist AS (SELECT generic, description, nearestpast.presentedformaxdate, sih_history.sih AS sih_past, generic_moves.code AS code, sih_history.datetime AS matcheddate, total_sales, total_purchases, referenceinvoices FROM generic_moves JOIN nearestpast ON generic_moves.code = nearestpast.itemcode AND nearestpast.presentedformaxdate = generic_moves.invoicedate JOIN sih_history ON sih_history.itemcode = nearestpast.itemcode AND sih_history.datetime = nearestpast.maxdate), uncumulative AS ( SELECT generic, code, presentedformaxdate, total(total_sales) AS total_sales, total(total_purchases) AS total_purchases, group_concat(referenceinvoices) AS referenceinvoices, generic_info.description, max(moves_with_hist.description) AS description, sih_past FROM moves_with_hist JOIN generic_info ON classification=3 AND category=? AND moves_with_hist.generic=generic_info.category GROUP BY generic, code, presentedformaxdate) SELECT * FROM uncumulative WHERE presentedformaxdate BETWEEN ? AND ? ORDER BY generic, code, presentedformaxdate;
+WITH moves AS (
+    SELECT
+        code, generic, invoicedate,
+        total_sales, total_purchases
+    FROM
+        generic_moves
+        JOIN generic_product_info
+            ON generic_moves.generic = generic_product_info.category
+    WHERE
+        generic_product_info.classification = 3
+),
+
+nearestpast AS (
+    SELECT
+        sih_history.itemcode,
+        MAX(sih_history.datetime)    AS maxdate,
+        generic_moves.invoicedate    AS presentedformaxdate
+    FROM
+        generic_moves
+        JOIN sih_history
+            ON generic_moves.code = sih_history.itemcode
+           AND generic_moves.invoicedate > sih_history.datetime
+    GROUP BY
+        sih_history.itemcode,
+        generic_moves.invoicedate
+),
+
+moves_with_hist AS (
+    SELECT
+        generic_moves.generic, description, nearestpast.presentedformaxdate,
+        sih_history.sih          AS sih_past,   generic_moves.code,    sih_history.datetime AS matcheddate,
+        generic_moves.total_sales, generic_moves.total_purchases, generic_moves.referenceinvoices
+    FROM
+        generic_moves
+        JOIN nearestpast
+            ON generic_moves.code = nearestpast.itemcode
+           AND nearestpast.presentedformaxdate = generic_moves.invoicedate
+        JOIN sih_history
+            ON sih_history.itemcode = nearestpast.itemcode
+           AND sih_history.datetime = nearestpast.maxdate
+),
+
+uncumulative AS (
+    SELECT
+        generic, code, presentedformaxdate,
+        TOTAL(total_sales)          AS total_sales,           TOTAL(total_purchases)       AS total_purchases,
+        GROUP_CONCAT(referenceinvoices) AS referenceinvoices,
+        generic_info.description, MAX(moves_with_hist.description) AS description_1, sih_past
+    FROM
+        moves_with_hist
+        JOIN generic_info
+            ON generic_info.classification = 3
+           AND moves_with_hist.generic     = generic_info.category
+           AND generic_info.category       = ?
+    GROUP BY
+        generic, code, presentedformaxdate
+)
+
+SELECT
+    *
+FROM
+    uncumulative
+WHERE
+    presentedformaxdate BETWEEN ? AND ?
+ORDER BY
+    generic, code, presentedformaxdate;
+
 SQL;
 
 // 3. Prepare the statement
