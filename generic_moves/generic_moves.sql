@@ -11,6 +11,7 @@ INSERT INTO generic_moves (
   referenceinvoices,
   code,
   invoicedate,
+generic,
   description
 )
 SELECT
@@ -21,6 +22,7 @@ SELECT
   referenceinvoices,
   CAST(code                      AS INT ) AS code,
   invoicedate,
+  CAST(generic                      AS INT ) AS generic,
   description
 FROM generic_moves_import
 WHERE true

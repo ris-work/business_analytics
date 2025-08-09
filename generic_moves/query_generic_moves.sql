@@ -45,8 +45,8 @@ PURCHASES AS (
 	)
 
 	SELECT 0, 0, s.totalquantity AS total_sales, p.totalquantity AS total_purchases, p.referenceinvoices AS referenceinvoices, COALESCE(s.code, p.code) AS code, COALESCE(s.invoicedate, p.invoicedate) AS invoicedate, COALESCE(s.generic, p.generic) AS generic, e.PLU_DESC FROM SALES_AGGREGATE s FULL OUTER JOIN PURCHASES p ON s.code = p.code AND s.invoicedate = p.invoicedate JOIN VIEW_ITEMWISESTOCKBALANCE e ON COALESCE(TRY_CAST(e.PLU_CODE AS int), -1) = p.code OR COALESCE(TRY_CAST(e.PLU_CODE AS int), -1) =s.code
-	WHERE s.generic <> -1 AND s.generic <>2
-	AND p.generic <> -1 AND p.generic <>2
+	WHERE (s.generic IS NOT NULL AND s.generic <> -1 AND s.generic <>2)
+	OR (p.generic IS NOT NULL AND p.generic <> -1 AND p.generic <>2)
 	--WHERE generic = 13 AND
 	-- CONVERT(varchar(10), s.invoicedate, 126)
 	--      >= CONVERT(varchar(10), DATEADD(day, -180, GETDATE()), 126)
