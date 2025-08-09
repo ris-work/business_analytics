@@ -1,17 +1,24 @@
 <style>
-  /* Center the table and add a subtle drop-shadow */
+  /* —— BASE STYLES —— */
   table {
-    margin: 30px auto;           /* center horizontally with auto-margins */
-    width: 90%;                  /* adjust as needed */
+    margin: 30px auto;
+    width: 90%;
     max-width: 1200px;
-    border-collapse: collapse;   /* merge borders into single lines */
+    border-collapse: collapse;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
     background-color: #fff;
   }
 
-  /* Header styling */
-  table th {
+  table caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 1.1em;
+    padding: 8px;
+    color: #666;
+  }
+
+  th {
     background-color: #f2f2f2;
     color: #333;
     font-weight: 600;
@@ -20,32 +27,86 @@
     border-bottom: 2px solid #ddd;
   }
 
-  /* Body cell styling */
-  table td {
+  td {
     padding: 10px 15px;
     color: #444;
     border-bottom: 1px solid #eee;
   }
 
-  /* Zebra stripes on alternate rows */
-  table tr:nth-child(even) {
+  /* zebra striping */
+  tr:nth-child(even) {
     background-color: #fafafa;
   }
 
-  /* Hover effect for better readability */
-  table tr:hover {
+  /* hover highlight */
+  tr:hover {
     background-color: #f1f1f1;
   }
 
-  /* Optional caption styling */
-  table caption {
-    caption-side: top;
-    text-align: center;
-    font-size: 1.1em;
-    padding: 8px;
-    color: #666;
+  /* —— GLOBAL NUMERIC ALIGNMENT —— */
+  /* presentedformaxdate (col 3), sales (6), c_sales (7), purchases (8), c_purchases (9), past_stock (11) */
+  th:nth-child(3),
+  td:nth-child(3),
+  th:nth-child(6),
+  td:nth-child(6),
+  th:nth-child(7),
+  td:nth-child(7),
+  th:nth-child(8),
+  td:nth-child(8),
+  th:nth-child(9),
+  td:nth-child(9),
+  th:nth-child(11),
+  td:nth-child(11) {
+    text-align: right;
+  }
+
+  /* —— PRINT-FRIENDLY OVERRIDES —— */
+  @media print {
+    table {
+      margin: 0;
+      width: 100% !important;
+      box-shadow: none !important;
+      background-color: transparent !important;
+      page-break-inside: avoid;
+      border: 1px solid #000;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2 !important;
+    }
+
+    th, td {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      border: 1px solid #000 !important;
+      background-color: #f9f9f9 !important;
+      font-size: 10pt;
+      padding: 6px 8px;
+    }
+
+    /* hide generic ID and generic-description (cols 1 & 4) */
+    th:nth-child(1),
+    td:nth-child(1),
+    th:nth-child(4),
+    td:nth-child(4) {
+      display: none !important;
+    }
+
+    /* prevent breaking rows across pages */
+    tr {
+      page-break-inside: avoid;
+    }
+
+    caption {
+      font-size: 12pt;
+      color: #000;
+      padding-bottom: 4px;
+    }
   }
 </style>
+
+
+
 <?php
 error_reporting(E_ALL);
 require_once "./env.php";
@@ -155,8 +216,8 @@ uncumulative AS (
         TOTAL(total_sales)            AS total_sales,
         TOTAL(total_purchases)        AS total_purchases,
         GROUP_CONCAT(referenceinvoices) AS referenceinvoices,
-        generic_info.description,
-        MAX(moves_with_hist.description) AS description_1,
+        generic_info.description AS genericdesc,
+        MAX(moves_with_hist.description) AS description,
         sih_past
     FROM
         moves_with_hist
@@ -171,7 +232,17 @@ uncumulative AS (
 )
 
 SELECT
-    *
+    generic,
+    code,
+    presentedformaxdate,
+    genericdesc,
+    description,
+    total_sales AS sales,
+    total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales,
+    total_purchases AS purchases,
+    total(total_purchases) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_purchases,
+    referenceinvoices,
+    sih_past AS past_stock
 FROM
     uncumulative
 WHERE
@@ -183,6 +254,7 @@ ORDER BY
 
 
 SQL;
+    //total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales
 
 // 3. Prepare the statement
 $stmt = $pdo->prepare($sql);
