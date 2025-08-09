@@ -283,13 +283,32 @@ if (!empty($rows)) {
     }
     echo '</tr></thead><tbody>';
     // Data rows
-    foreach ($rows as $row) {
+    $needHeader = false;
+
+foreach ($rows as $row) {
+    if (is_string($row[0]) || is_string($row[1])) {
+        $needHeader = true;
+    }
+
+    if ($needHeader) {
         echo '<tr>';
-        foreach ($row as $cell) {
-            echo '<td>' . htmlspecialchars($cell) . '</td>';
+        for ($i = 0; $i < 3; $i++) {
+            echo '<td>' . htmlspecialchars($row[$i]) . '</td>';
         }
         echo '</tr>';
+        $needHeader = false;
     }
+
+    echo '<tr>';
+    foreach ($row as $cell) {
+        echo '<td>' . htmlspecialchars($cell) . '</td>';
+    }
+    echo '</tr>';
+}
+
+    echo '</tr>';
+}
+
     echo '</tbody></table>';
 } else {
     echo '<p>No records found between '
