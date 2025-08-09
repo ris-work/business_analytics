@@ -1,6 +1,7 @@
 echo "pwd: $(pwd)"
 . /etc/auth.ps1
-$query = Get-Content query_generic_moves.sql
+$query = Get-Content query_generic_moves.sql -Raw
+Write-Host $query
 #$query_t = Get-Content sih_t.sql
 Get-Date -Format "o"
 Invoke-Sqlcmd -ServerInstance "$serv" -Query "$query" -Encrypt "Optional" -TrustServerCertificate -User "pos" -Password "$cred" | ConvertTo-csv -NoHeader | Out-File -File generic_moves.csv.inprogress && mv generic_moves.csv.inprogress generic_moves.csv
