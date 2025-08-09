@@ -270,6 +270,7 @@ $params    = [$generic, $startDateIso, $endDateIso];
 //$params    = [$generic];
 
 // 5. Execute with array binding and fetch all rows
+$stmt->setFetchMode(PDO::FETCH_NUM);
 $stmt->execute($params);
 $rows = $stmt->fetchAll();
 
@@ -285,29 +286,27 @@ if (!empty($rows)) {
     // Data rows
     $needHeader = false;
 
-foreach ($rows as $row) {
-    if (is_string($row[0]) || is_string($row[1])) {
-        $needHeader = true;
-    }
-
-    if ($needHeader) {
+    foreach ($rows as $row) {
+	    var_dump($row[0]);
+	    if (
+		            isset($row[0]) && is_string($row[0]) && trim($row[0]) !== "" ||
+        isset($row[1]) && is_string($row[1]) && trim($row[1]) !== ""
+	    
+	    ) {
         echo '<tr>';
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             echo '<td>' . htmlspecialchars($row[$i]) . '</td>';
         }
         echo '</tr>';
-        $needHeader = false;
     }
 
     echo '<tr>';
-    foreach ($row as $cell) {
+    foreach (array_slice($row, 3) as $cell) {
         echo '<td>' . htmlspecialchars($cell) . '</td>';
     }
     echo '</tr>';
 }
 
-    echo '</tr>';
-}
 
     echo '</tbody></table>';
 } else {
