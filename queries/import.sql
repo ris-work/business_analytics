@@ -5,5 +5,5 @@ INSERT INTO hourly SELECT CAST(itemcode AS int), daydate, CAST(timehour AS int),
 --UPDATE hourly SET quantity=0 WHERE (itemcode, daydate, timehour) IN zeroed_out_on_import;
 DELETE FROM hourly_import;
 COMMIT;
-VACUUM;
-ANALYZE;
+--VACUUM;
+--ANALYZE;

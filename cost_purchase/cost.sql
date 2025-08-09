@@ -5,5 +5,5 @@ INSERT INTO cost_purchase SELECT cast(itemcode AS INT), cast(runno AS INT), date
 --UPDATE cost SET quantity=0 WHERE (itemcode, daydate, timehour) IN zeroed_out_on_import;
 DELETE FROM cost_purchase_import;
 COMMIT;
-VACUUM;
-ANALYZE;
+--VACUUM;
+--ANALYZE;

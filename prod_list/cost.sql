@@ -13,4 +13,4 @@ INSERT INTO prod_list SELECT CAST(dest AS INT), CAST(src AS INT), CAST(cost_src 
 DELETE FROM prod_list_import;
 COMMIT;
 --VACUUM;
-ANALYZE;
+--ANALYZE;

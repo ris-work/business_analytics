@@ -1,3 +1,3 @@
 <?php
-$dbname = "/saru/www-data/hourly.sqlite3";
+$dbname = "/realsaru/www-data/hourly.sqlite3";
 ?>

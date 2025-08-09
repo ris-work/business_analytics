@@ -5,5 +5,5 @@ INSERT INTO sih_current SELECT cast(PLU_CODE AS INT), PLU_DESC, cast(SIH AS REAL
 --UPDATE cost SET quantity=0 WHERE (itemcode, daydate, timehour) IN zeroed_out_on_import;
 DELETE FROM sih_import;
 COMMIT;
-VACUUM;
-ANALYZE;
+--VACUUM;
+--ANALYZE;

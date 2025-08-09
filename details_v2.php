@@ -7,7 +7,9 @@ function goback(){window.location.assign("/scan/")}
 function graph(){}
 </script>
 <?php
-ini_set("display_errors", "0");
+require_once('/etc/auth.php');
+var_dump($dbpath);
+ini_set("display_errors", "1");
 error_reporting(E_ALL);
 require_once "/etc/auth.php";
 $ID = $_GET["id"];
@@ -130,6 +132,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 
 	function getsalesbyhour($itemcode)
 	{
+		global $dbpath;
 		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
@@ -142,6 +145,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	}
 	function getsalesbyday($itemcode)
 	{
+		global $dbpath;
 		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
@@ -154,6 +158,7 @@ if (true || ($response && !property_exists($response, "Message"))) {
 	}
 	function lastimportedday()
 	{
+		global $dbpath;
 		$dbhm = new PDO($dbpath);
 		$t = $dbhm->beginTransaction();
 		$stmtm_sql = $dbhm->prepare(
