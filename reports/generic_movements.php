@@ -77,6 +77,11 @@ print-color-adjust: exact;
 thead * {
 position: relative;
 }
+td{
+overflow-wrap: anywhere;
+word-wrap: anywhere;
+max-width: 250px;
+}
 
   }
 
@@ -265,7 +270,7 @@ SELECT
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN code ELSE '' END AS codep,
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN genericdesc ELSE '' END AS genericdescp,
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN description ELSE '' END AS descriptionp,
-	presentedformaxdate AS as_at,
+	SUBSTR(presentedformaxdate, 6, 5) AS as_at,
 	total_sales AS sales,
 	total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales,
 	total_purchases AS purchases,
