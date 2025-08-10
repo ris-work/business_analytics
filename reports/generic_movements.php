@@ -59,6 +59,12 @@ print-color-adjust: exact;
 
   /* —— GLOBAL NUMERIC ALIGNMENT —— */
   /* presentedformaxdate (col 3), sales (6), c_sales (7), purchases (8), c_purchases (9), past_stock (11) */
+  th:nth-child(2),
+  td:nth-child(2),
+  th:nth-child(3),
+  td:nth-child(3),
+  th:nth-child(4),
+  td:nth-child(4),
   th:nth-child(5),
   td:nth-child(5),
   th:nth-child(6),
@@ -294,14 +300,23 @@ ORDER BY
 	generic,
 	code,
 	presentedformaxdate
-)
-SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, c_sales, purchases, c_purchases, referenceinvoices, past_stock, last_sih,
+),
+
+computed AS (
+SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, c_sales, purchases, c_purchases, referenceinvoices, past_stock AS manual,
 last_sih
 +total(sales) OVER (PARTITION BY code ORDER BY as_at ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING EXCLUDE CURRENT ROW) 
 -total(purchases) OVER (PARTITION BY code ORDER BY as_at ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING EXCLUDE CURRENT ROW) 
 AS computed_sih
 
-FROM truedata ORDER BY generic, code, as_at;
+FROM truedata ORDER BY generic, code, as_at)
+
+
+SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, c_sales, purchases, c_purchases, referenceinvoices, manual,
+computed_sih
+FROM computed
+
+;
 
 SQL;
 //total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales
@@ -353,7 +368,7 @@ if (!empty($rows)) {
 	//foreach (array_keys($rows[0]) as $colName) {
 	//	echo '<th>' . htmlspecialchars($colName) . '</th>';
 	//}
-	foreach (['date', 'sold', 'cumulative', 'purchase', 'cumulative', 'received invoice no.', 'stock recorded'] as $colname) {
+	foreach (['date', 'sold', 'cumulative', 'purchase', 'cumulative', 'received invoice no.', 'verified physical', 'stock in hand'] as $colname) {
 		echo '<th>' . htmlspecialchars($colname) . '</th>';
 	}
 	echo '</tr></thead><tbody>';
