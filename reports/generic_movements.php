@@ -276,6 +276,8 @@ SELECT
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN code ELSE '' END AS codep,
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN genericdesc ELSE '' END AS genericdescp,
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN description ELSE '' END AS descriptionp,
+        code,
+        generic,
 	SUBSTR(presentedformaxdate, 6, 5) AS as_at,
 	total_sales AS sales,
 	total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales,
@@ -293,7 +295,13 @@ ORDER BY
 	code,
 	presentedformaxdate
 )
-SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, s_cumulative, purchases, p_cumulative, referenceinvoices, sih_past FROM truedata;
+SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, c_sales, purchases, c_purchases, referenceinvoices, past_stock, last_sih,
+last_sih
++total(sales) OVER (PARTITION BY code ORDER BY as_at ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING EXCLUDE CURRENT ROW) 
+-total(purchases) OVER (PARTITION BY code ORDER BY as_at ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING EXCLUDE CURRENT ROW) 
+AS computed_sih
+
+FROM truedata ORDER BY generic, code, as_at;
 
 SQL;
 //total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales
