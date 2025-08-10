@@ -146,6 +146,11 @@ error_reporting(E_ALL);
 require_once "./env.php";
 // 1. Compute default values and parse query-string inputs
 $tz = new DateTimeZone('UTC');
+$UseQuarters = false;
+if(isset($_GET['quarter']) && $_GET['quarter'] != '0' && strtolower($_GET['quarter']) != "none" && strtolower($_GET['quarter']) != "nothing"){
+	$UseQuarters = true;
+	$Quarter = (int)$_GET['quarter'];
+}
 
 // Determine start date: use ?startdate or default to today minus 180 days
 try {
@@ -263,8 +268,9 @@ uncumulative AS (
 	generic,
 	code,
 	presentedformaxdate
-)
+),
 
+truedata AS (
 SELECT
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN generic ELSE '' END AS genericp,
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN code ELSE '' END AS codep,
@@ -276,7 +282,8 @@ SELECT
 	total_purchases AS purchases,
 	total(total_purchases) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_purchases,
 	referenceinvoices,
-	sih_past AS past_stock
+	sih_past AS past_stock,
+        last_value(sih_past) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_sih
 FROM
 	uncumulative
 WHERE
@@ -284,11 +291,36 @@ WHERE
 ORDER BY
 	generic,
 	code,
-	presentedformaxdate;
-
+	presentedformaxdate
+)
+SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, s_cumulative, purchases, p_cumulative, referenceinvoices, sih_past FROM truedata;
 
 SQL;
 //total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales
+$DefinedQuarters = [];
+$year = date('Y');
+$DefinedQuarters = [
+    [
+        "{$year}-01-01",
+        "{$year}-03-31",
+    ],
+    [
+        "{$year}-04-01",
+        "{$year}-06-30",
+    ],
+    [
+        "{$year}-07-01",
+        "{$year}-09-30",
+    ],
+    [
+        "{$year}-10-01",
+        "{$year}-12-31",
+    ],
+];
+if($UseQuarters){
+	$startDateIso = $DefinedQuarters[$Quarter-1][0];
+	$endDateIso = $DefinedQuarters[$Quarter-1][1];
+}
 
 // 3. Prepare the statement
 $stmt = $pdo->prepare($sql);
@@ -305,6 +337,8 @@ $rows = $stmt->fetchAll();
 
 // 6. Render results as an HTML table
 if (!empty($rows)) {
+	echo "<span>Report from $startDateIso to $endDateIso</span><br />\r\n";
+	if($UseQuarters) echo "<span>Quarter requested: $Quarter</span><br />\r\n";
 	echo '<table border="2" cellpadding="5" cellspacing="0">';
 	echo '<thead><tr>';
 	// Header row
