@@ -1,0 +1,139 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RepotSelect</title>
+    <link rel="stylesheet" href="styles.css" />
+<style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+        }
+        .center {
+            width: auto;
+            
+        }
+	body{
+		background-color: #e7e8f1;
+	     }
+	.title{
+		font-size: 40px;
+              }
+
+	label {
+	cursor: pointer;
+	color: #191970;
+	display: block;
+	padding: 5px;
+	font-size:18px;
+                        }
+
+	input, select{
+		padding: 1em ;
+		border: 2px solid #ccc;
+		border-radius: 6px;
+		width: 90%;
+		-webkit-transition: 0.5s;
+  		outline:none;
+		margin-bottom:8px;		
+}
+	input[type="submit"]{
+		background-color: #6495ED;
+		color: #fff;
+		border: solid 1px #999;
+		border-radius: 6px;
+		padding: 1em;
+        margin-bottom: 20px;
+		width: 100%;
+		cursor: pointer;
+		font-size:20px;
+ 				}
+
+	input[type=submit]:hover {
+ 		background-color: #357EC7;
+
+}
+
+	input:focus {
+  		border:  2px solid #87b1fa;
+}
+		
+
+        fieldset{
+		border: solid 1px #ccc;
+		margin: auto;
+		padding: 1em 2em;
+		border-radius: 16px;
+		min-width: 200px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+	legend{
+		font-size: 1.25em;
+		padding: 0 .25em;
+		color: #999999bd;}
+
+select{
+width:100%;
+}
+
+select:focus{
+border:  2px solid #87b1fa;}
+
+
+input[type=date]{
+font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+}
+
+
+
+    </style>
+  </head>
+  <body>
+<div class="container">
+<div class="center">
+	
+      <fieldset><legend>
+      <h1 class="title">Report Generator</h1></legend>
+     
+  <form action="/action_page.php" method="get">
+  
+  <label  for="startdate">Start Date:</label>
+  <input type="date" id="sdate" name="startdate">
+  
+  <label for="enddate">End Date:</label>
+  <input type="date" id="edate" name="enddate">
+
+  <label for="quaters">Quarters:</label>
+
+  <select name="quarters" id="quarters">
+  <option value="1">0</option>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  </select>
+  
+ 
+  <label  for="generic">Generic:</label>
+    
+  <input list="generic" name="generics" id="generics">
+
+<datalist id="generic">
+  <option value="20">
+  <option value="30">
+  <option value="40">
+  <option value="50">
+  <option value="60">
+</datalist>
+  <br><br>
+ <input type="submit" value="Submit">
+	</form>
+	<div>
+	<div>
+	</fieldset>
+  </body>
+</html>
