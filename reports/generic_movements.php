@@ -214,7 +214,23 @@ WITH moves AS (
 	WHERE
 	generic_product_info.classification = 3
 ),
-
+-- USED TO BE NEARESTPAST, now NEARESTFUTURE and should be renamed to NEARESTFUTURE
+nearestfuture AS (
+	SELECT
+	generic_moves.code           AS itemcode,
+	(
+	  SELECT
+		MIN(sh.datetime)
+	  FROM
+		sih_history AS sh
+	  WHERE
+		sh.itemcode  = generic_moves.code
+		AND sh.datetime > generic_moves.invoicedate
+	)                            AS maxdate,
+	generic_moves.invoicedate    AS presentedformaxdate
+	FROM
+	generic_moves
+),
 nearestpast AS (
 	SELECT
 	generic_moves.code           AS itemcode,
@@ -237,9 +253,9 @@ moves_with_hist AS (
 	generic_moves.generic,
 	description,
 	nearestpast.presentedformaxdate,
-	sih_history.sih             AS sih_past,
+	max(past.sih, future.sih)             AS sih_past,
 	generic_moves.code,
-	sih_history.datetime        AS matcheddate,
+	past.datetime        AS matcheddate,
 	generic_moves.total_sales,
 	generic_moves.total_purchases,
 	generic_moves.referenceinvoices
@@ -248,9 +264,15 @@ moves_with_hist AS (
 	JOIN nearestpast
 	  ON generic_moves.code              = nearestpast.itemcode
 	 AND generic_moves.invoicedate       = nearestpast.presentedformaxdate
-	JOIN sih_history
-	  ON sih_history.itemcode           = nearestpast.itemcode
-	 AND sih_history.datetime           = nearestpast.maxdate
+	JOIN nearestfuture
+	  ON generic_moves.code              = nearestfuture.itemcode
+	 AND generic_moves.invoicedate       = nearestfuture.presentedformaxdate
+	JOIN sih_history past
+	  ON past.itemcode           = nearestpast.itemcode
+	 AND past.datetime           = nearestpast.maxdate
+	JOIN sih_history future
+	  ON future.itemcode           = nearestfuture.itemcode
+	 AND future.datetime           = nearestfuture.maxdate
 ),
 
 uncumulative AS (
