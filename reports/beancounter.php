@@ -95,5 +95,11 @@ a {
 						<a href="last_sold_or_bought_long_ago_and_in_stock.php"><button>Last sold/bought long ago<br />(but in stock)</button></a>
 						</fieldset>
 				</div>
+				<div class='container'>
+						<fieldset>
+								<legend>Generics (aggregate)</legend>
+						<a href="generic_report_generator.php"><button>Generics<br />(Antibiotics, etc.)</button></a>
+						</fieldset>
+				</div>
 		</body>
 </html>

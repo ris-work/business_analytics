@@ -186,6 +186,11 @@ $endDateIso = $endDt->format(DateTime::ATOM);
 
 // Determine generic category: use ?generic or default to 13
 $generic = filter_input(INPUT_GET, 'generic', FILTER_VALIDATE_INT);
+	if (!empty($_GET['generic'])) {
+		echo "Generic ID: $generic";
+$parts = explode('::', $_GET["generic"]);
+$generic = (int) trim(array_pop($parts));
+	}
 if ($generic === false || $generic === null) {
 	$generic = 13;
 }
