@@ -319,7 +319,8 @@ SELECT
 	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) = 1 THEN description ELSE '' END AS descriptionp,
         code,
         generic,
-	SUBSTR(presentedformaxdate, 6, 5) AS as_at,
+	SUBSTR(presentedformaxdate, 6, 5) AS as_at_noy,
+	SUBSTR(presentedformaxdate, 1, 10) AS as_at,
 	total_sales AS sales,
 	total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales,
 	total_purchases AS purchases,
@@ -347,7 +348,7 @@ AS computed_sih
 FROM truedata ORDER BY generic, code, as_at)
 
 
-SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, c_sales, purchases, c_purchases, referenceinvoices, manual,
+SELECT descriptionp, genericp, codep, genericdescp, as_at, purchases, c_purchases, sales, c_sales, referenceinvoices, manual,
 computed_sih
 FROM computed
 
@@ -403,7 +404,7 @@ if (!empty($rows)) {
 	//foreach (array_keys($rows[0]) as $colName) {
 	//	echo '<th>' . htmlspecialchars($colName) . '</th>';
 	//}
-	foreach (['date', 'sold', 'cumulative', 'purchase', 'cumulative', 'received invoice no.', 'verified physical', 'stock in hand'] as $colname) {
+	foreach (['date', 'purchase', '=> so far', 'sales', '=> so far', 'received invoice no.', 'verified physical', 'stock in hand'] as $colname) {
 		echo '<th>' . htmlspecialchars($colname) . '</th>';
 	}
 	echo '</tr></thead><tbody>';
