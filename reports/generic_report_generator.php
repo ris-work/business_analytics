@@ -109,7 +109,7 @@ font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 
   <label for="quaters">Quarters:</label>
 
-  <select name="quarters" id="quarters">
+  <select name="quarter" id="quarters">
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -133,7 +133,7 @@ $options = [
 ];
 $pdo = new PDO($dsn, null, null, $options);
 $sql = <<<SQL
-select description || ' :: ' || category AS generic from generic_info;
+select description || ' :: ' || category AS generic from generic_info WHERE classification=3;
 SQL;
 $stmt = $pdo->prepare($sql);
 

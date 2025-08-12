@@ -78,6 +78,7 @@ print-color-adjust: exact;
   th:nth-child(11),
   td:nth-child(11) {
 	text-align: right;
+/*border: 1px black dashed;*/
   }
   @media print {
 thead * {
@@ -87,6 +88,13 @@ td{
 overflow-wrap: anywhere;
 word-wrap: anywhere;
 max-width: 250px;
+}
+  th:nth-child(7),
+  td:nth-child(7){
+display: none;
+visibility: none;
+border: 1px black dashed;
+border-collapse: separate;
 }
 
   }
