@@ -102,6 +102,8 @@ border-collapse: separate;
 
   /* —— PRINT-FRIENDLY OVERRIDES —— */
 </style>
+</head><body>
+<span style="font-size: 2em; display: block; text-align: center; width: 100vw;">S R Medicals</span>
 <!--
   @media print {
 	table {
@@ -349,7 +351,7 @@ AS computed_sih
 FROM truedata ORDER BY generic, code, as_at)
 
 
-SELECT descriptionp, genericp, codep, genericdescp, as_at, referenceinvoices, purchases, c_purchases, sales, c_sales, manual,
+SELECT descriptionp, genericdescp, as_at, referenceinvoices, purchases, CASE WHEN purchases > 0 THEN computed_sih + sales ELSE NULL END AS computed_psih, sales,
 computed_sih
 FROM computed
 
@@ -405,7 +407,7 @@ if (!empty($rows)) {
 	//foreach (array_keys($rows[0]) as $colName) {
 	//	echo '<th>' . htmlspecialchars($colName) . '</th>';
 	//}
-	foreach (['date', 'received invoice no.', 'purchase', '&rarr; so far', 'sales', '&rarr; so far', 'verified physical', 'stock in hand'] as $colname) {
+	foreach (['date', 'received invoice no.', 'purchase', 'total', 'sales', 'balance'] as $colname) {
 		echo '<th>' . $colname . '</th>';
 	}
 	echo '</tr></thead><tbody>';
@@ -422,14 +424,14 @@ if (!empty($rows)) {
 		) {
 			//Vypecho '<tr style="background: #9aa; position: sticky; top: 25px">';
 			echo '<tr style="background: #cee !important; font-weight: 700; print-color-adjust: exact;">';
-			for ($i = 0; $i < 4; $i++) {
+			for ($i = 0; $i < 2; $i++) {
 				echo '<td style="" colspan="2">&sect;: ' . htmlspecialchars($row[$i]) . '</td>';
 			}
 			echo '</tr>';
 		}
 
 		echo '<tr>';
-		foreach (array_slice($row, 4) as $cell) {
+		foreach (array_slice($row, 2) as $cell) {
 			echo '<td>' . htmlspecialchars($cell) . '</td>';
 		}
 		echo '</tr>';
