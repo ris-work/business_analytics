@@ -1,4 +1,5 @@
 BEGIN TRANSACTION;
+--DELETE FROM generic_moves;
 DELETE FROM generic_moves_import;
 .import --csv generic_moves.csv generic_moves_import
 --INSERT INTO cost SELECT cast(cumulative_total_sales AS REAL) AS cumulative_total_sales, cast(cumulative_total_purchases AS REAL) AS cumulative_total_purchases, cast(total_sales AS REAL) AS total_sales, cast(total_purchases AS REAL) AS total_purchases, referenceinvoices, cast(code AS INT) AS code, invoicedate, description FROM generic_moves_import WHERE true ON CONFLICT DO UPDATE SET cost=CAST(excluded.cost AS REAL) WHERE cost <> CAST(excluded.cost AS REAL);

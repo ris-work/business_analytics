@@ -42,6 +42,7 @@ top: 0;
 	padding: 2px 5px;
 	color: #444;
 	border-bottom: 2px dotted #aaa;
+max-width: 150px;
 print-color-adjust: exact;
   }
 
@@ -84,10 +85,10 @@ print-color-adjust: exact;
 thead * {
 position: relative;
 }
-td{
+td, tr{
 overflow-wrap: anywhere;
 word-wrap: anywhere;
-max-width: 250px;
+max-width: 150px;
 }
   th:nth-child(7),
   td:nth-child(7){
@@ -348,7 +349,7 @@ AS computed_sih
 FROM truedata ORDER BY generic, code, as_at)
 
 
-SELECT descriptionp, genericp, codep, genericdescp, as_at, purchases, c_purchases, sales, c_sales, referenceinvoices, manual,
+SELECT descriptionp, genericp, codep, genericdescp, as_at, referenceinvoices, purchases, c_purchases, sales, c_sales, manual,
 computed_sih
 FROM computed
 
@@ -404,8 +405,8 @@ if (!empty($rows)) {
 	//foreach (array_keys($rows[0]) as $colName) {
 	//	echo '<th>' . htmlspecialchars($colName) . '</th>';
 	//}
-	foreach (['date', 'purchase', '=> so far', 'sales', '=> so far', 'received invoice no.', 'verified physical', 'stock in hand'] as $colname) {
-		echo '<th>' . htmlspecialchars($colname) . '</th>';
+	foreach (['date', 'received invoice no.', 'purchase', '&rarr; so far', 'sales', '&rarr; so far', 'verified physical', 'stock in hand'] as $colname) {
+		echo '<th>' . $colname . '</th>';
 	}
 	echo '</tr></thead><tbody>';
 	// Data rows
@@ -422,7 +423,7 @@ if (!empty($rows)) {
 			//Vypecho '<tr style="background: #9aa; position: sticky; top: 25px">';
 			echo '<tr style="background: #cee !important; font-weight: 700; print-color-adjust: exact;">';
 			for ($i = 0; $i < 4; $i++) {
-				echo '<td style="" colspan="2">CODE: ' . htmlspecialchars($row[$i]) . '</td>';
+				echo '<td style="" colspan="2">&sect;: ' . htmlspecialchars($row[$i]) . '</td>';
 			}
 			echo '</tr>';
 		}
