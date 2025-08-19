@@ -42,8 +42,9 @@ top: 0;
 	padding: 2px 5px;
 	color: #444;
 	border-bottom: 2px dotted #aaa;
-max-width: 150px;
+max-width: 120px;
 print-color-adjust: exact;
+word-break: break-all;
   }
 
   /* zebra striping */
@@ -104,6 +105,8 @@ border-collapse: separate;
 </style>
 </head><body>
 <span style="font-size: 2em; display: block; text-align: center; width: 100vw;">S R Medicals</span>
+<span style="font-size: 1em; display: block; text-align: center; width: 100vw;">108, Post Office Road, Trincomalee</span>
+<span style="font-size: 1em; display: block; text-align: center; width: 100vw;">026 2227588</span>
 <!--
   @media print {
 	table {
@@ -161,6 +164,7 @@ position: relative;
 <?php
 error_reporting(E_ALL);
 require_once "./env.php";
+error_reporting(E_ALL);
 // 1. Compute default values and parse query-string inputs
 $tz = new DateTimeZone('UTC');
 $UseQuarters = false;
@@ -324,11 +328,11 @@ SELECT
         generic,
 	SUBSTR(presentedformaxdate, 6, 5) AS as_at_noy,
 	SUBSTR(presentedformaxdate, 1, 10) AS as_at,
-	total_sales AS sales,
+	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) <> 1 THEN total_sales ELSE NULL END AS sales,
 	total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales,
-	total_purchases AS purchases,
+	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) <> 1 THEN total_purchases ELSE NULL END AS purchases,
 	total(total_purchases) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_purchases,
-	referenceinvoices,
+	CASE WHEN ROW_NUMBER() OVER (PARTITION BY code ORDER BY presentedformaxdate) <> 1 THEN referenceinvoices ELSE '' END AS referenceinvoicesf,
 	sih_past AS past_stock,
         last_value(sih_past) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_sih
 FROM
@@ -342,7 +346,7 @@ ORDER BY
 ),
 
 computed AS (
-SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, c_sales, purchases, c_purchases, referenceinvoices, past_stock AS manual,
+SELECT genericp, codep, genericdescp, descriptionp, as_at, sales, c_sales, purchases, c_purchases, referenceinvoicesf, past_stock AS manual,
 last_sih
 +total(sales) OVER (PARTITION BY code ORDER BY as_at ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING EXCLUDE CURRENT ROW) 
 -total(purchases) OVER (PARTITION BY code ORDER BY as_at ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING EXCLUDE CURRENT ROW) 
@@ -351,7 +355,7 @@ AS computed_sih
 FROM truedata ORDER BY generic, code, as_at)
 
 
-SELECT descriptionp, genericdescp, as_at, referenceinvoices, purchases, CASE WHEN purchases > 0 THEN computed_sih + sales ELSE NULL END AS computed_psih, sales,
+SELECT descriptionp, genericdescp, as_at, referenceinvoicesf, purchases, CASE WHEN purchases > 0 THEN computed_sih + sales ELSE NULL END AS computed_psih, sales,
 computed_sih
 FROM computed
 
@@ -361,21 +365,22 @@ SQL;
 //total(total_sales) OVER (PARTITION BY code ORDER BY presentedformaxdate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS c_sales
 $DefinedQuarters = [];
 $year = date('Y');
+$yearminusone = ((int)$year)-1;
 $DefinedQuarters = [
     [
-        "{$year}-01-01",
+        "{$yearminusone}-12-31",
         "{$year}-03-31",
     ],
     [
-        "{$year}-04-01",
+        "{$year}-03-31",
         "{$year}-06-30",
     ],
     [
-        "{$year}-07-01",
+        "{$year}-06-31",
         "{$year}-09-30",
     ],
     [
-        "{$year}-10-01",
+        "{$year}-09-31",
         "{$year}-12-31",
     ],
 ];
@@ -399,8 +404,9 @@ $rows = $stmt->fetchAll();
 
 // 6. Render results as an HTML table
 if (!empty($rows)) {
-	echo "<span>Report from $startDateIso to $endDateIso</span><br />\r\n";
-	if($UseQuarters) echo "<span>Quarter requested: $Quarter</span><br />\r\n";
+	echo "<span>Reporting information from $startDateIso to $endDateIso</span><br />\r\n";
+	if($UseQuarters) echo "<span>Quarterly report requested: $Quarter</span><br />\r\n";
+	else echo "<span>NON-QUARTERLY REPORT</span><br />\r\n";
 	echo '<table border="2" cellpadding="5" cellspacing="0">';
 	echo '<thead><tr>';
 	// Header row
@@ -418,14 +424,14 @@ if (!empty($rows)) {
 		//var_dump($row[0]);
 		//var_dump($row[1]);
 		if (
-			isset($row[0]) && is_numeric($row[0]) && trim($row[0]) != "" ||
-			isset($row[1]) && is_numeric($row[1]) && trim($row[1]) != ""
+			isset($row[0]) && is_string($row[0]) && trim($row[0]) != "" ||
+			isset($row[1]) && is_string($row[1]) && trim($row[1]) != ""
 
 		) {
 			//Vypecho '<tr style="background: #9aa; position: sticky; top: 25px">';
 			echo '<tr style="background: #cee !important; font-weight: 700; print-color-adjust: exact;">';
 			for ($i = 0; $i < 2; $i++) {
-				echo '<td style="" colspan="2">&sect;: ' . htmlspecialchars($row[$i]) . '</td>';
+				echo '<td style="" colspan="3">&sect; Name: ' . htmlspecialchars($row[$i]) . '</td>';
 			}
 			echo '</tr>';
 		}
